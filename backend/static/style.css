@@ -1,0 +1,785 @@
+/* =========================================
+   1. VARIABLES & RESET (Estilo TradingView)
+   ========================================= */
+:root {
+    /* Paleta de Colores Oficial */
+    --bg-main: #131722;       /* Fondo principal oscuro */
+    --bg-card: #1e222d;       /* Fondo de tarjetas */
+    --bg-hover: #2a2e39;      /* Hover en listas/tablas */
+    
+    --text-primary: #d1d4dc;  /* Texto principal */
+    --text-secondary: #787b86;/* Texto secundario (muted) */
+    
+    --accent-blue: #2962ff;   /* Azul institucional */
+    --accent-pos: #089981;    /* Verde ganancia */
+    --accent-neg: #f23645;    /* Rojo pérdida */
+    
+    --border: #363a45;        /* Bordes sutiles */
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    
+    /* Animaciones */
+    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    overflow-x: hidden; /* Evita scroll horizontal indeseado */
+}
+
+a { text-decoration: none; color: inherit; transition: color 0.2s; }
+ul { list-style: none; }
+
+/* Scrollbar Personalizado (Estilo Pro) */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-main); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+
+/* =========================================
+   2. NAVBAR & NAVEGACIÓN
+   ========================================= */
+.navbar-pro {
+    background-color: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav-left { display: flex; align-items: center; gap: 30px; }
+.nav-logo { 
+    font-weight: 800; font-size: 18px; letter-spacing: -0.5px; 
+    color: var(--text-primary); 
+}
+.nav-logo span { color: var(--accent-blue); }
+
+.nav-links { display: flex; gap: 20px; }
+.nav-link { 
+    font-weight: 600; font-size: 13px; color: var(--text-secondary); 
+    padding: 5px 0; border-bottom: 2px solid transparent;
+}
+.nav-link:hover, .nav-link.active { 
+    color: var(--text-primary); 
+    border-bottom-color: var(--accent-blue); 
+}
+
+/* Buscador en Navbar */
+.search-terminal { position: relative; }
+.search-terminal input {
+    background: var(--bg-main);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 6px 12px 6px 30px; /* Espacio para lupa */
+    border-radius: 4px;
+    font-size: 13px;
+    width: 220px;
+    transition: width 0.3s ease, border-color 0.3s;
+}
+.search-terminal input:focus {
+    width: 300px;
+    border-color: var(--accent-blue);
+    outline: none;
+}
+.search-icon-btn {
+    position: absolute; left: 8px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; color: var(--text-secondary); cursor: pointer;
+}
+
+/* =========================================
+   3. HOME: MONITOR DÓLARES (PRINCIPIANTE)
+   ========================================= */
+.section-dolares {
+    padding: 20px;
+    overflow-x: auto;
+    white-space: nowrap;
+    display: flex;
+    gap: 15px;
+    padding-bottom: 30px; /* Espacio para la sombra del hover */
+}
+
+.card-dolar {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    min-width: 180px;
+    padding: 16px;
+    display: inline-flex;
+    flex-direction: column;
+    transition: transform 0.3s var(--ease-smooth), box-shadow 0.3s, border-color 0.3s;
+    cursor: default;
+}
+
+/* Efecto de "Levitación" al pasar el mouse */
+.card-dolar:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+    border-color: var(--accent-blue);
+}
+
+.card-dolar small { 
+    font-size: 11px; font-weight: 700; color: var(--text-secondary); 
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;
+}
+.card-dolar .valor { font-size: 22px; font-weight: 700; color: var(--text-primary); }
+.card-dolar .spread { font-size: 11px; color: var(--accent-blue); margin-top: auto; }
+
+/* =========================================
+   4. HOME: TABLAS & DASHBOARD (EXPERTO)
+   ========================================= */
+.expert-dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 24px;
+    padding: 20px;
+}
+
+.panel-tabla {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden; /* Para que el header no se salga */
+}
+
+.panel-header {
+    background: var(--bg-hover);
+    padding: 12px 16px;
+    font-size: 12px; font-weight: 700; color: var(--text-primary);
+    border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between;
+}
+
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 10px 16px; text-align: left; font-size: 13px; }
+td { border-bottom: 1px solid var(--border); color: var(--text-primary); }
+tr:last-child td { border-bottom: none; }
+tr:hover { background-color: rgba(255, 255, 255, 0.02); }
+
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+.pos { color: var(--accent-pos); font-weight: 600; }
+.neg { color: var(--accent-neg); font-weight: 600; }
+
+/* =========================================
+   5. PESTAÑA EXPLORAR (TERMINAL)
+   ========================================= */
+.layout-explorar {
+    display: grid;
+    grid-template-columns: 1fr 360px; /* Gráfico flexible | Sidebar fija */
+    grid-template-rows: auto 1fr;
+    gap: 20px;
+    padding: 20px;
+    height: calc(100vh - 60px); /* Ocupa toda la altura menos navbar */
+}
+
+/* Header del Ticker */
+.ticker-head {
+    grid-column: 1 / -1;
+    display: flex; align-items: flex-end; gap: 20px;
+    padding-bottom: 15px; border-bottom: 1px solid var(--border);
+}
+.ticker-title h1 { font-size: 28px; margin: 0; line-height: 1; }
+.ticker-badge { 
+    background: var(--bg-hover); padding: 4px 8px; border-radius: 4px; 
+    font-size: 12px; color: var(--text-secondary); vertical-align: middle; 
+}
+.big-price { font-size: 32px; font-weight: 700; }
+
+/* Contenedor del Gráfico */
+.chart-container {
+    background-color: var(--card-bg);
+    border: 1px solid #2a2e39;
+    border-radius: 12px;       /* Bordes más redondeados */
+    padding: 15px;
+    height: 500px;             /* Altura fija cómoda */
+    position: relative;
+    display: flex;             /* FLEXBOX: La clave para que no se rompa */
+    flex-direction: column;    /* Ordena Header arriba, Gráfico abajo */
+    overflow: hidden;          /* Corta cualquier cosa que se salga del margen */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* EFECTO SOMBRA/GLOW */
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Suavidad al pasar mouse */
+}
+
+/* Efecto Hover (Opcional): Se ilumina un poco al pasar el mouse */
+.chart-container:hover {
+    box-shadow: 0 6px 20px rgba(41, 98, 255, 0.15); /* Sombra azulada sutil */
+    border-color: var(--text-secondary);
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    flex-shrink: 0; /* Asegura que el título no se aplaste */
+}
+
+/* Ajuste para que el widget ocupe EXACTAMENTE el espacio restante */
+.tradingview-widget-container {
+    flex-grow: 1;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Busca o agrega esto en tu sección <style> */
+
+.table-container {
+    background-color: var(--card-bg);
+    border: 1px solid #2a2e39;
+    border-radius: 12px;       /* Bordes redondeados igual que los gráficos */
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); /* Sombra profunda para efecto elevar */
+    transition: transform 0.2s ease;
+}
+
+/* Un pequeño efecto para que la tabla resalte cuando pasas el mouse */
+.table-container:hover {
+    border-color: #3b4254;
+}
+
+/* Estilo para los títulos internos de las tablas (Top 5...) */
+.table-container h6 {
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    margin-bottom: 18px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espacio entre el icono y el texto */
+}
+
+/* Sidebar de Datos */
+.sidebar-data {
+    display: flex; flex-direction: column; gap: 20px;
+    overflow-y: auto; /* Scroll independiente si hay mucha info */
+    padding-right: 5px; 
+}
+
+.data-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.data-row {
+    display: flex; justify-content: space-between;
+    padding: 8px 0; border-bottom: 1px solid var(--border);
+    font-size: 13px;
+}
+.data-row:last-child { border-bottom: none; }
+.lbl { color: var(--text-secondary); }
+.val { font-weight: 600; color: var(--text-primary); }
+
+/* Noticias Mini */
+.news-item {
+    margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
+}
+.news-source { font-size: 10px; color: var(--accent-blue); font-weight: 700; text-transform: uppercase; }
+.news-link { display: block; margin-top: 4px; font-weight: 500; font-size: 13px; line-height: 1.4; }
+.news-link:hover { color: var(--accent-blue); }
+
+/* =========================================
+   6. LÓGICA DE VISIBILIDAD & SWITCH
+   ========================================= */
+/* Switch Toggle */
+.switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { 
+    position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; 
+    background-color: var(--border); transition: .4s; border-radius: 34px; 
+}
+.slider:before { 
+    position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; 
+    background-color: white; transition: .4s; border-radius: 50%; 
+}
+input:checked + .slider { background-color: var(--accent-blue); }
+input:checked + .slider:before { transform: translateX(20px); }
+
+/* Clases de utilidad para JS */
+.hidden { display: none !important; }
+
+/* Lógica de Modo Experto (Global) */
+body.expert-mode .only-beginner { display: none !important; }
+body.expert-mode .only-expert { display: block !important; }
+
+body:not(.expert-mode) .only-expert { display: none !important; }
+body:not(.expert-mode) .only-beginner { display: block !important; }
+
+/* Responsive móvil */
+@media (max-width: 768px) {
+    .layout-explorar { grid-template-columns: 1fr; height: auto; }
+    .expert-dashboard { grid-template-columns: 1fr; }
+    .chart-container { height: 400px; }
+    .nav-links { display: none; } /* En móvil se podría ocultar o hacer menú hamburguesa */
+}
+
+/* ESTILOS PAQUETE 1: TEST INVERSOR */
+.opcion-card {
+    background: #2a2e39;
+    border: 1px solid #404450;
+    border-radius: 10px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+.opcion-card:hover {
+    background: #363a45;
+    border-color: #ffd700; /* Dorado al pasar el mouse */
+    transform: translateY(-2px);
+}
+
+.personaje-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-bottom: 15px;
+    border: 3px solid #ffd700;
+    object-fit: cover;
+    background: #131722;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    margin: 0 auto;
+}
+
+/* ETIQUETAS DE RIESGO - PAQUETE 1 */
+.badge-escudo {
+    background-color: #198754; /* Verde - Seguro */
+    color: white;
+    font-size: 0.8em;
+    padding: 5px 10px;
+    border-radius: 20px;
+    border: 1px solid #146c43;
+}
+
+.badge-motor {
+    background-color: #0d6efd; /* Azul - Crecimiento */
+    color: white;
+    font-size: 0.8em;
+    padding: 5px 10px;
+    border-radius: 20px;
+    border: 1px solid #0a58ca;
+}
+
+.badge-cohete {
+    background-color: #dc3545; /* Rojo - Riesgo Alto */
+    color: white;
+    font-size: 0.8em;
+    padding: 5px 10px;
+    border-radius: 20px;
+    border: 1px solid #b02a37;
+}
+/* ── Ajustes para Light Mode ── */
+[data-theme="light"] body {
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .navbar {
+    background: var(--navbar-bg);
+    border-bottom-color: var(--border);
+}
+
+[data-theme="light"] .navbar-brand {
+    color: #1a1d26 !important;
+}
+
+[data-theme="light"] .nav-link {
+    color: #6b7080 !important;
+}
+
+[data-theme="light"] .nav-link:hover,
+[data-theme="light"] .nav-link.active {
+    color: #1a1d26 !important;
+}
+
+[data-theme="light"] .text-white {
+    color: var(--text-primary) !important;
+}
+
+[data-theme="light"] .text-secondary {
+    color: var(--text-secondary) !important;
+}
+
+[data-theme="light"] .modal-content {
+    background: var(--modal-bg) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border) !important;
+}
+
+[data-theme="light"] .form-control {
+    background: var(--input-bg);
+    border-color: var(--border);
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .btn-close {
+    filter: none;
+}
+
+/* Spinner en light mode */
+[data-theme="light"] .spinner-border {
+    color: var(--accent-blue) !important;
+}
+
+/* Selection color */
+[data-theme="light"] ::selection {
+    background: rgba(37, 99, 235, 0.2);
+    color: #1a1d26;
+}
+
+/* Scrollbar light */
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+}
+
+[data-theme="light"] footer {
+    background: #ecedf1;
+    border-top-color: var(--border);
+    color: var(--text-secondary);
+}
+
+[data-theme="light"] footer .fw-bold {
+    color: var(--text-primary) !important;
+}
+
+[data-theme="light"] .table-glass th,
+[data-theme="light"] .stock-table th {
+    background: rgba(0, 0, 0, 0.03);
+    color: #6b7080;
+    border-bottom-color: var(--border);
+}
+
+[data-theme="light"] .personal-dashboard,
+[data-theme="light"] .glass-panel {
+    background: #ffffff;
+    border-color: var(--border);
+}
+
+[data-theme="light"] .summary-card,
+[data-theme="light"] .stat-card,
+[data-theme="light"] .perf-card {
+    background: #f5f6fa;
+    border-color: var(--border);
+}
+
+[data-theme="light"] .stock-table td {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .stock-table tr:hover td {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme="light"] .table-glass td {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .table-glass tr:hover td {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme="light"] .macro-card,
+[data-theme="light"] .mover-card,
+[data-theme="light"] .feature-card,
+[data-theme="light"] .controls-bar,
+[data-theme="light"] .market-stats,
+[data-theme="light"] .crypto-card,
+[data-theme="light"] .comp-card,
+[data-theme="light"] .learn-card,
+[data-theme="light"] .blog-post-card,
+[data-theme="light"] .metrics-card,
+[data-theme="light"] .watchlist-widget {
+    background: #ffffff;
+    border-color: var(--border);
+}
+
+[data-theme="light"] .search-box,
+[data-theme="light"] .search-input,
+[data-theme="light"] .ticker-input,
+[data-theme="light"] .filter-btn {
+    background: #f5f6fa;
+    border-color: var(--border);
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .filter-btn.active {
+    background: var(--accent-blue);
+    color: white;
+}
+
+[data-theme="light"] .tab-btn {
+    background: #f5f6fa;
+    border-color: var(--border);
+    color: var(--text-secondary);
+}
+
+[data-theme="light"] .tab-btn.active {
+    background: rgba(37, 99, 235, 0.1);
+    border-color: var(--accent-blue);
+    color: var(--accent-blue);
+}
+
+[data-theme="light"] .btn-outline-success.rounded-pill {
+    border-color: rgba(5, 150, 105, 0.3);
+    color: #059669;
+}
+
+[data-theme="light"] .btn-outline-warning.rounded-pill {
+    border-color: rgba(217, 119, 6, 0.3);
+    color: #d97706;
+}
+
+[data-theme="light"] .btn-outline-secondary.rounded-pill {
+    border-color: var(--border);
+    color: var(--text-secondary);
+}
+
+[data-theme="light"] .navbar-brand img {
+    filter: invert(1);
+}
+
+[data-theme="light"] .modal-content {
+    background: #ffffff !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border) !important;
+}
+
+[data-theme="light"] .modal-header {
+    border-bottom-color: var(--border);
+}
+
+[data-theme="light"] .modal-footer {
+    border-top-color: var(--border);
+}
+
+[data-theme="light"] .modal-title {
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .btn-close {
+    filter: none;
+}
+
+[data-theme="light"] .progress {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .opcion-card {
+    background: #f5f6fa;
+    border-color: var(--border);
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .opcion-card:hover {
+    border-color: var(--accent-blue);
+    background: rgba(37, 99, 235, 0.05);
+}
+
+[data-theme="light"] .accordion-button {
+    background: #ffffff;
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .accordion-button:not(.collapsed) {
+    background: rgba(37, 99, 235, 0.05);
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .accordion-button::after {
+    filter: none;
+}
+
+[data-theme="light"] .accordion-item {
+    background: #ffffff;
+    border-color: var(--border);
+}
+
+[data-theme="light"] .accordion-body {
+    color: var(--text-secondary);
+    border-top-color: var(--border);
+}
+
+[data-theme="light"] .btn-primary,
+[data-theme="light"] .btn-success,
+[data-theme="light"] .btn-secondary,
+[data-theme="light"] .btn-danger,
+[data-theme="light"] .btn-warning,
+[data-theme="light"] .btn-info {
+    color: white;
+}
+
+[data-theme="light"] .btn-outline-primary {
+    border-color: var(--accent-blue);
+    color: var(--accent-blue);
+}
+
+[data-theme="light"] .btn-outline-info {
+    border-color: var(--accent-blue);
+    color: var(--accent-blue);
+}
+
+[data-theme="light"] .btn-outline-secondary {
+    border-color: var(--border);
+    color: var(--text-secondary);
+    background: transparent;
+}
+
+[data-theme="light"] .btn-outline-danger {
+    border-color: var(--negative);
+    color: var(--negative);
+}
+
+[data-theme="light"] .btn-dark {
+    background: #f5f6fa;
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+}
+
+[data-theme="light"] .btn-primary-cta {
+    color: white;
+}
+
+[data-theme="light"] .btn-secondary-cta {
+    border-color: var(--border);
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .btn-comparar {
+    color: white;
+}
+
+[data-theme="light"] .btn-buy {
+    color: white;
+}
+
+[data-theme="light"] .carousel-control-prev-icon,
+[data-theme="light"] .carousel-control-next-icon {
+    filter: invert(1);
+}
+
+css[data-theme="light"] #wlToggleBtn {
+    background: #ffffff;
+    border-color: var(--border);
+    color: #d97706;
+    box-shadow: -3px 0 12px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] #wlToggleBtn:hover {
+    background: #f5f6fa;
+}
+
+[data-theme="light"] #wlBtnBadge {
+    background: var(--accent-blue);
+}
+
+[data-theme="light"] #wlSidebar {
+    background: #ffffff;
+    border-left-color: var(--border);
+    box-shadow: -6px 0 24px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] #wlHeader {
+    border-bottom-color: var(--border);
+}
+
+[data-theme="light"] #wlHeader span {
+    color: var(--text-primary) !important;
+}
+
+[data-theme="light"] #wlCloseBtn {
+    color: var(--text-secondary);
+}
+
+[data-theme="light"] #wlCloseBtn:hover {
+    background: rgba(0, 0, 0, 0.04);
+    color: var(--text-primary);
+}
+
+[data-theme="light"] #wlBadge {
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--accent-blue);
+    border-color: rgba(37, 99, 235, 0.2);
+}
+
+[data-theme="light"] .wl-item {
+    border-bottom-color: var(--border);
+}
+
+[data-theme="light"] .wl-item:hover {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme="light"] .wl-ticker {
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .wl-name {
+    color: var(--text-secondary);
+}
+
+[data-theme="light"] .wl-price {
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .wl-remove:hover {
+    background: rgba(220, 38, 38, 0.1);
+    color: var(--negative);
+}
+
+[data-theme="light"] .wl-empty {
+    color: var(--text-secondary);
+}
+
+[data-theme="light"] #wlAddRow input {
+    background: #f5f6fa;
+    border-color: var(--border);
+    color: var(--text-primary);
+}
+
+[data-theme="light"] #wlAddRow button {
+    background: var(--accent-blue);
+    color: white;
+}
+
+[data-theme="light"] #wlOverlay {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="light"] .table-custom td {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .table-custom th {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    color: var(--text-secondary);
+}
+
+[data-theme="light"] .nav-tabs {
+    border-bottom-color: var(--border);
+}
+
+[data-theme="light"] .nav-tabs .nav-link {
+    color: var(--text-secondary);
+}
+
+[data-theme="light"] .nav-tabs .nav-link.active {
+    color: var(--text-primary);
+    border-bottom-color: var(--accent-blue);
+}

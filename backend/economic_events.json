@@ -1,0 +1,134 @@
+{
+  "recurring_events": [
+    {
+      "event": "Nonfarm Payrolls (Empleo)",
+      "country": "US",
+      "impact": "high",
+      "frequency": "Primer viernes de cada mes",
+      "time": "08:30 ET",
+      "description": "Número de empleos creados. Clave para decisiones de la Fed."
+    },
+    {
+      "event": "CPI (Inflación)",
+      "country": "US",
+      "impact": "high",
+      "frequency": "~10-15 de cada mes",
+      "time": "08:30 ET",
+      "description": "Índice de precios al consumidor. Impacta directamente en tasas."
+    },
+    {
+      "event": "Decisión de Tasas FOMC",
+      "country": "US",
+      "impact": "high",
+      "frequency": "8 reuniones al año (~6 semanas)",
+      "time": "14:00 ET",
+      "description": "La Fed decide si sube, baja o mantiene la tasa de interés."
+    },
+    {
+      "event": "PIB (GDP) Preliminar",
+      "country": "US",
+      "impact": "high",
+      "frequency": "Último jueves del mes siguiente al trimestre",
+      "time": "08:30 ET",
+      "description": "Crecimiento económico trimestral. Mide la salud de la economía."
+    },
+    {
+      "event": "ISM Manufacturing PMI",
+      "country": "US",
+      "impact": "high",
+      "frequency": "Primer día hábil de cada mes",
+      "time": "10:00 ET",
+      "description": "Actividad manufacturera. >50 = expansión, <50 = contracción."
+    },
+    {
+      "event": "Retail Sales (Ventas Minoristas)",
+      "country": "US",
+      "impact": "high",
+      "frequency": "~15 de cada mes",
+      "time": "08:30 ET",
+      "description": "Gasto del consumidor. Motor principal de la economía de EEUU."
+    },
+    {
+      "event": "PCE Price Index",
+      "country": "US",
+      "impact": "high",
+      "frequency": "Último viernes de cada mes",
+      "time": "08:30 ET",
+      "description": "Indicador de inflación preferido de la Fed."
+    },
+    {
+      "event": "Initial Jobless Claims",
+      "country": "US",
+      "impact": "medium",
+      "frequency": "Todos los jueves",
+      "time": "08:30 ET",
+      "description": "Solicitudes semanales de desempleo. Pulso del mercado laboral."
+    },
+    {
+      "event": "Consumer Confidence",
+      "country": "US",
+      "impact": "medium",
+      "frequency": "Último martes de cada mes",
+      "time": "10:00 ET",
+      "description": "Confianza del consumidor. Alta confianza = más gasto."
+    },
+    {
+      "event": "Michigan Consumer Sentiment",
+      "country": "US",
+      "impact": "medium",
+      "frequency": "Segundo viernes (preliminar) y cuarto viernes (final)",
+      "time": "10:00 ET",
+      "description": "Sentimiento del consumidor. Anticipa tendencias de gasto."
+    }
+  ],
+  "scheduled_2026": {
+    "2026-04-02": [
+      {"event": "Initial Jobless Claims", "time": "08:30 ET", "impact": "medium", "country": "US"},
+      {"event": "Trade Balance", "time": "08:30 ET", "impact": "medium", "country": "US"},
+      {"event": "Factory Orders", "time": "10:00 ET", "impact": "medium", "country": "US"}
+    ],
+    "2026-04-03": [
+      {"event": "Nonfarm Payrolls", "time": "08:30 ET", "impact": "high", "country": "US"},
+      {"event": "Unemployment Rate", "time": "08:30 ET", "impact": "high", "country": "US"},
+      {"event": "ISM Non-Manufacturing PMI", "time": "10:00 ET", "impact": "high", "country": "US"}
+    ],
+    "2026-04-09": [
+      {"event": "Initial Jobless Claims", "time": "08:30 ET", "impact": "medium", "country": "US"},
+      {"event": "Wholesale Inventories", "time": "10:00 ET", "impact": "medium", "country": "US"}
+    ],
+    "2026-04-10": [
+      {"event": "CPI (Inflación)", "time": "08:30 ET", "impact": "high", "country": "US"},
+      {"event": "Core CPI", "time": "08:30 ET", "impact": "high", "country": "US"},
+      {"event": "Michigan Consumer Sentiment (Prelim)", "time": "10:00 ET", "impact": "medium", "country": "US"}
+    ],
+    "2026-04-15": [
+      {"event": "Retail Sales", "time": "08:30 ET", "impact": "high", "country": "US"},
+      {"event": "Empire State Manufacturing", "time": "08:30 ET", "impact": "medium", "country": "US"},
+      {"event": "Business Inventories", "time": "10:00 ET", "impact": "medium", "country": "US"}
+    ],
+    "2026-04-16": [
+      {"event": "Initial Jobless Claims", "time": "08:30 ET", "impact": "medium", "country": "US"},
+      {"event": "Housing Starts", "time": "08:30 ET", "impact": "medium", "country": "US"},
+      {"event": "Philadelphia Fed Manufacturing", "time": "08:30 ET", "impact": "medium", "country": "US"},
+      {"event": "Industrial Production", "time": "09:15 ET", "impact": "medium", "country": "US"}
+    ],
+    "2026-04-23": [
+      {"event": "Initial Jobless Claims", "time": "08:30 ET", "impact": "medium", "country": "US"},
+      {"event": "New Home Sales", "time": "10:00 ET", "impact": "medium", "country": "US"}
+    ],
+    "2026-04-24": [
+      {"event": "Durable Goods Orders", "time": "08:30 ET", "impact": "high", "country": "US"},
+      {"event": "Michigan Consumer Sentiment (Final)", "time": "10:00 ET", "impact": "medium", "country": "US"}
+    ],
+    "2026-04-29": [
+      {"event": "PIB (GDP) Advance Q1", "time": "08:30 ET", "impact": "high", "country": "US"},
+      {"event": "Consumer Confidence", "time": "10:00 ET", "impact": "medium", "country": "US"}
+    ],
+    "2026-04-30": [
+      {"event": "PCE Price Index", "time": "08:30 ET", "impact": "high", "country": "US"},
+      {"event": "Personal Income", "time": "08:30 ET", "impact": "medium", "country": "US"},
+      {"event": "Initial Jobless Claims", "time": "08:30 ET", "impact": "medium", "country": "US"},
+      {"event": "Employment Cost Index", "time": "08:30 ET", "impact": "high", "country": "US"}
+    ]
+  }
+}

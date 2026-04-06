@@ -1,0 +1,2419 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explorar {{ data.ticker }} - RosKapital</title>
+    <link rel="icon" type="image/png" href="/static/img/favicon.png" media="(prefers-color-scheme: dark)">
+    <link rel="icon" type="image/png" href="/static/img/favicon-dark.png" media="(prefers-color-scheme: light)">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        .metrics-card a:last-child {
+            border-bottom: none !important;
+        }
+
+        /* Navbar action badges */
+        .btn-outline-success.rounded-pill {
+            border-color: rgba(0, 212, 170, 0.3);
+            color: var(--positive);
+            font-weight: 600;
+            font-size: 0.78rem;
+            transition: all 0.2s;
+        }
+
+        .btn-outline-success.rounded-pill:hover {
+            background: rgba(0, 212, 170, 0.1);
+            border-color: var(--positive);
+            color: var(--positive);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline-warning.rounded-pill {
+            border-color: rgba(255, 167, 38, 0.3);
+            color: #ffa726;
+            font-weight: 600;
+            font-size: 0.78rem;
+            transition: all 0.2s;
+        }
+
+        .btn-outline-warning.rounded-pill:hover {
+            background: rgba(255, 167, 38, 0.1);
+            border-color: #ffa726;
+            color: #ffa726;
+            transform: translateY(-1px);
+        }
+
+        /* Mobile navbar */
+        .navbar-toggler {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.4rem 0.6rem;
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: none;
+            border-color: var(--accent-blue);
+        }
+
+        /* Collapse menu en mobile */
+        @media (max-width: 991px) {
+            .navbar-collapse {
+                background: var(--card-bg);
+                border-radius: 12px;
+                margin-top: 0.5rem;
+                padding: 1rem;
+                border: 1px solid var(--border);
+            }
+        }
+
+        /* Tooltips custom */
+        .tooltip-inner {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            font-size: 0.82rem;
+            padding: 0.6rem 0.8rem;
+            border-radius: 10px;
+            max-width: 250px;
+            text-align: left;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .tooltip .tooltip-arrow::before {
+            border-top-color: var(--card-bg);
+        }
+
+        .bs-tooltip-bottom .tooltip-arrow::before {
+            border-bottom-color: var(--card-bg);
+        }
+
+        /* Focus ring para accesibilidad */
+        :focus-visible {
+            outline: 2px solid var(--accent-blue);
+            outline-offset: 2px;
+        }
+
+        button:focus-visible,
+        .btn:focus-visible {
+            outline: 2px solid var(--accent-blue);
+            outline-offset: 2px;
+            box-shadow: 0 0 0 4px rgba(59, 125, 255, 0.15);
+        }
+
+        /* Scrollbar custom */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        ::selection {
+            background: rgba(59, 125, 255, 0.3);
+            color: white;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .modal select option {
+            background: #161921;
+            color: white;
+        }
+
+        :root,
+        [data-theme="dark"] {
+            --bg-dark: #0a0b0f;
+            --bg-dark-2: #0f1117;
+            --card-bg: #161921;
+            --card-bg-hover: #1a1f2b;
+            --text-primary: #e8eaed;
+            --text-secondary: #6b7080;
+            --accent-blue: #3b7dff;
+            --accent-blue-glow: rgba(59, 125, 255, 0.15);
+            --positive: #00d4aa;
+            --negative: #ff4757;
+            --border: rgba(255, 255, 255, 0.06);
+            --border-hover: rgba(255, 255, 255, 0.12);
+            --border-color: rgba(255, 255, 255, 0.06);
+            --glow: 0 0 40px rgba(59, 125, 255, 0.08);
+            --warning: #ffa500;
+            --navbar-bg: rgba(10, 11, 15, 0.85);
+            --modal-bg: #161921;
+            --input-bg: rgba(255, 255, 255, 0.05);
+            --table-header-bg: rgba(0, 0, 0, 0.3);
+            --table-hover: rgba(255, 255, 255, 0.02);
+            --scrollbar-thumb: rgba(255, 255, 255, 0.08);
+            --shadow-color: rgba(0, 0, 0, 0.3);
+        }
+
+        /* ── TEMA CLARO ── */
+        [data-theme="light"] {
+            --bg-dark: #f5f6fa;
+            --bg-dark-2: #ecedf1;
+            --card-bg: #ffffff;
+            --card-bg-hover: #f8f9fb;
+            --text-primary: #1a1d26;
+            --text-secondary: #6b7080;
+            --accent-blue: #2563eb;
+            --accent-blue-glow: rgba(37, 99, 235, 0.12);
+            --positive: #059669;
+            --negative: #dc2626;
+            --border: rgba(0, 0, 0, 0.08);
+            --border-hover: rgba(0, 0, 0, 0.15);
+            --border-color: rgba(0, 0, 0, 0.08);
+            --glow: 0 0 40px rgba(37, 99, 235, 0.06);
+            --warning: #d97706;
+            --navbar-bg: rgba(255, 255, 255, 0.9);
+            --modal-bg: #ffffff;
+            --input-bg: rgba(0, 0, 0, 0.04);
+            --table-header-bg: rgba(0, 0, 0, 0.03);
+            --table-hover: rgba(0, 0, 0, 0.02);
+            --scrollbar-thumb: rgba(0, 0, 0, 0.12);
+            --shadow-color: rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+
+        footer {
+            margin-top: 0;
+            border-top: 1px solid var(--border);
+            padding: 2rem 0;
+            text-align: center;
+            background: var(--card-bg);
+            clear: both;
+            position: relative;
+            z-index: 1;
+        }
+
+        footer p {
+            margin: 0.5rem 0;
+        }
+
+        footer .fw-bold {
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        footer .text-secondary {
+            color: var(--text-secondary) !important;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(10, 11, 15, 0.85);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: white !important;
+        }
+
+        .nav-link {
+            color: var(--text-secondary) !important;
+            transition: color 0.2s ease, background 0.2s ease;
+            border-radius: 8px;
+            padding: 0.5rem 0.9rem !important;
+        }
+
+        .nav-link:hover {
+            color: white !important;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .nav-link.active {
+            color: white !important;
+            background: rgba(59, 125, 255, 0.1);
+        }
+
+        .search-section {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.2rem 2rem;
+            margin: 2rem auto;
+            max-width: 1400px;
+            border: 1px solid var(--border);
+        }
+
+        .search-input {
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+        }
+
+        .search-input:focus {
+            background-color: var(--bg-dark);
+            border-color: var(--accent-blue);
+            color: var(--text-primary);
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(41, 98, 255, 0.25);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .btn-search {
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-search:hover {
+            background-color: #1e4fcc;
+            transform: translateY(-1px);
+        }
+
+        .asset-header {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 1400px;
+            border: 1px solid var(--border-color);
+        }
+
+        .asset-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+
+        .asset-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .asset-price {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+        }
+
+        .realtime-badge {
+            background-color: rgba(41, 98, 255, 0.15);
+            color: var(--accent-blue);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .chart-card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+            height: 600px !important;
+        }
+
+        .metrics-card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .card-header {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .metric-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .metric-item:last-child {
+            border-bottom: none;
+        }
+
+        .metric-label {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .metric-value {
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .info-tooltip {
+            color: #17a2b8;
+            cursor: help;
+            font-size: 1rem;
+        }
+
+        .info-tooltip:hover {
+            color: #138496;
+        }
+
+        .perf-card {
+            background-color: var(--bg-dark);
+            border-radius: 10px;
+            padding: 1.2rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s;
+        }
+
+        .perf-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .perf-label {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .perf-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+        .perf-value.positive {
+            color: var(--positive);
+        }
+
+        .perf-value.negative {
+            color: var(--negative);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            opacity: 0.5;
+            margin-bottom: 1rem;
+        }
+
+        body {
+            height: auto !important;
+            min-height: 100vh;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .main-container {
+            margin-bottom: 0 !important;
+            padding-bottom: 2rem;
+        }
+
+        .metrics-card:last-child {
+            margin-bottom: 2rem !important;
+        }
+
+        /* ── Watchlist Sidebar ───────────────────────────── */
+        #wlToggleBtn {
+            position: fixed !important;
+            right: 0 !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            z-index: 99999 !important;
+            background: var(--card-bg);
+            border: 1px solid var(--border-hover);
+            border-right: none;
+            border-radius: 10px 0 0 10px;
+            color: #ffa726;
+            padding: 14px 10px;
+            cursor: pointer;
+            display: flex !important;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            font-size: 1rem;
+            box-shadow: -3px 0 12px var(--shadow-color);
+            transition: background 0.2s, padding 0.2s;
+        }
+
+        #wlToggleBtn:hover {
+            background: var(--card-bg-hover);
+        }
+
+        #wlBtnBadge {
+            background: #2962ff;
+            color: #fff;
+            border-radius: 10px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 1px 6px;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        #wlOverlay {
+            display: none;
+            position: fixed !important;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 99997 !important;
+            backdrop-filter: blur(2px);
+        }
+
+        #wlOverlay.active {
+            display: block;
+        }
+
+        #wlSidebar {
+            position: fixed !important;
+            top: 0 !important;
+            right: -340px !important;
+            width: 320px;
+            height: 100vh;
+            background: var(--card-bg);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 99998 !important;
+            display: flex;
+            flex-direction: column;
+            transition: right 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: -6px 0 24px rgba(0, 0, 0, 0.5);
+        }
+
+        #wlSidebar.open {
+            right: 0 !important;
+        }
+
+        #wlHeader {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            flex-shrink: 0;
+        }
+
+        #wlCloseBtn {
+            background: none;
+            border: none;
+            color: #787b86;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        #wlCloseBtn:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #e0e3eb;
+        }
+
+        #wlBadge {
+            background: rgba(41, 98, 255, 0.15);
+            color: #2962ff;
+            border: 1px solid rgba(41, 98, 255, 0.3);
+            border-radius: 20px;
+            padding: 1px 9px;
+            font-size: 0.72rem;
+            font-weight: 600;
+        }
+
+        #wlList {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0.5rem 0;
+        }
+
+        #wlList::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        #wlList::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .wl-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.7rem 1.25rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .wl-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .wl-item-left {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .wl-ticker {
+            font-weight: 700;
+            color: #e0e3eb;
+            font-size: 0.9rem;
+        }
+
+        .wl-name {
+            font-size: 0.72rem;
+            color: #787b86;
+            margin-top: 1px;
+        }
+
+        .wl-item-right {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .wl-price-block {
+            text-align: right;
+        }
+
+        .wl-price {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #e0e3eb;
+        }
+
+        .wl-change {
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .wl-up {
+            color: #089981;
+        }
+
+        .wl-down {
+            color: #f23645;
+        }
+
+        .wl-remove {
+            background: none;
+            border: none;
+            color: #787b86;
+            cursor: pointer;
+            padding: 3px 6px;
+            border-radius: 5px;
+            font-size: 0.75rem;
+            transition: all 0.2s;
+            line-height: 1;
+        }
+
+        .wl-remove:hover {
+            background: rgba(242, 54, 69, 0.15);
+            color: #f23645;
+        }
+
+        .wl-empty {
+            text-align: center;
+            color: #787b86;
+            padding: 2.5rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        .wl-empty i {
+            display: block;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.4;
+        }
+
+        .wl-loading-dot {
+            display: inline-block;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #787b86;
+            animation: wlBlink 1.2s infinite;
+        }
+
+        @keyframes wlBlink {
+
+            0%,
+            100% {
+                opacity: 0.2
+            }
+
+            50% {
+                opacity: 1
+            }
+        }
+
+        #wlAddRow {
+            padding: 0.9rem 1.25rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        #wlInput {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #e0e3eb;
+            padding: 0.42rem 0.75rem;
+            font-size: 0.83rem;
+            text-transform: uppercase;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        #wlInput:focus {
+            border-color: #2962ff;
+        }
+
+        #wlInput::placeholder {
+            color: #787b86;
+            text-transform: none;
+        }
+
+        #wlAddRow button {
+            background: rgba(41, 98, 255, 0.15);
+            border: 1px solid rgba(41, 98, 255, 0.3);
+            color: #2962ff;
+            border-radius: 8px;
+            padding: 0.42rem 0.85rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.2s;
+        }
+
+        #wlAddRow button:hover {
+            background: rgba(41, 98, 255, 0.28);
+        }
+
+        #wlMsg {
+            padding: 0 1.25rem 0.7rem;
+            font-size: 0.78rem;
+            min-height: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        /* ── fin Watchlist Sidebar ───────────────────────── */
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 0 0.5rem;
+            }
+
+            .asset-header .row {
+                text-align: center;
+            }
+
+            .asset-header .col-md-2,
+            .asset-header .col-md-4,
+            .asset-header .col-md-5 {
+                text-align: center !important;
+            }
+
+            .asset-title {
+                font-size: 1.5rem;
+            }
+
+            .asset-price {
+                font-size: 1.5rem;
+            }
+
+            .chart-card {
+                height: 400px !important;
+            }
+
+            #tradingview_chart {
+                height: 400px !important;
+            }
+        }
+
+        #wlToggleBtn {
+            z-index: 1100 !important;
+        }
+
+        #wlSidebar {
+            z-index: 1100 !important;
+        }
+
+        #wlOverlay {
+            z-index: 1095 !important;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/"><img src="/static/img/favicon.png" alt="Logo" height="35"
+                    class="me-2"></i>RosKapital</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto ps-3">
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/mercado">Mercado</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/crypto">Crypto</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/explorar/AAPL">Explorar</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/heatmap">Heatmap</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/simulador">Simulador</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/comunidad">Comunidad</a></li>
+                </ul>
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn btn-outline-success rounded-pill px-3 btn-sm" onclick="abrirModalMisiones()">
+                        <i class="bi bi-trophy me-1"></i><span id="misionesCount">0</span>/11
+                    </button>
+                    <button class="btn btn-outline-warning rounded-pill px-3 btn-sm" id="btnTestInversor"
+                        onclick="abrirTestInversor()">
+                        <i class="bi bi-person-vcard me-1"></i><span id="textoBotonPerfil">Mi Perfil</span>
+                    </button>
+                    <button class="btn btn-outline-secondary rounded-pill px-3 btn-sm" data-bs-toggle="modal"
+                        data-bs-target="#modalSettings">
+                        <i class="bi bi-gear"></i>
+                    </button>
+                    <!-- Auth buttons (sin login) -->
+                    <div id="authNavButtons" style="display:flex; gap:0.5rem;">
+                        <button class="btn btn-outline-primary rounded-pill px-3 btn-sm"
+                            onclick="abrirAuthModal('login')">
+                            <i class="bi bi-person me-1"></i>Ingresar
+                        </button>
+                    </div>
+                    <!-- User info (con login) -->
+                    <div id="userNavInfo" style="display:none; align-items:center; gap:0.5rem;"></div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- Buscador -->
+    <div class="search-section">
+        <div class="row align-items-center">
+            <div class="col-md-10">
+                <input type="text" class="form-control search-input" id="searchInput"
+                    placeholder="Buscar acciones o cryptos (ej: AAPL, TSLA, BTC-USD, GGAL.BA)..."
+                    onkeypress="if(event.key==='Enter') buscarActivo()">
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-search w-100" onclick="buscarActivo()">
+                    <i class="bi bi-search me-2"></i>Buscar
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="asset-header">
+        <div class="row align-items-center">
+            <div class="col-md-2">
+                <h1 class="asset-title" style="margin-bottom: 0;">{{ data.ticker }}</h1>
+                <p class="asset-subtitle" style="margin-top: 0.3rem;">{{ data.nombre }}</p>
+            </div>
+            <div class="col-md-2 mt-3 mt-md-0">
+                <div class="asset-price">${{ data.precio }}</div>
+                <div class="realtime-badge">
+                    <i class="bi bi-clock-history me-1"></i>Tiempo real
+                </div>
+                <div style="margin-top:0.5rem; font-size:0.78rem; color:var(--warning);">
+                    📅 Próximo earnings: <strong>{{ data.fundamentals.earningsDate }}</strong>
+                </div>
+            </div>
+            <div class="col-md-5 mt-3 mt-md-0" id="perfilBadge"></div>
+            <div class="col-md-3 mt-3 mt-md-0 d-flex gap-2">
+                <a href="/comparar?base={{ data.ticker }}" class="btn btn-outline-info rounded-pill px-3 btn-sm">
+                    <i class="fas fa-balance-scale me-1"></i>Comparar
+                </a>
+                <button class="btn btn-outline-warning rounded-pill px-3 btn-sm" onclick="abrirModalAlerta()">
+                    <i class="bi bi-bell me-1"></i>Alerta
+                </button>
+                <button class="btn btn-outline-success rounded-pill px-3 btn-sm" onclick="compartirAnalisis()">
+                    <i class="fas fa-share-alt me-1"></i>Compartir
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <div class="row align-items-start">
+            <!-- Columna izquierda -->
+            <div class="col-lg-8">
+                <!-- Chart -->
+                <div class="chart-card">
+                    <div id="tradingview_chart" style="height: 600;"></div>
+                </div>
+
+                <!-- Perfil -->
+                {% if data.fundamentals and data.fundamentals.sector and data.fundamentals.sector != 'N/A' %}
+                <div class="metrics-card" style="padding: 1rem 1.5rem;">
+                    <h3 class="card-header" style="margin-bottom: 0.5rem;">
+                        <i class="bi bi-briefcase-fill"></i>
+                        Perfil
+                    </h3>
+                    <div class="metric-item">
+                        <div class="metric-label">Sector</div>
+                        <div class="metric-value">{{ data.fundamentals.sector }}</div>
+                    </div>
+                    {% if data.fundamentals.industry and data.fundamentals.industry != 'N/A' %}
+                    <div class="metric-item">
+                        <div class="metric-label">Industria</div>
+                        <div class="metric-value">{{ data.fundamentals.industry }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <!-- Rendimiento -->
+                <div class="metrics-card">
+                    <h3 class="card-header">
+                        <i class="bi bi-graph-up"></i>
+                        Rendimiento Histórico
+                    </h3>
+                    <div class="row g-3">
+                        <div class="col">
+                            <div class="perf-card">
+                                <div class="perf-label">1D</div>
+                                <div
+                                    class="perf-value {% if rend['1D']|float > 0 %}positive{% elif rend['1D']|float < 0 %}negative{% endif %}">
+                                    {% if rend['1D']|float > 0 %}+{% endif %}{{ rend['1D'] }}%
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="perf-card">
+                                <div class="perf-label">1W</div>
+                                <div
+                                    class="perf-value {% if rend['1W']|float > 0 %}positive{% elif rend['1W']|float < 0 %}negative{% endif %}">
+                                    {% if rend['1W']|float > 0 %}+{% endif %}{{ rend['1W'] }}%
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="perf-card">
+                                <div class="perf-label">1M</div>
+                                <div
+                                    class="perf-value {% if rend['1M']|float > 0 %}positive{% elif rend['1M']|float < 0 %}negative{% endif %}">
+                                    {% if rend['1M']|float > 0 %}+{% endif %}{{ rend['1M'] }}%
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="perf-card">
+                                <div class="perf-label">3M</div>
+                                <div
+                                    class="perf-value {% if rend['3M']|float > 0 %}positive{% elif rend['3M']|float < 0 %}negative{% endif %}">
+                                    {% if rend['3M']|float > 0 %}+{% endif %}{{ rend['3M'] }}%
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="perf-card">
+                                <div class="perf-label">1Y</div>
+                                <div
+                                    class="perf-value {% if rend['1Y']|float > 0 %}positive{% elif rend['1Y']|float < 0 %}negative{% endif %}">
+                                    {% if rend['1Y']|float > 0 %}+{% endif %}{{ rend['1Y'] }}%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Indicadores Técnicos (EXPERT) -->
+                <div class="metrics-card expert-only" id="technicalCard">
+                    <h3 class="card-header">
+                        📐 Indicadores Técnicos
+                    </h3>
+                    <div class="row g-3" id="technicalIndicators">
+                        <div class="text-center text-secondary py-3">
+                            <div class="spinner-border spinner-border-sm me-2"></div>
+                            Calculando indicadores...
+                        </div>
+                    </div>
+                    <div id="technicalSignal"></div>
+                </div>
+
+                {% if data.noticias and data.noticias|length > 0 %}
+                <div class="metrics-card">
+                    <h3 class="card-header">
+                        📰 Noticias — {{ data.ticker }}
+                    </h3>
+                    {% for noticia in data.noticias %}
+                    <a href="{{ noticia.url }}" target="_blank" rel="noopener"
+                        style="display:flex; justify-content:space-between; align-items:start; padding:0.8rem 0; border-bottom:1px solid var(--border); text-decoration:none; color:inherit; transition: background 0.15s;"
+                        onmouseover="this.style.background='var(--table-hover)'"
+                        onmouseout="this.style.background='transparent'">
+                        <div style="flex:1;">
+                            <div
+                                style="font-size:0.88rem; font-weight:600; color:var(--text-primary); line-height:1.4;">
+                                {{ noticia.titulo }}
+                            </div>
+                            <div style="font-size:0.72rem; color:var(--text-secondary); margin-top:0.3rem;">
+                                {{ noticia.fuente }}
+                            </div>
+                        </div>
+                        <i class="bi bi-box-arrow-up-right"
+                            style="color:var(--text-secondary); font-size:0.75rem; margin-left:1rem; margin-top:0.2rem;"></i>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+
+            <!-- Columna derecha: Fundamentos -->
+            <div class="col-lg-4">
+                <!-- Conversor CEDEAR -->
+                <div id="cedearCard" class="metrics-card" style="display:none; margin-bottom:1rem; background:rgba(255,167,38,0.03); border:1px solid rgba(255,167,38,0.1);">
+                    <h3 class="card-header" style="margin-bottom:0.8rem;">
+                        <i class="bi bi-currency-exchange" style="color:#ffa726;"></i>
+                        <span style="color:#ffa726;">Conversor CEDEAR</span>
+                    </h3>
+                    <div class="metric-item">
+                        <div class="metric-label">Precio USD</div>
+                        <div class="metric-value" id="cedearPrecioUSD">-</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Ratio de conversión</div>
+                        <div class="metric-value" id="cedearRatio">-</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Dólar CCL</div>
+                        <div class="metric-value" id="cedearCCL">-</div>
+                    </div>
+                    <div style="margin-top:0.8rem; padding:0.8rem; background:rgba(255,167,38,0.08); border-radius:10px; text-align:center;">
+                        <div style="font-size:0.7rem; color:#787b86; text-transform:uppercase; letter-spacing:0.05em;">Precio teórico CEDEAR</div>
+                        <div style="font-size:1.5rem; font-weight:800; color:#ffa726;" id="cedearPrecioARS">-</div>
+                        <div style="font-size:0.7rem; color:#787b86;">Precio USD ÷ Ratio × CCL</div>
+                    </div>
+                </div>
+
+                <div class="metrics-card">
+                    <h3 class="card-header">
+                        <i class="bi bi-bar-chart-fill"></i>
+                        Fundamentos
+                    </h3>
+
+                    {% if data.fundamentals %}
+
+                    <!-- Market Cap -->
+                    <div class="metric-item">
+                        <div class="metric-label">
+                            Market Cap
+                            <i class="bi bi-info-circle info-tooltip" data-bs-toggle="tooltip" data-bs-html="true"
+                                title="<strong>Capitalización de mercado</strong><br>Valor total de la empresa. Se calcula multiplicando precio x acciones."></i>
+                        </div>
+                        <div class="metric-value">
+                            {% if data.fundamentals.marketCap and data.fundamentals.marketCap > 0 %}
+                            {% if data.fundamentals.marketCap >= 1000000000000 %}
+                            ${{ "%.2f"|format(data.fundamentals.marketCap / 1000000000000) }}T
+                            {% elif data.fundamentals.marketCap >= 1000000000 %}
+                            ${{ "%.2f"|format(data.fundamentals.marketCap / 1000000000) }}B
+                            {% elif data.fundamentals.marketCap >= 1000000 %}
+                            ${{ "%.2f"|format(data.fundamentals.marketCap / 1000000) }}M
+                            {% else %}
+                            ${{ data.fundamentals.marketCap }}
+                            {% endif %}
+                            {% else %}
+                            N/A
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- P/E Ratio -->
+                    <div class="metric-item">
+                        <div class="metric-label">
+                            P/E Ratio
+                            <i class="bi bi-info-circle info-tooltip" data-bs-toggle="tooltip" data-bs-html="true"
+                                title="<strong>Price to Earnings</strong><br>Precio / ganancias. Alto = cara. Bajo = barata. Compara con el sector."></i>
+                        </div>
+                        <div class="metric-value">
+                            {% if data.fundamentals.peRatio and data.fundamentals.peRatio > 0 %}
+                            {{ data.fundamentals.peRatio }}
+                            {% else %}
+                            N/A
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- P/E Forward -->
+                    <div class="metric-item">
+                        <div class="metric-label">
+                            P/E Forward
+                            <i class="bi bi-info-circle info-tooltip" data-bs-toggle="tooltip" data-bs-html="true"
+                                title="<strong>P/E Futuro</strong><br>P/E usando ganancias esperadas del próximo año."></i>
+                        </div>
+                        <div class="metric-value">
+                            {% if data.fundamentals.forwardPE and data.fundamentals.forwardPE > 0 %}
+                            {{ data.fundamentals.forwardPE }}
+                            {% else %}
+                            N/A
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- PEG Ratio -->
+                    <div class="metric-item">
+                        <div class="metric-label">
+                            PEG Ratio
+                            <i class="bi bi-info-circle info-tooltip" data-bs-toggle="tooltip" data-bs-html="true"
+                                title="<strong>P/E ajustado por crecimiento</strong><br>PEG < 1 = infravalorada. PEG > 2 = sobrevalorada. Se calcula: P/E ÷ Earnings Growth Rate."></i>
+                        </div>
+                        <div class="metric-value">
+                            {% if data.fundamentals.pegRatio and data.fundamentals.pegRatio > 0 %}
+                            {{ data.fundamentals.pegRatio }}
+                            {% else %}
+                            N/A
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Beta -->
+                    <div class="metric-item">
+                        <div class="metric-label">
+                            Beta
+                            <i class="bi bi-info-circle info-tooltip" data-bs-toggle="tooltip" data-bs-html="true"
+                                title="<strong>Volatilidad</strong><br>Beta > 1 = más volátil (más riesgo). Beta < 1 = menos volátil."></i>
+                        </div>
+                        <div class="metric-value">
+                            {% if data.fundamentals.beta and data.fundamentals.beta != 0 %}
+                            {{ data.fundamentals.beta }}
+                            {% else %}
+                            N/A
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Dividend Yield -->
+                    <div class="metric-item">
+                        <div class="metric-label">
+                            Dividend Yield
+                            <i class="bi bi-info-circle info-tooltip" data-bs-toggle="tooltip" data-bs-html="true"
+                                title="<strong>Rendimiento por dividendos</strong><br>% anual que paga la empresa en efectivo."></i>
+                        </div>
+                        <div class="metric-value">
+                            {% if data.fundamentals.dividendYield and data.fundamentals.dividendYield > 0 %}
+                            {{ data.fundamentals.dividendYield }}%
+                            {% else %}
+                            0%
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Métricas avanzadas (EXPERT) -->
+                    <div class="expert-only">
+                        <div style="margin:1rem 0 0.5rem; padding-top:0.8rem; border-top:1px solid var(--border);">
+                            <div
+                                style="font-size:0.7rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--accent-blue); margin-bottom:0.5rem;">
+                                Métricas Avanzadas
+                            </div>
+                        </div>
+
+                        {% if data.fundamentals.ebitda and data.fundamentals.ebitda > 0 %}
+                        <div class="metric-item">
+                            <div class="metric-label">
+                                EV/EBITDA
+                                <i class="bi bi-info-circle info-tooltip" data-bs-toggle="tooltip" data-bs-html="true"
+                                    title="<strong>Enterprise Value / EBITDA</strong><br>Valora la empresa independiente de su estructura de deuda.<br><10 = barata. >15 = cara."></i>
+                            </div>
+                            <div class="metric-value">{{ data.fundamentals.evToEbitda or 'N/A' }}</div>
+                        </div>
+                        {% endif %}
+
+                        {% if data.fundamentals.roe %}
+                        <div class="metric-item">
+                            <div class="metric-label">
+                                ROE
+                                <i class="bi bi-info-circle info-tooltip" data-bs-toggle="tooltip" data-bs-html="true"
+                                    title="<strong>Return on Equity</strong><br>Ganancia sobre el patrimonio neto.<br>>15% = bueno. >25% = excelente."></i>
+                            </div>
+                            <div class="metric-value">{{ data.fundamentals.roe }}%</div>
+                        </div>
+                        {% endif %}
+
+                        {% if data.fundamentals.roa %}
+                        <div class="metric-item">
+                            <div class="metric-label">
+                                ROA
+                                <i class="bi bi-info-circle info-tooltip" data-bs-toggle="tooltip" data-bs-html="true"
+                                    title="<strong>Return on Assets</strong><br>Eficiencia del uso de activos.<br>>5% = bueno."></i>
+                            </div>
+                            <div class="metric-value">{{ data.fundamentals.roa }}%</div>
+                        </div>
+                        {% endif %}
+
+                        {% if data.fundamentals.debtToEquity is not none %}
+                        <div class="metric-item">
+                            <div class="metric-label">
+                                Debt/Equity
+                                <i class="bi bi-info-circle info-tooltip" data-bs-toggle="tooltip" data-bs-html="true"
+                                    title="<strong>Ratio Deuda/Patrimonio</strong><br>Cuánta deuda tiene vs patrimonio.<br><1 = conservador. >2 = alto apalancamiento."></i>
+                            </div>
+                            <div class="metric-value">{{ data.fundamentals.debtToEquity }}</div>
+                        </div>
+                        {% endif %}
+
+                        {% if data.fundamentals.currentRatio %}
+                        <div class="metric-item">
+                            <div class="metric-label">
+                                Current Ratio
+                                <i class="bi bi-info-circle info-tooltip" data-bs-toggle="tooltip" data-bs-html="true"
+                                    title="<strong>Ratio de Liquidez</strong><br>Activos corrientes / Pasivos corrientes.<br>>1.5 = saludable. <1 = posible problema."></i>
+                            </div>
+                            <div class="metric-value">{{ data.fundamentals.currentRatio }}</div>
+                        </div>
+                        {% endif %}
+
+                        {% if data.fundamentals.profitMargin %}
+                        <div class="metric-item">
+                            <div class="metric-label">
+                                Profit Margin
+                                <i class="bi bi-info-circle info-tooltip" data-bs-toggle="tooltip" data-bs-html="true"
+                                    title="<strong>Margen de Ganancia Neta</strong><br>% de ingresos que queda como ganancia.<br>>20% = excelente."></i>
+                            </div>
+                            <div class="metric-value">{{ data.fundamentals.profitMargin }}%</div>
+                        </div>
+                        {% endif %}
+
+                        {% if data.fundamentals.revenueGrowth %}
+                        <div class="metric-item">
+                            <div class="metric-label">
+                                Revenue Growth
+                                <i class="bi bi-info-circle info-tooltip" data-bs-toggle="tooltip" data-bs-html="true"
+                                    title="<strong>Crecimiento de Ingresos</strong><br>Variación interanual de facturación."></i>
+                            </div>
+                            <div
+                                class="metric-value {% if data.fundamentals.revenueGrowth > 0 %}text-up{% else %}text-down{% endif %}">
+                                {{ data.fundamentals.revenueGrowth }}%
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    {% else %}
+                    <div class="empty-state">
+                        <i class="bi bi-bar-chart-fill"></i>
+                        <p>No hay datos disponibles.</p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Datos de Trading -->
+                <div class="metrics-card expert-only" style="display:none;">
+                    <h3 class="card-header">
+                        <i class="bi bi-activity"></i>
+                        Datos de Trading
+                    </h3>
+
+                    <div class="metric-item">
+                        <div class="metric-label">Apertura
+                            <i class="bi bi-info-circle info-tooltip" data-bs-toggle="tooltip" data-bs-html="true"
+                                title="<strong>Precio de apertura</strong><br>Precio al que se realizó la primera operación del día."></i>
+                        </div>
+                        <div class="metric-value">${{ data.fundamentals.open or 'N/A' }}</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Cierre Anterior
+                            <i class="bi bi-info-circle info-tooltip" data-bs-toggle="tooltip" data-bs-html="true"
+                                title="<strong>Cierre anterior</strong><br>Último precio del día de operación previo. Referencia para calcular la variación diaria."></i>
+                        </div>
+                        <div class="metric-value">${{ data.fundamentals.previousClose or 'N/A' }}</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Máximo del Día
+                            <i class="bi bi-info-circle info-tooltip" data-bs-toggle="tooltip" data-bs-html="true"
+                                title="<strong>Máximo intradiario</strong><br>Precio más alto alcanzado durante la sesión de hoy."></i>
+                        </div>
+                        <div class="metric-value" style="color: var(--positive)">${{ data.fundamentals.dayHigh or 'N/A'
+                            }}
+                        </div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Mínimo del Día
+                            <i class="bi bi-info-circle info-tooltip" data-bs-toggle="tooltip" data-bs-html="true"
+                                title="<strong>Mínimo intradiario</strong><br>Precio más bajo alcanzado durante la sesión de hoy."></i>
+                        </div>
+                        <div class="metric-value" style="color: var(--negative);">${{ data.fundamentals.dayLow or 'N/A'
+                            }}</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Volumen
+                            <i class="bi bi-info-circle info-tooltip" data-bs-toggle="tooltip" data-bs-html="true"
+                                title="<strong>Volumen diario</strong><br>Cantidad de acciones negociadas hoy. Alto volumen = mayor liquidez."></i>
+                        </div>
+                        <div class="metric-value">
+                            {% if data.fundamentals.volume and data.fundamentals.volume > 0 %}
+                            {% if data.fundamentals.volume >= 1000000000 %}
+                            {{ "%.1f"|format(data.fundamentals.volume / 1000000000) }}B
+                            {% elif data.fundamentals.volume >= 1000000 %}
+                            {{ "%.1f"|format(data.fundamentals.volume / 1000000) }}M
+                            {% elif data.fundamentals.volume >= 1000 %}
+                            {{ "%.1f"|format(data.fundamentals.volume / 1000) }}K
+                            {% else %}
+                            {{ data.fundamentals.volume }}
+                            {% endif %}
+                            {% else %}
+                            N/A
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Rango 52 Semanas
+                            <i class="bi bi-info-circle info-tooltip" data-bs-toggle="tooltip" data-bs-html="true"
+                                title="<strong>Rango anual</strong><br>Precio mínimo y máximo del último año."></i>
+                        </div>
+                        <div class="metric-value" style="font-size: 0.95rem;">
+                            ${{ data.fundamentals.week52Low or 'N/A' }} — ${{ data.fundamentals.week52High or 'N/A' }}
+                        </div>
+                    </div>
+                    {% if data.fundamentals.preMarketPrice and data.fundamentals.preMarketPrice > 0 %}
+                    <div class="metric-item">
+                        <div class="metric-label">Pre-Market
+                            <i class="bi bi-info-circle info-tooltip" data-bs-toggle="tooltip" data-bs-html="true"
+                                title="<strong>Precio Pre-Market</strong><br>Sesión previa a la apertura (4:00-9:30 AM ET)."></i>
+                        </div>
+                        <div class="metric-value" style="color: var(--warning);">${{ data.fundamentals.preMarketPrice }}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if data.fundamentals.postMarketPrice and data.fundamentals.postMarketPrice > 0 %}
+                    <div class="metric-item">
+                        <div class="metric-label">Post-Market
+                            <i class="bi bi-info-circle info-tooltip" data-bs-toggle="tooltip" data-bs-html="true"
+                                title="<strong>Precio Post-Market</strong><br>Sesión posterior al cierre (4:00-8:00 PM ET)."></i>
+                        </div>
+                        <div class="metric-value" style="color: var(--warning);">${{ data.fundamentals.postMarketPrice
+                            }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Alerta de Precio -->
+    <div class="modal fade" id="modalAlerta" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content"
+                style="background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); color: white;">
+                <div class="modal-header border-0 pb-0">
+                    <h6 class="modal-title fw-bold"><i class="bi bi-bell me-2 text-warning"></i>Crear Alerta — {{
+                        data.ticker }}</h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-secondary small mb-3">Precio actual: <strong class="text-white">${{ data.precio
+                            }}</strong></p>
+
+                    <label class="text-secondary small mb-1">Avisarme cuando el precio:</label>
+                    <select id="alertaDireccion" class="form-select form-select-sm mb-3"
+                        style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;">
+                        <option value="above">Suba por encima de</option>
+                        <option value="below">Baje por debajo de</option>
+                    </select>
+
+                    <label class="text-secondary small mb-1">Precio objetivo (USD):</label>
+                    <input type="number" id="alertaPrecio" class="form-control form-control-sm" step="0.01"
+                        placeholder="Ej: 300.00"
+                        style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;">
+
+                    <div id="alertaError" class="text-danger small mt-2" style="display:none;"></div>
+                    <div id="alertaCount" class="text-secondary small mt-2"></div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-warning btn-sm rounded-pill px-4" onclick="guardarAlerta()">
+                        <i class="bi bi-bell-fill me-1"></i>Crear Alerta
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast para alertas -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999">
+        <div id="alertaToast" class="toast align-items-center text-white border-0" role="alert"
+            style="background: var(--card-bg); border: 1px solid rgba(255,167,38,0.3) !important;">
+            <div class="d-flex">
+                <div class="toast-body" id="alertaToastBody">
+                    <i class="bi bi-bell-fill text-warning me-2"></i>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p class="fw-bold mb-1">Desarrollado con Python & FastAPI</p>
+            <p class="text-secondary small mb-3">
+                <i class="bi bi-exclamation-triangle me-1 text-warning"></i>
+                Advertencia: La información de los tickers puede tener un retraso de 15-20 minutos.
+            </p>
+            <p class="text-secondary" style="font-size: 0.75rem; opacity: 0.7;">
+                Disclaimer: Este sitio es una herramienta educativa y de consulta. No constituye asesoramiento
+                financiero ni recomendación de inversión.
+            </p>
+        </div>
+    </footer>
+
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1050">
+        <div id="liveToast" class="toast align-items-center text-white bg-success border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body fs-6">
+                    <i class="bi bi-trophy-fill text-warning me-2"></i>
+                    <span id="textoMision">¡Misión Completada!</span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Misiones -->
+    <div class="modal fade" id="modalMisiones" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content"
+                style="background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); color: white;">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold"><i class="bi bi-trophy-fill text-warning me-2"></i>Mis Misiones</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-0">
+                    <div class="mb-3">
+                        <div class="progress"
+                            style="height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px;">
+                            <div class="progress-bar bg-warning" id="misionesProgressBar"
+                                style="width: 0%; border-radius: 4px;"></div>
+                        </div>
+                        <div class="text-secondary small mt-1" id="misionesProgressText">0 de 11 completadas</div>
+                    </div>
+                    <div id="misionesLista"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Perfil Inversor -->
+    <div class="modal fade" id="modalPerfilInversor" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content glass-effect text-white"
+                style="background: var(--card-bg); border: 1px solid var(--border);">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">Test de Identidad Financiera</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="px-3 mt-3">
+                    <div class="progress" style="height: 5px; background: rgba(255, 255, 255, 0.06);">
+                        <div class="progress-bar bg-warning" id="barraProgreso" role="progressbar" style="width: 0%;">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body p-4 text-center" id="contenidoTest"></div>
+                <div class="modal-footer border-0 justify-content-center d-none" id="footerResultados">
+                    <button type="button" class="btn btn-primary rounded-pill px-4" data-bs-dismiss="modal"
+                        onclick="location.reload()">¡Entendido, vamos!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast para misiones -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1050">
+        <div id="liveToast" class="toast align-items-center text-white bg-success border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body fs-6">
+                    <i class="bi bi-trophy-fill text-warning me-2"></i>
+                    <span id="textoMision">¡Misión Completada!</span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Settings -->
+    <div class="modal fade" id="modalSettings" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content"
+                style="background: var(--card-bg); border: 1px solid var(--border); color: var(--text-primary);">
+                <div class="modal-header border-0 pb-0">
+                    <h6 class="modal-title fw-bold">⚙️ Configuración</h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Tema -->
+                    <div class="d-flex justify-content-between align-items-center mb-3 pb-3"
+                        style="border-bottom: 1px solid var(--border);">
+                        <div>
+                            <div class="fw-bold" style="font-size:0.9rem;">Tema</div>
+                            <div style="font-size:0.78rem; color:var(--text-secondary);">Apariencia de la plataforma
+                            </div>
+                        </div>
+                        <div class="d-flex gap-1">
+                            <button class="btn btn-sm theme-opt" data-theme-val="dark" onclick="setTheme('dark')"
+                                style="padding:0.3rem 0.7rem; border-radius:8px; font-size:0.78rem;">🌙 Oscuro</button>
+                            <button class="btn btn-sm theme-opt" data-theme-val="light" onclick="setTheme('light')"
+                                style="padding:0.3rem 0.7rem; border-radius:8px; font-size:0.78rem;">☀️ Claro</button>
+                        </div>
+                    </div>
+
+                    <!-- Modo Experto -->
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="fw-bold" style="font-size:0.9rem;">Modo Experto</div>
+                            <div style="font-size:0.78rem; color:var(--text-secondary);">Indicadores técnicos y métricas
+                                avanzadas</div>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="expertModeToggle"
+                                onchange="toggleExpertMode(this.checked)"
+                                style="cursor:pointer; width:2.5rem; height:1.25rem;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Compartir Análisis -->
+    <div class="modal fade" id="modalCompartir" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered" style="max-width:420px;">
+            <div class="modal-content"
+                style="background:#0a0b0f; border:1px solid rgba(255,255,255,0.1); border-radius:18px; padding:0;">
+
+                <!-- Card compartible -->
+                <div id="shareCard" style="
+                    background: linear-gradient(145deg, #0f1117, #1a1d2b);
+                    border-radius: 16px;
+                    padding: 1.8rem;
+                    color: white;
+                    font-family: 'Plus Jakarta Sans', sans-serif;
+                    position: relative;
+                    overflow: hidden;
+                ">
+                    <div
+                        style="position:absolute; top:-30%; right:-20%; width:300px; height:300px; background:radial-gradient(circle, rgba(59,125,255,0.1), transparent 70%); border-radius:50%; pointer-events:none;">
+                    </div>
+
+                    <div
+                        style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:1.2rem;">
+                        <div>
+                            <div style="font-size:2rem; font-weight:800; letter-spacing:-1px;">{{ data.ticker }}</div>
+                            <div style="font-size:0.82rem; color:#787b86;">{{ data.nombre }}</div>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="font-size:1.6rem; font-weight:700;">${{ data.precio }}</div>
+                            <div id="shareVariacion" style="font-size:0.85rem; font-weight:600;"></div>
+                        </div>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:0.6rem; margin-bottom:0.6rem;">
+                        <div
+                            style="background:rgba(255,255,255,0.05); border-radius:10px; padding:0.6rem; text-align:center;">
+                            <div style="font-size:0.65rem; color:#787b86; text-transform:uppercase;">P/E Ratio</div>
+                            <div style="font-weight:700; font-size:0.95rem;">{{ data.fundamentals.peRatio }}</div>
+                        </div>
+                        <div
+                            style="background:rgba(255,255,255,0.05); border-radius:10px; padding:0.6rem; text-align:center;">
+                            <div style="font-size:0.65rem; color:#787b86; text-transform:uppercase;">Beta</div>
+                            <div style="font-weight:700; font-size:0.95rem;">{{ data.fundamentals.beta }}</div>
+                        </div>
+                        <div
+                            style="background:rgba(255,255,255,0.05); border-radius:10px; padding:0.6rem; text-align:center;">
+                            <div style="font-size:0.65rem; color:#787b86; text-transform:uppercase;">Div. Yield</div>
+                            <div style="font-weight:700; font-size:0.95rem;">{{ data.fundamentals.dividendYield }}%
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:0.6rem; margin-bottom:1.2rem;">
+                        <div
+                            style="background:rgba(255,255,255,0.05); border-radius:10px; padding:0.6rem; text-align:center;">
+                            <div style="font-size:0.65rem; color:#787b86; text-transform:uppercase;">Market Cap</div>
+                            <div style="font-weight:700; font-size:0.95rem;">
+                                {% if data.fundamentals.marketCap >= 1000000000000 %}${{
+                                "%.1f"|format(data.fundamentals.marketCap / 1000000000000) }}T
+                                {% elif data.fundamentals.marketCap >= 1000000000 %}${{
+                                "%.1f"|format(data.fundamentals.marketCap / 1000000000) }}B
+                                {% else %}${{ "%.1f"|format(data.fundamentals.marketCap / 1000000) }}M
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div
+                            style="background:rgba(255,255,255,0.05); border-radius:10px; padding:0.6rem; text-align:center;">
+                            <div style="font-size:0.65rem; color:#787b86; text-transform:uppercase;">Sector</div>
+                            <div style="font-weight:700; font-size:0.75rem;">{{ data.fundamentals.sector or 'N/A' }}
+                            </div>
+                        </div>
+                        <div
+                            style="background:rgba(255,255,255,0.05); border-radius:10px; padding:0.6rem; text-align:center;">
+                            <div style="font-size:0.65rem; color:#787b86; text-transform:uppercase;">P/E Forward</div>
+                            <div style="font-weight:700; font-size:0.95rem;">{{ data.fundamentals.forwardPE }}</div>
+                        </div>
+                    </div>
+
+                    <div id="shareSignal"
+                        style="background:rgba(255,255,255,0.05); border-radius:10px; padding:0.7rem; text-align:center; margin-bottom:1.2rem;">
+                        <div style="font-size:0.65rem; color:#787b86; text-transform:uppercase;">Señal Técnica</div>
+                        <div style="font-weight:700; font-size:0.9rem; margin-top:0.2rem;">Cargando...</div>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:0.4rem; margin-bottom:1.2rem;">
+                        {% for period, value in [('1D', rend['1D']), ('1W', rend['1W']), ('1M', rend['1M']), ('3M',
+                        rend['3M']), ('1Y', rend['1Y'])] %}
+                        <div style="text-align:center;">
+                            <div style="font-size:0.6rem; color:#787b86;">{{ period }}</div>
+                            {% if value|float > 0 %}
+                            <div style="font-weight:600; font-size:0.78rem; color:var(--positive);">+{{ value }}%</div>
+                            {% elif value|float < 0 %} <div
+                                style="font-weight:600; font-size:0.78rem; color:var(--negative);">{{ value }}%
+                        </div>
+                        {% else %}
+                        <div style="font-weight:600; font-size:0.78rem; color:var(--text-secondary);">{{ value }}%</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div
+                    style="display:flex; justify-content:space-between; align-items:center; padding-top:0.8rem; border-top:1px solid rgba(255,255,255,0.06);">
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                        <img src="/static/img/favicon.png" alt="RK" height="20">
+                        <span style="font-weight:700; font-size:0.85rem; color:#787b86;">RosKapital</span>
+                    </div>
+                    <div style="font-size:0.7rem; color:#555;" id="shareDate"></div>
+                </div>
+            </div>
+
+            <!-- Botones -->
+            <div style="display:flex; gap:0.5rem; justify-content:center; padding:1rem;">
+                <button class="btn btn-sm btn-primary rounded-pill px-4" onclick="copiarLinkAnalisis()">
+                    <i class="fas fa-link me-1"></i>Copiar Link
+                </button>
+                <button class="btn btn-sm btn-success rounded-pill px-4" onclick="descargarCard()">
+                    <i class="fas fa-download me-1"></i>Descargar Imagen
+                </button>
+                <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" data-bs-dismiss="modal">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://s3.tradingview.com/tv.js"></script>
+    <script>
+        new TradingView.widget({
+            width: "100%",
+            height: "100%",
+            symbol: "{{ data.ticker }}",
+            interval: "D",
+            timezone: "America/Argentina/Buenos_Aires",
+            theme: "dark",
+            style: "1",
+            locale: "es",
+            toolbar_bg: "#1c222d",
+            enable_publishing: false,
+            hide_side_toolbar: false,
+            allow_symbol_change: true,
+            container_id: "tradingview_chart"
+        });
+
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (el) {
+            return new bootstrap.Tooltip(el, { html: true, placement: 'left' });
+        });
+
+        function buscarActivo() {
+            const ticker = document.getElementById('searchInput').value.trim().toUpperCase();
+            if (ticker) window.location.href = '/explorar/' + ticker;
+        }
+    </script>
+
+    <button id="wlToggleBtn" onclick="wlToggle()" title="Mis Activos Seguidos">
+        <i class="fas fa-star"></i>
+        <span id="wlBtnBadge" style="display:none"></span>
+    </button>
+
+    <!-- 2. Overlay oscuro -->
+    <div id="wlOverlay" onclick="wlClose()"></div>
+
+    <!-- 3. Panel lateral -->
+    <div id="wlSidebar">
+        <div id="wlHeader">
+            <div style="display:flex;align-items:center;gap:0.6rem">
+                <i class="fas fa-star" style="color:#ffa726"></i>
+                <span style="font-weight:600;color:#e0e3eb">Mis Activos</span>
+                <span id="wlBadge"></span>
+            </div>
+            <button onclick="wlClose()" id="wlCloseBtn"><i class="fas fa-times"></i></button>
+        </div>
+        <div id="wlList"></div>
+        <div id="wlAddRow">
+            <input id="wlInput" placeholder="Ej: AAPL, MELI" maxlength="10" onkeydown="if(event.key==='Enter') wlAdd()"
+                autocomplete="off" />
+            <button onclick="wlAdd()"><i class="fas fa-plus"></i> Agregar</button>
+        </div>
+        <div id="wlMsg"></div>
+    </div>
+
+
+    <script>// ========================================
+        // ALERTAS DE PRECIO
+        // ========================================
+        const MAX_ALERTAS_FREE = 4;
+        const ALERTAS_KEY = 'roskapital_alertas';
+        const TICKER_ACTUAL = '{{ data.ticker }}';
+        const PRECIO_ACTUAL = parseFloat('{{ data.precio }}');
+
+        function getAlertas() {
+            return JSON.parse(localStorage.getItem(ALERTAS_KEY) || '[]');
+        }
+
+
+        async function getAlertasSmart() {
+            if (typeof isLoggedIn === 'function' && isLoggedIn()) {
+                try {
+                    const res = await authFetch('/api/portfolio/alertas');
+                    if (res.ok) {
+                        const data = await res.json();
+                        localStorage.setItem(ALERTAS_KEY, JSON.stringify(data));
+                        return data;
+                    }
+                } catch (e) { console.warn('Error cargando alertas:', e); }
+            }
+            return getAlertas();
+        }
+
+        function saveAlertas(alertas) {
+            localStorage.setItem(ALERTAS_KEY, JSON.stringify(alertas));
+        }
+
+        function abrirModalAlerta() {
+            const alertas = getAlertas();
+            const count = alertas.length;
+
+            document.getElementById('alertaPrecio').value = '';
+            document.getElementById('alertaError').style.display = 'none';
+            document.getElementById('alertaCount').textContent = `${count}/${MAX_ALERTAS_FREE} alertas usadas`;
+
+            if (count >= MAX_ALERTAS_FREE) {
+                document.getElementById('alertaCount').innerHTML = `<span class="text-warning">${count}/${MAX_ALERTAS_FREE} alertas — Límite alcanzado</span>`;
+            }
+
+            const modal = new bootstrap.Modal(document.getElementById('modalAlerta'));
+            modal.show();
+        }
+
+        async function guardarAlerta() {
+            const alertas = getAlertas();
+            const precio = parseFloat(document.getElementById('alertaPrecio').value);
+            const direccion = document.getElementById('alertaDireccion').value;
+            const errorEl = document.getElementById('alertaError');
+
+            // Validaciones
+            if (!precio || precio <= 0) {
+                errorEl.textContent = 'Ingresá un precio válido';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            if (alertas.length >= MAX_ALERTAS_FREE) {
+                errorEl.textContent = 'Alcanzaste el límite de 4 alertas (plan free)';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            // Validar que no sea redundante
+            if (direccion === 'above' && precio <= PRECIO_ACTUAL) {
+                errorEl.textContent = `El precio objetivo debe ser mayor al actual ($${PRECIO_ACTUAL})`;
+                errorEl.style.display = 'block';
+                return;
+            }
+            if (direccion === 'below' && precio >= PRECIO_ACTUAL) {
+                errorEl.textContent = `El precio objetivo debe ser menor al actual ($${PRECIO_ACTUAL})`;
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            // Verificar duplicados
+            const existe = alertas.find(a => a.ticker === TICKER_ACTUAL && a.precio === precio && a.direccion === direccion);
+            if (existe) {
+                errorEl.textContent = 'Ya tenés una alerta igual para este activo';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            if (typeof isLoggedIn === 'function' && isLoggedIn()) {
+                try {
+                    const res = await authFetch('/api/portfolio/alertas', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            ticker: TICKER_ACTUAL,
+                            precio: precio,
+                            direccion: direccion
+                        })
+                    });
+                    if (!res.ok) {
+                        const data = await res.json();
+                        errorEl.textContent = data.detail || 'Error al crear alerta';
+                        errorEl.style.display = 'block';
+                        return;
+                    }
+                } catch (e) { console.warn('Error guardando alerta en DB:', e); }
+            }
+
+            // Guardar en localStorage también
+            alertas.push({
+                ticker: TICKER_ACTUAL,
+                precio: precio,
+                direccion: direccion,
+                creadaEl: new Date().toISOString(),
+                precioAlCrear: PRECIO_ACTUAL
+            });
+
+            saveAlertas(alertas);
+
+            // Cerrar modal y mostrar confirmación
+            bootstrap.Modal.getInstance(document.getElementById('modalAlerta')).hide();
+            mostrarToastAlerta(`Alerta creada: ${TICKER_ACTUAL} ${direccion === 'above' ? '↑' : '↓'} $${precio.toFixed(2)}`);
+        }
+
+        // Chequear alertas al cargar la página
+        async function chequearAlertas() {
+            const alertas = getAlertas();
+            if (alertas.length === 0) return;
+
+            // Obtener tickers únicos
+            const tickers = [...new Set(alertas.map(a => a.ticker))];
+
+            try {
+                const res = await fetch(`/api/cotizaciones?tickers=${tickers.join(',')}`);
+                if (!res.ok) return;
+                const precios = await res.json();
+
+                const alertasActivas = [];
+                const alertasDisparadas = [];
+
+                alertas.forEach(alerta => {
+                    const data = precios[alerta.ticker];
+                    if (!data) {
+                        alertasActivas.push(alerta);
+                        return;
+                    }
+
+                    const precioActual = data.precio;
+                    let disparada = false;
+
+                    if (alerta.direccion === 'above' && precioActual >= alerta.precio) {
+                        disparada = true;
+                    } else if (alerta.direccion === 'below' && precioActual <= alerta.precio) {
+                        disparada = true;
+                    }
+
+                    if (disparada) {
+                        alertasDisparadas.push({ ...alerta, precioActual });
+                    } else {
+                        alertasActivas.push(alerta);
+                    }
+                });
+
+                // Guardar solo las activas (las disparadas se eliminan)
+                saveAlertas(alertasActivas);
+
+                // Mostrar notificaciones
+                alertasDisparadas.forEach((alerta, i) => {
+                    setTimeout(() => {
+                        const dir = alerta.direccion === 'above' ? 'superó' : 'bajó de';
+                        mostrarToastAlerta(
+                            `🔔 ${alerta.ticker} ${dir} $${alerta.precio.toFixed(2)} — Precio actual: $${alerta.precioActual.toFixed(2)}`
+                        );
+                    }, i * 2000);
+                });
+
+            } catch (e) {
+                console.warn('Error chequeando alertas:', e);
+            }
+        }
+
+        function mostrarToastAlerta(msg) {
+            const toastEl = document.getElementById('alertaToast');
+            const bodyEl = document.getElementById('alertaToastBody');
+            if (toastEl && bodyEl) {
+                bodyEl.innerHTML = `<i class="bi bi-bell-fill text-warning me-2"></i>${msg}`;
+                const toast = new bootstrap.Toast(toastEl, { delay: 5000 });
+                toast.show();
+            }
+        }
+
+        // Chequear alertas al cargar
+        document.addEventListener('DOMContentLoaded', function () {
+            chequearAlertas();
+        });
+    </script>
+
+    <script>// ========================================
+        // BADGE DE PERFIL DE INVERSOR
+        // ========================================
+        function mostrarBadgePerfil() {
+            const perfil = JSON.parse(localStorage.getItem('perfil_inversor') || 'null');
+            if (!perfil) return;
+
+            const ticker = '{{ data.ticker }}';
+            const sector = '{{ data.fundamentals.sector if data.fundamentals else "N/A" }}';
+            const badge = document.getElementById('perfilBadge');
+            if (!badge) return;
+
+            const perfilSectores = {
+                'Don Horacio': {
+                    sectores: ['Utilities', 'Consumer Defensive', 'Healthcare', 'Real Estate'],
+                    emoji: '🛡️',
+                    msgOk: 'Activo alineado con tu perfil conservador',
+                    msgNo: 'Este activo puede ser volátil para tu perfil conservador',
+                    color: '#089981',
+                    colorNo: '#ffa726'
+                },
+                'Valeria': {
+                    sectores: ['Financial Services', 'Industrials', 'Energy', 'Healthcare', 'Real Estate', 'Basic Materials'],
+                    emoji: '⚖️',
+                    msgOk: 'Activo alineado con tu perfil equilibrado',
+                    msgNo: 'Este activo está fuera de tu zona de confort',
+                    color: '#089981',
+                    colorNo: '#ffa726'
+                },
+                'Enzo': {
+                    sectores: ['Technology', 'Consumer Cyclical', 'Communication Services', 'Basic Materials'],
+                    emoji: '🚀',
+                    msgOk: 'Activo alineado con tu perfil agresivo',
+                    msgNo: 'Este activo puede ser demasiado conservador para tu perfil',
+                    color: '#089981',
+                    colorNo: '#787b86'
+                }
+            };
+
+            const config = perfilSectores[perfil.personaje];
+            if (!config) return;
+
+            const alineado = config.sectores.includes(sector);
+
+            if (alineado) {
+                badge.innerHTML = `
+                    <span style="font-size:0.8rem; padding:4px 12px; border-radius:20px; 
+                        background:rgba(8,153,129,0.15); border:1px solid rgba(8,153,129,0.3); color:${config.color};">
+                        ${config.emoji} ${config.msgOk}
+                    </span>`;
+            } else {
+                badge.innerHTML = `
+                    <span style="font-size:0.8rem; padding:4px 12px; border-radius:20px; 
+                        background:rgba(255,167,38,0.1); border:1px solid rgba(255,167,38,0.2); color:${config.colorNo};">
+                        ⚠️ ${config.msgNo}
+                    </span>`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            mostrarBadgePerfil();
+        });
+    </script>
+    <script>
+        // ============================================
+        // INDICADORES TÉCNICOS (EXPERT MODE)
+        // ============================================
+        async function cargarIndicadoresTecnicos(ticker) {
+            if (typeof isExpertMode === 'function' && !isExpertMode()) return;
+
+            const container = document.getElementById('technicalIndicators');
+            const signalContainer = document.getElementById('technicalSignal');
+            if (!container) return;
+
+            try {
+                const res = await fetch(`/api/indicators/${ticker}`);
+                if (!res.ok) throw new Error('No disponible');
+                const data = await res.json();
+                const precio = parseFloat(document.querySelector('.asset-price')?.textContent?.replace('$', '').replace(',', '') || 0);
+
+                let html = '';
+
+                // RSI
+                if (data.rsi !== null) {
+                    let rsiColor = 'var(--text-primary)';
+                    let rsiLabel = 'Neutral';
+                    if (data.rsi > 70) { rsiColor = 'var(--negative)'; rsiLabel = 'Sobrecompra'; }
+                    else if (data.rsi < 30) { rsiColor = 'var(--positive)'; rsiLabel = 'Sobreventa'; }
+
+                    html += `
+                <div class="col">
+                    <div class="perf-card">
+                        <div class="perf-label">RSI (14)
+                            <i class="bi bi-info-circle info-tooltip" data-bs-toggle="tooltip" data-bs-html="true"
+                                title="<strong>Relative Strength Index</strong><br>Mide momentum. >70 = Sobrecompra. <30 = Sobreventa."></i>
+                        </div>
+                        <div class="perf-value" style="color:${rsiColor}">${data.rsi}</div>
+                        <div style="font-size:0.68rem; margin-top:0.3rem; color:${rsiColor}">${rsiLabel}</div>
+                    </div>
+                </div>`;
+                }
+
+                // MACD
+                if (data.macd !== undefined) {
+                    const macdBullish = data.macdHistogram > 0;
+                    html += `
+                <div class="col">
+                    <div class="perf-card">
+                        <div class="perf-label">MACD
+                            <i class="bi bi-info-circle info-tooltip" data-bs-toggle="tooltip" data-bs-html="true"
+                                title="<strong>Moving Average Convergence Divergence</strong><br>MACD sobre señal = alcista.<br>MACD bajo señal = bajista.<br>Histograma positivo = momentum creciente."></i>
+                        </div>
+                        <div class="perf-value" style="font-size:1.5rem; color:${macdBullish ? 'var(--positive)' : 'var(--negative)'}">${data.macd}</div>
+                        <div style="font-size:0.68rem; margin-top:0.3rem; color:${macdBullish ? 'var(--positive)' : 'var(--negative)'}">
+                            ${macdBullish ? '▲ Alcista' : '▼ Bajista'} (H: ${data.macdHistogram})
+                        </div>
+                    </div>
+                </div>`;
+                }
+
+                // Bollinger Bands
+                if (data.bbPosition !== null && data.bbPosition !== undefined) {
+                    let bbColor = 'var(--text-primary)';
+                    let bbLabel = 'Zona media';
+                    if (data.bbPosition > 80) { bbColor = 'var(--negative)'; bbLabel = 'Cerca de banda superior'; }
+                    else if (data.bbPosition < 20) { bbColor = 'var(--positive)'; bbLabel = 'Cerca de banda inferior'; }
+
+                    html += `
+                <div class="col">
+                    <div class="perf-card">
+                        <div class="perf-label">Bollinger
+                            <i class="bi bi-info-circle info-tooltip" data-bs-toggle="tooltip" data-bs-html="true"
+                                title="<strong>Bollinger Bands</strong><br>Posición del precio entre las bandas.<br>Cerca de superior (>80%) = posible sobrecompra.<br>Cerca de inferior (<20%) = posible sobreventa.<br>Bandas: $${data.bbLower} — $${data.bbUpper}"></i>
+                        </div>
+                        <div class="perf-value" style="font-size:1.5rem; color:${bbColor}">${data.bbPosition}%</div>
+                        <div style="font-size:0.68rem; margin-top:0.3rem; color:${bbColor}">${bbLabel}</div>
+                    </div>
+                </div>`;
+                }
+
+                // ATR
+                if (data.atr) {
+                    html += `
+                <div class="col">
+                    <div class="perf-card">
+                        <div class="perf-label">ATR (14)
+                            <i class="bi bi-info-circle info-tooltip" data-bs-toggle="tooltip" data-bs-html="true"
+                                title="<strong>Average True Range</strong><br>Volatilidad diaria promedio.<br>$${data.atr} = el precio se mueve ~$${data.atr} por día.<br>Útil para calcular stop-loss (2x ATR = $${(data.atr * 2).toFixed(2)})."></i>
+                        </div>
+                        <div class="perf-value" style="font-size:1.5rem;">$${data.atr}</div>
+                        <div style="font-size:0.68rem; margin-top:0.3rem; color:var(--text-secondary)">${data.atrPercent}% del precio</div>
+                    </div>
+                </div>`;
+                }
+
+                // SMA 20
+                if (data.sma20) {
+                    const above = precio > data.sma20;
+                    html += `
+                <div class="col">
+                    <div class="perf-card">
+                        <div class="perf-label">SMA 20
+                            <i class="bi bi-info-circle info-tooltip" data-bs-toggle="tooltip" data-bs-html="true"
+                                title="<strong>Media Móvil Simple 20 días</strong><br>Tendencia de corto plazo.<br>Usada por swing traders para entradas y salidas rápidas."></i>
+                        </div>
+                        <div class="perf-value" style="font-size:1.5rem;">$${data.sma20}</div>
+                        <div style="font-size:0.68rem; margin-top:0.3rem; color:${above ? 'var(--positive)' : 'var(--negative)'}">
+                            ${above ? '▲ Precio sobre SMA20' : '▼ Precio bajo SMA20'}
+                        </div>
+                    </div>
+                </div>`;
+                }
+
+                // MA 50
+                if (data.ma50) {
+                    const above = precio > data.ma50;
+                    html += `
+                <div class="col">
+                    <div class="perf-card">
+                        <div class="perf-label">MA 50
+                            <i class="bi bi-info-circle info-tooltip" data-bs-toggle="tooltip" data-bs-html="true"
+                                title="<strong>Media Móvil 50 días</strong><br>Tendencia de mediano plazo.<br>Precio por encima = alcista. Por debajo = bajista."></i>
+                        </div>
+                        <div class="perf-value" style="font-size:1.5rem;">$${data.ma50}</div>
+                        <div style="font-size:0.68rem; margin-top:0.3rem; color:${above ? 'var(--positive)' : 'var(--negative)'}">
+                            ${above ? '▲ Precio sobre MA50' : '▼ Precio bajo MA50'}
+                        </div>
+                    </div>
+                </div>`;
+                }
+
+                // MA 200
+                if (data.ma200) {
+                    const above = precio > data.ma200;
+                    html += `
+                <div class="col">
+                    <div class="perf-card">
+                        <div class="perf-label">MA 200
+                            <i class="bi bi-info-circle info-tooltip" data-bs-toggle="tooltip" data-bs-html="true"
+                                title="<strong>Media Móvil 200 días</strong><br>Tendencia largo plazo.<br>Golden Cross = MA50 cruza arriba de MA200 (alcista).<br>Death Cross = lo opuesto."></i>
+                        </div>
+                        <div class="perf-value" style="font-size:1.5rem;">$${data.ma200}</div>
+                        <div style="font-size:0.68rem; margin-top:0.3rem; color:${above ? 'var(--positive)' : 'var(--negative)'}">
+                            ${above ? '▲ Precio sobre MA200' : '▼ Precio bajo MA200'}
+                        </div>
+                    </div>
+                </div>`;
+                }
+
+                // Soporte
+                if (data.support) {
+                    html += `
+                <div class="col">
+                    <div class="perf-card">
+                        <div class="perf-label">Soporte
+                            <i class="bi bi-info-circle info-tooltip" data-bs-toggle="tooltip" data-bs-html="true"
+                                title="<strong>Nivel de Soporte</strong><br>Mínimo de los últimos 3 meses. Zona donde el precio tiende a rebotar al alza."></i>
+                        </div>
+                        <div class="perf-value" style="font-size:1.2rem; color:var(--positive)">$${data.support}</div>
+                        <div style="font-size:0.68rem; margin-top:0.3rem; color:var(--text-secondary)">Mín. 3 meses</div>
+                    </div>
+                </div>`;
+                }
+
+                // Resistencia
+                if (data.resistance) {
+                    html += `
+                <div class="col">
+                    <div class="perf-card">
+                        <div class="perf-label">Resistencia
+                            <i class="bi bi-info-circle info-tooltip" data-bs-toggle="tooltip" data-bs-html="true"
+                                title="<strong>Nivel de Resistencia</strong><br>Máximo de los últimos 3 meses. Zona donde el precio tiende a frenarse o caer."></i>
+                        </div>
+                        <div class="perf-value" style="font-size:1.2rem; color:var(--negative)">$${data.resistance}</div>
+                        <div style="font-size:0.68rem; margin-top:0.3rem; color:var(--text-secondary)">Máx. 3 meses</div>
+                    </div>
+                </div>`;
+                }
+
+                container.innerHTML = html || '<div class="text-center text-secondary py-3">No hay indicadores disponibles</div>';
+
+                // Señal técnica mejorada (usa más indicadores)
+                if (signalContainer && data.rsi && data.ma50) {
+                    let bullPoints = 0;
+                    let bearPoints = 0;
+
+                    // RSI
+                    if (data.rsi < 30) bullPoints += 2;
+                    else if (data.rsi < 50) bullPoints += 1;
+                    else if (data.rsi > 70) bearPoints += 2;
+                    else if (data.rsi > 50) bearPoints += 1;
+
+                    // Precio vs MAs
+                    if (precio > data.ma50) bullPoints += 1;
+                    else bearPoints += 1;
+                    if (data.ma200 && precio > data.ma200) bullPoints += 1;
+                    else if (data.ma200) bearPoints += 1;
+                    if (data.sma20 && precio > data.sma20) bullPoints += 1;
+                    else if (data.sma20) bearPoints += 1;
+
+                    // MACD
+                    if (data.macdHistogram > 0) bullPoints += 1;
+                    else if (data.macdHistogram < 0) bearPoints += 1;
+
+                    // Bollinger
+                    if (data.bbPosition < 20) bullPoints += 1;
+                    else if (data.bbPosition > 80) bearPoints += 1;
+
+                    let signal, signalColor;
+                    const diff = bullPoints - bearPoints;
+
+                    if (diff >= 4) { signal = '🟢 Fuertemente alcista'; signalColor = 'var(--positive)'; }
+                    else if (diff >= 2) { signal = '🟢 Posible tendencia alcista'; signalColor = 'var(--positive)'; }
+                    else if (diff <= -4) { signal = '🔴 Fuertemente bajista'; signalColor = 'var(--negative)'; }
+                    else if (diff <= -2) { signal = '🔴 Posible tendencia bajista'; signalColor = 'var(--negative)'; }
+                    else { signal = '⚪ Neutral / Sin tendencia clara'; signalColor = 'var(--text-secondary)'; }
+
+                    signalContainer.innerHTML = `
+                <div style="margin-top:1rem; padding:0.8rem; border-radius:10px; background:var(--input-bg); border:1px solid var(--border); text-align:center;">
+                    <div style="font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-secondary); margin-bottom:0.3rem;">
+                        Señal Técnica (${bullPoints} alcista / ${bearPoints} bajista)
+                    </div>
+                    <div style="font-weight:700; color:${signalColor}">${signal}</div>
+                    <div style="font-size:0.68rem; color:var(--text-secondary); margin-top:0.3rem;">⚠️ No es asesoramiento financiero</div>
+                </div>`;
+                }
+
+                // Reinicializar tooltips
+                const tooltipList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                tooltipList.forEach(el => new bootstrap.Tooltip(el));
+
+            } catch (err) {
+                container.innerHTML = '<div class="text-center text-secondary py-3">Indicadores no disponibles</div>';
+            }
+        }
+
+        // Llamar al cargar
+        document.addEventListener('DOMContentLoaded', () => {
+            const ticker = '{{ data.ticker }}';
+            cargarIndicadoresTecnicos(ticker);
+            cargarCedearInfo(ticker);
+        });
+    </script>
+
+
+    <!-- Modal Auth (Login/Register) -->
+    <div class="modal fade" id="modalAuth" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width:420px;">
+            <div class="modal-content"
+                style="background:var(--card-bg); border:1px solid var(--border); color:var(--text-primary);">
+                <div class="modal-header border-0 pb-0">
+                    <div style="display:flex; gap:0; width:100%;">
+                        <button class="auth-tab active" id="authTabLogin" onclick="switchAuthTab('login')"
+                            style="flex:1; padding:0.7rem; border:none; background:transparent; color:var(--text-primary); font-weight:700; font-size:0.95rem; border-bottom:2px solid var(--accent-blue); cursor:pointer; transition:all 0.2s;">
+                            Iniciar Sesión
+                        </button>
+                        <button class="auth-tab" id="authTabRegister" onclick="switchAuthTab('register')"
+                            style="flex:1; padding:0.7rem; border:none; background:transparent; color:var(--text-secondary); font-weight:600; font-size:0.95rem; border-bottom:2px solid transparent; cursor:pointer; transition:all 0.2s;">
+                            Crear Cuenta
+                        </button>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white position-absolute"
+                        style="top:0.7rem; right:0.7rem;" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body px-4 pb-4">
+
+                    <div id="authError"
+                        style="display:none; background:rgba(255,71,87,0.1); border:1px solid rgba(255,71,87,0.2); color:var(--negative); padding:0.6rem 1rem; border-radius:10px; font-size:0.85rem; margin-bottom:1rem;">
+                    </div>
+
+                    <!-- LOGIN FORM -->
+                    <div id="authLoginForm">
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Email</label>
+                            <input type="email" id="loginEmail" class="form-control" placeholder="tu@email.com"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;"
+                                onkeydown="if(event.key==='Enter') handleLogin()">
+                        </div>
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Contraseña</label>
+                            <input type="password" id="loginPassword" class="form-control" placeholder="••••••••"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;"
+                                onkeydown="if(event.key==='Enter') handleLogin()">
+                        </div>
+                        <button id="loginBtn" onclick="handleLogin()" class="btn w-100"
+                            style="background:linear-gradient(135deg, var(--accent-blue), #2855cc); color:white; font-weight:700; border:none; border-radius:10px; padding:0.75rem;">
+                            Iniciar Sesión
+                        </button>
+                        <div class="text-center mt-3" style="font-size:0.82rem; color:var(--text-secondary);">
+                            ¿No tenés cuenta? <a href="#" onclick="switchAuthTab('register'); return false;"
+                                style="color:var(--accent-blue); text-decoration:none; font-weight:600;">Registrate</a>
+                        </div>
+                    </div>
+
+                    <!-- REGISTER FORM -->
+                    <div id="authRegisterForm" style="display:none;">
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Nombre
+                                completo <span style="opacity:0.5;">(opcional)</span></label>
+                            <input type="text" id="registerName" class="form-control" placeholder="Juan Pérez"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;">
+                        </div>
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Nombre
+                                de usuario</label>
+                            <input type="text" id="registerUsername" class="form-control" placeholder="juanperez"
+                                maxlength="30"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;">
+                        </div>
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Email</label>
+                            <input type="email" id="registerEmail" class="form-control" placeholder="tu@email.com"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;">
+                        </div>
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Contraseña</label>
+                            <input type="password" id="registerPassword" class="form-control"
+                                placeholder="Mínimo 8 caracteres, 1 mayúscula, 1 número"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;">
+                        </div>
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Repetir
+                                contraseña</label>
+                            <input type="password" id="registerPassword2" class="form-control" placeholder="••••••••"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;"
+                                onkeydown="if(event.key==='Enter') handleRegister()">
+                        </div>
+                        <button id="registerBtn" onclick="handleRegister()" class="btn w-100"
+                            style="background:linear-gradient(135deg, var(--accent-blue), #2855cc); color:white; font-weight:700; border:none; border-radius:10px; padding:0.75rem;">
+                            Crear Cuenta
+                        </button>
+                        <div class="text-center mt-3" style="font-size:0.82rem; color:var(--text-secondary);">
+                            ¿Ya tenés cuenta? <a href="#" onclick="switchAuthTab('login'); return false;"
+                                style="color:var(--accent-blue); text-decoration:none; font-weight:600;">Iniciá
+                                sesión</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- html2canvas para descargar como imagen -->
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script>
+        function compartirAnalisis() {
+            // Actualizar variación del día
+            const varEl = document.getElementById('shareVariacion');
+            const rend1d = parseFloat('{{ rend["1D"] }}');
+            if (varEl) {
+                varEl.textContent = `${rend1d >= 0 ? '+' : ''}${rend1d.toFixed(2)}%`;
+                varEl.style.color = rend1d >= 0 ? 'var(--positive)' : 'var(--negative)';
+            }
+
+            // Copiar señal técnica del DOM
+            const signalSource = document.querySelector('#technicalSignal div');
+            const shareSignal = document.getElementById('shareSignal');
+            if (signalSource && shareSignal) {
+                const signalText = signalSource.querySelector('div[style*="font-weight:700"]');
+                if (signalText) {
+                    shareSignal.innerHTML = `
+                        <div style="font-size:0.65rem; color:#787b86; text-transform:uppercase;">Señal Técnica</div>
+                        <div style="font-weight:700; font-size:0.9rem; margin-top:0.2rem;">${signalText.textContent}</div>
+                    `;
+                }
+            }
+
+            // Fecha
+            document.getElementById('shareDate').textContent = new Date().toLocaleDateString('es-AR', {
+                day: 'numeric', month: 'short', year: 'numeric'
+            });
+
+            const modal = new bootstrap.Modal(document.getElementById('modalCompartir'));
+            modal.show();
+        }
+
+        function copiarLinkAnalisis() {
+            const url = window.location.href;
+            navigator.clipboard.writeText('Analisis de {{ data.ticker }} en RosKapital - ' + url).then(() => {
+                const btn = event.target.closest('button');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check me-1"></i>¡Copiado!';
+                setTimeout(() => { btn.innerHTML = originalText; }, 2000);
+            });
+        }
+
+        async function descargarCard() {
+            const card = document.getElementById('shareCard');
+            try {
+                const canvas = await html2canvas(card, {
+                    backgroundColor: '#0f1117',
+                    scale: 2,
+                    useCORS: true
+                });
+                const link = document.createElement('a');
+                link.download = `RosKapital_{{ data.ticker }}_${new Date().toISOString().split('T')[0]}.png`;
+                link.href = canvas.toDataURL();
+                link.click();
+            } catch (e) {
+                console.error('Error generando imagen:', e);
+                alert('Error al generar la imagen');
+            }
+        }
+    </script>
+
+    <script>
+        async function cargarCedearInfo(ticker) {
+            try {
+                const res = await fetch(`/api/cedear-info/${ticker}`);
+                if (!res.ok) return;
+                const data = await res.json();
+
+                if (!data.has_cedear) return;
+
+                const precio = PRECIO_ACTUAL;
+                const precioARS = (precio / data.ratio) * data.dolar_ccl;
+
+                document.getElementById('cedearCard').style.display = 'block';
+                document.getElementById('cedearPrecioUSD').textContent = `$${precio.toFixed(2)}`;
+                document.getElementById('cedearRatio').textContent = `${data.ratio}:1`;
+                document.getElementById('cedearCCL').textContent = `$${data.dolar_ccl.toLocaleString('es-AR')}`;
+                document.getElementById('cedearPrecioARS').textContent = `$${precioARS.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ARS`;
+
+            } catch (e) {
+                console.warn('Error cargando CEDEAR info:', e);
+            }
+        }
+    </script>
+
+    <script src="/static/js/auth_client.js"></script>
+    <script src="/static/js/watchlist_sidebar.js"></script>
+    <script src="/static/js/notifications.js"></script>
+    <script src="/static/perfil.js"></script>
+    <script src="/static/js/settings.js"></script>
+
+
+
+</body>
+
+</html>

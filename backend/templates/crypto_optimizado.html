@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Wall - RosKapital</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="icon" type="image/png" href="/static/img/favicon.png" media="(prefers-color-scheme: dark)">
+    <link rel="icon" type="image/png" href="/static/img/favicon-dark.png" media="(prefers-color-scheme: light)">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        #fearGreed span {
+            font-size: 2rem;
+            line-height: 1;
+        }
+
+        .crypto-card:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .crypto-card:nth-child(2) {
+            animation-delay: 0.05s;
+        }
+
+        .crypto-card:nth-child(3) {
+            animation-delay: 0.1s;
+        }
+
+        .crypto-card:nth-child(4) {
+            animation-delay: 0.15s;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .controls-bar,
+        .stock-table,
+        .crypto-card,
+        .glass-panel,
+        .comp-card,
+        .learn-card,
+        .market-stats {
+            animation: fadeInUp 0.4s ease-out both;
+        }
+
+        /* Navbar action badges */
+        .btn-outline-success.rounded-pill {
+            border-color: rgba(0, 212, 170, 0.3);
+            color: var(--positive);
+            font-weight: 600;
+            font-size: 0.78rem;
+            transition: all 0.2s;
+        }
+
+        .btn-outline-success.rounded-pill:hover {
+            background: rgba(0, 212, 170, 0.1);
+            border-color: var(--positive);
+            color: var(--positive);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline-warning.rounded-pill {
+            border-color: rgba(255, 167, 38, 0.3);
+            color: #ffa726;
+            font-weight: 600;
+            font-size: 0.78rem;
+            transition: all 0.2s;
+        }
+
+        .btn-outline-warning.rounded-pill:hover {
+            background: rgba(255, 167, 38, 0.1);
+            border-color: #ffa726;
+            color: #ffa726;
+            transform: translateY(-1px);
+        }
+
+        /* Mobile navbar */
+        .navbar-toggler {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.4rem 0.6rem;
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: none;
+            border-color: var(--accent-blue);
+        }
+
+        /* Collapse menu en mobile */
+        @media (max-width: 991px) {
+            .navbar-collapse {
+                background: var(--card-bg);
+                border-radius: 12px;
+                margin-top: 0.5rem;
+                padding: 1rem;
+                border: 1px solid var(--border);
+            }
+        }
+
+        /* Dot pulsante para indicar datos en vivo */
+        .live-dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: var(--positive);
+            border-radius: 50%;
+            margin-right: 4px;
+            animation: livePulse 2s ease-in-out infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes livePulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                box-shadow: 0 0 0 0 rgba(0, 212, 170, 0.4);
+            }
+
+            50% {
+                opacity: 0.6;
+                box-shadow: 0 0 0 4px rgba(0, 212, 170, 0);
+            }
+        }
+
+        /* Focus ring para accesibilidad */
+        :focus-visible {
+            outline: 2px solid var(--accent-blue);
+            outline-offset: 2px;
+        }
+
+        button:focus-visible,
+        .btn:focus-visible {
+            outline: 2px solid var(--accent-blue);
+            outline-offset: 2px;
+            box-shadow: 0 0 0 4px rgba(59, 125, 255, 0.15);
+        }
+
+        /* Scrollbar custom */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        ::selection {
+            background: rgba(59, 125, 255, 0.3);
+            color: white;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        :root,
+        [data-theme="dark"] {
+            --bg-dark: #0a0b0f;
+            --bg-dark-2: #0f1117;
+            --card-bg: #161921;
+            --card-bg-hover: #1a1f2b;
+            --text-primary: #e8eaed;
+            --text-secondary: #6b7080;
+            --accent-blue: #3b7dff;
+            --accent-blue-glow: rgba(59, 125, 255, 0.15);
+            --positive: #00d4aa;
+            --negative: #ff4757;
+            --border: rgba(255, 255, 255, 0.06);
+            --border-hover: rgba(255, 255, 255, 0.12);
+            --border-color: rgba(255, 255, 255, 0.06);
+            --glow: 0 0 40px rgba(59, 125, 255, 0.08);
+            --warning: #ffa500;
+            --navbar-bg: rgba(10, 11, 15, 0.85);
+            --modal-bg: #161921;
+            --input-bg: rgba(255, 255, 255, 0.05);
+            --table-header-bg: rgba(0, 0, 0, 0.3);
+            --table-hover: rgba(255, 255, 255, 0.02);
+            --scrollbar-thumb: rgba(255, 255, 255, 0.08);
+            --shadow-color: rgba(0, 0, 0, 0.3);
+        }
+
+        /* ── TEMA CLARO ── */
+        [data-theme="light"] {
+            --bg-dark: #f5f6fa;
+            --bg-dark-2: #ecedf1;
+            --card-bg: #ffffff;
+            --card-bg-hover: #f8f9fb;
+            --text-primary: #1a1d26;
+            --text-secondary: #6b7080;
+            --accent-blue: #2563eb;
+            --accent-blue-glow: rgba(37, 99, 235, 0.12);
+            --positive: #059669;
+            --negative: #dc2626;
+            --border: rgba(0, 0, 0, 0.08);
+            --border-hover: rgba(0, 0, 0, 0.15);
+            --border-color: rgba(0, 0, 0, 0.08);
+            --glow: 0 0 40px rgba(37, 99, 235, 0.06);
+            --warning: #d97706;
+            --navbar-bg: rgba(255, 255, 255, 0.9);
+            --modal-bg: #ffffff;
+            --input-bg: rgba(0, 0, 0, 0.04);
+            --table-header-bg: rgba(0, 0, 0, 0.03);
+            --table-hover: rgba(0, 0, 0, 0.02);
+            --scrollbar-thumb: rgba(0, 0, 0, 0.12);
+            --shadow-color: rgba(0, 0, 0, 0.08);
+        }
+
+        /*footer*/
+        footer {
+            margin-top: 60px;
+            border-top: 1px solid var(--border);
+            padding: 2rem 0;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            background: var(--bg-dark);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            padding-bottom: 50px;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(10, 11, 15, 0.85);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: white !important;
+        }
+
+        .nav-link {
+            color: var(--text-secondary) !important;
+            transition: color 0.2s ease, background 0.2s ease;
+            border-radius: 8px;
+            padding: 0.5rem 0.9rem !important;
+        }
+
+        .nav-link:hover {
+            color: white !important;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .nav-link.active {
+            color: white !important;
+            background: rgba(59, 125, 255, 0.1);
+        }
+
+        /* Market Stats */
+        .market-stats {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.08em;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .stat-detail {
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Controls Bar */
+        .controls-bar {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--text-secondary);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        .filter-btn.active {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: white;
+        }
+
+        .search-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+        }
+
+        .search-box:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-blue);
+            outline: none;
+        }
+
+        /* Crypto Cards */
+        .crypto-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            height: 100%;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .crypto-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+        }
+
+        .crypto-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--border-hover);
+            box-shadow: var(--glow);
+        }
+
+        .crypto-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .crypto-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .crypto-info {
+            flex: 1;
+        }
+
+        .crypto-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.25rem;
+        }
+
+        .crypto-symbol {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .crypto-price {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 1rem 0;
+        }
+
+        .crypto-change {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .crypto-change-up {
+            background: rgba(8, 153, 129, 0.2);
+            color: var(--positive);
+        }
+
+        .crypto-change-down {
+            background: rgba(242, 54, 69, 0.2);
+            color: var(--negative);
+        }
+
+        .crypto-stats {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .crypto-stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .crypto-stat-label {
+            color: var(--text-secondary);
+        }
+
+        .crypto-stat-value {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* Action Buttons */
+        .btn-buy {
+            background: linear-gradient(135deg, var(--positive), #00d68f);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            width: 100%;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .btn-buy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(8, 153, 129, 0.3);
+        }
+
+        /* Category Badges */
+        .badge-category {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+            margin-left: 0.5rem;
+        }
+
+        /* Loading State */
+        .skeleton-card {
+            background: linear-gradient(90deg,
+                    var(--card-bg) 25%,
+                    var(--card-bg-hover) 50%,
+                    var(--card-bg) 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            height: 350px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        @keyframes loading {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .crypto-price {
+                font-size: 1.5rem;
+            }
+
+            .stat-value {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/"><img src="/static/img/favicon.png" alt="Logo" height="35"
+                    class="me-2"></i>RosKapital</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto ps-3">
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/mercado">Mercado</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/crypto">Crypto</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/explorar/AAPL">Explorar</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/heatmap">Heatmap</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/simulador">Simulador</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/comunidad">Comunidad</a></li>
+                </ul>
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn btn-outline-success rounded-pill px-3 btn-sm" onclick="abrirModalMisiones()">
+                        <i class="bi bi-trophy me-1"></i><span id="misionesCount">0</span>/11
+                    </button>
+                    <button class="btn btn-outline-warning rounded-pill px-3 btn-sm" id="btnTestInversor"
+                        onclick="abrirTestInversor()">
+                        <i class="bi bi-person-vcard me-1"></i><span id="textoBotonPerfil">Mi Perfil</span>
+                    </button>
+                    <button class="btn btn-outline-secondary rounded-pill px-3 btn-sm" data-bs-toggle="modal"
+                        data-bs-target="#modalSettings">
+                        <i class="bi bi-gear"></i>
+                    </button>
+                    <!-- Auth buttons (sin login) -->
+                    <div id="authNavButtons" style="display:flex; gap:0.5rem;">
+                        <button class="btn btn-outline-primary rounded-pill px-3 btn-sm"
+                            onclick="abrirAuthModal('login')">
+                            <i class="bi bi-person me-1"></i>Ingresar
+                        </button>
+                    </div>
+                    <!-- User info (con login) -->
+                    <div id="userNavInfo" style="display:none; align-items:center; gap:0.5rem;"></div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="container-fluid px-4">
+
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h4 class="text-white fw-bold mb-1">
+                    <i class="fab fa-bitcoin me-2 text-warning"></i>Crypto Market
+                </h4>
+                <p class="text-secondary mb-0">Top criptomonedas en tiempo real</p>
+            </div>
+        </div>
+
+        <!-- Market Stats -->
+        <div class="market-stats">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <div class="stat-label">Market Cap Total</div>
+                        <div class="stat-value" id="totalMarketCap">$0</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <div class="stat-label">Volumen 24h</div>
+                        <div class="stat-value" id="totalVolume">$0</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <div class="stat-label">BTC Dominance</div>
+                        <div class="stat-value text-warning" id="btcDominance">0%</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <div class="stat-label">Fear & Greed</div>
+                        <div class="stat-value" id="fearGreed">
+                            <span style="font-size: 1.5rem;">😐</span>
+                            <div class="stat-detail text-secondary" id="fearGreedText">Neutral</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls Bar -->
+        <div class="controls-bar">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <input type="text" id="searchInput" class="search-box w-100"
+                        placeholder="🔍 Buscar por nombre o símbolo...">
+                </div>
+
+                <div class="col-md-6">
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button class="filter-btn active" data-filter="all" onclick="filtrarPorTop('all')">
+                            Top 20
+                        </button>
+                        <button class="filter-btn" data-filter="top10" onclick="filtrarPorTop('top10')">
+                            Top 10
+                        </button>
+                        <button class="filter-btn" data-filter="defi" onclick="filtrarPorCategoria('defi')">
+                            DeFi
+                        </button>
+                        <button class="filter-btn" data-filter="layer1" onclick="filtrarPorCategoria('layer1')">
+                            Layer 1
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-secondary mt-3" style="font-size: 0.9rem;">
+                Mostrando <strong id="resultsCount">0</strong> criptomonedas
+            </div>
+        </div>
+
+        <!-- Crypto Grid -->
+        <div class="row g-4" id="cryptoGrid">
+            <!-- Loading skeletons -->
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="skeleton-card"></div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="skeleton-card"></div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="skeleton-card"></div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="skeleton-card"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal Perfil Inversor -->
+    <div class="modal fade" id="modalPerfilInversor" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content glass-effect text-white"
+                style="background: var(--card-bg); border: 1px solid var(--border);">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">Test de Identidad Financiera</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="px-3 mt-3">
+                    <div class="progress" style="height: 5px; background: rgba(255, 255, 255, 0.06);">
+                        <div class="progress-bar bg-warning" id="barraProgreso" role="progressbar" style="width: 0%;">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body p-4 text-center" id="contenidoTest"></div>
+                <div class="modal-footer border-0 justify-content-center d-none" id="footerResultados">
+                    <button type="button" class="btn btn-primary rounded-pill px-4" data-bs-dismiss="modal"
+                        onclick="location.reload()">¡Entendido, vamos!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p class="fw-bold mb-1">Desarrollado con Python & FastAPI</p>
+            <p class="text-secondary small mb-3">
+                <i class="fas fa-exclamation-triangle me-1 text-warning"></i>
+                Advertencia: La información de los tickers puede tener un retraso de 15-20 minutos.
+            </p>
+            <p class="text-secondary" style="font-size: 0.75rem; opacity: 0.7;">
+                Disclaimer: Este sitio es una herramienta educativa y de consulta. No constituye asesoramiento
+                financiero ni recomendación de inversión.
+            </p>
+        </div>
+    </footer>
+
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1050">
+        <div id="liveToast" class="toast align-items-center text-white bg-success border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body fs-6">
+                    <i class="bi bi-trophy-fill text-warning me-2"></i>
+                    <span id="textoMision">¡Misión Completada!</span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Misiones -->
+    <div class="modal fade" id="modalMisiones" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content"
+                style="background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); color: white;">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold"><i class="bi bi-trophy-fill text-warning me-2"></i>Mis Misiones</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-0">
+                    <div class="mb-3">
+                        <div class="progress"
+                            style="height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px;">
+                            <div class="progress-bar bg-warning" id="misionesProgressBar"
+                                style="width: 0%; border-radius: 4px;"></div>
+                        </div>
+                        <div class="text-secondary small mt-1" id="misionesProgressText">0 de 11 completadas</div>
+                    </div>
+                    <div id="misionesLista"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Settings -->
+    <div class="modal fade" id="modalSettings" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content"
+                style="background: var(--card-bg); border: 1px solid var(--border); color: var(--text-primary);">
+                <div class="modal-header border-0 pb-0">
+                    <h6 class="modal-title fw-bold">⚙️ Configuración</h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Tema -->
+                    <div class="d-flex justify-content-between align-items-center mb-3 pb-3"
+                        style="border-bottom: 1px solid var(--border);">
+                        <div>
+                            <div class="fw-bold" style="font-size:0.9rem;">Tema</div>
+                            <div style="font-size:0.78rem; color:var(--text-secondary);">Apariencia de la plataforma
+                            </div>
+                        </div>
+                        <div class="d-flex gap-1">
+                            <button class="btn btn-sm theme-opt" data-theme-val="dark" onclick="setTheme('dark')"
+                                style="padding:0.3rem 0.7rem; border-radius:8px; font-size:0.78rem;">🌙 Oscuro</button>
+                            <button class="btn btn-sm theme-opt" data-theme-val="light" onclick="setTheme('light')"
+                                style="padding:0.3rem 0.7rem; border-radius:8px; font-size:0.78rem;">☀️ Claro</button>
+                        </div>
+                    </div>
+
+                    <!-- Modo Experto -->
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="fw-bold" style="font-size:0.9rem;">Modo Experto</div>
+                            <div style="font-size:0.78rem; color:var(--text-secondary);">Indicadores técnicos y métricas
+                                avanzadas</div>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="expertModeToggle"
+                                onchange="toggleExpertMode(this.checked)"
+                                style="cursor:pointer; width:2.5rem; height:1.25rem;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // ========================================
+        // VARIABLES GLOBALES
+        // ========================================
+        let cryptoData = [];
+        let filteredCryptos = [];
+
+        // Emojis para cada crypto
+        const cryptoIcons = {
+            'BTC': '₿',
+            'ETH': 'Ξ',
+            'USDT': '₮',
+            'BNB': '🔶',
+            'SOL': '◎',
+            'XRP': '✕',
+            'USDC': '💵',
+            'ADA': '₳',
+            'DOGE': '🐕',
+            'TRX': 'Ť',
+            'AVAX': '🔺',
+            'DOT': '⬤',
+            'MATIC': '⬡',
+            'LINK': '⬢',
+            'UNI': '🦄',
+            'ATOM': '⚛️',
+            'LTC': 'Ł',
+            'ETC': 'ξ',
+            'XLM': '*',
+            'ALGO': 'Ⱥ'
+        };
+
+        // ========================================
+        // INICIALIZACIÓN
+        // ========================================
+        document.addEventListener('DOMContentLoaded', function () {
+            cargarCryptos();
+
+            // Search en tiempo real
+            document.getElementById('searchInput').addEventListener('input', aplicarFiltros);
+        });
+
+        // ========================================
+        // CARGAR DATOS
+        // ========================================
+        async function cargarCryptos() {
+            try {
+                const res = await fetch('/api/cryptos');
+                const data = await res.json();
+
+                console.log('📊 Datos recibidos:', data);
+                console.log('📊 Cryptos count:', data.cryptos ? data.cryptos.length : 0);
+
+                cryptoData = data.cryptos || [];
+                filteredCryptos = [...cryptoData];
+
+                console.log('📊 cryptoData length:', cryptoData.length);
+                console.log('📊 filteredCryptos length:', filteredCryptos.length);
+
+                // Actualizar stats globales (con verificación de existencia)
+                if (data.stats) {
+                    const totalMarketCapEl = document.getElementById('totalMarketCap');
+                    if (totalMarketCapEl) {
+                        totalMarketCapEl.innerText = formatearNumero(data.stats.totalMarketCap);
+                    }
+
+                    const totalVolumeEl = document.getElementById('totalVolume');
+                    if (totalVolumeEl) {
+                        totalVolumeEl.innerText = formatearNumero(data.stats.totalVolume);
+                    }
+
+                    const btcDominanceEl = document.getElementById('btcDominance');
+                    if (btcDominanceEl) {
+                        btcDominanceEl.innerText = data.stats.btcDominance + '%';
+                    }
+
+                    // Fear & Greed
+                    const fg = data.stats.fearGreed || 50;
+                    let emoji = '😐';
+                    let texto = 'Neutral';
+                    if (fg < 25) { emoji = '😱'; texto = 'Extreme Fear'; }
+                    else if (fg < 45) { emoji = '😰'; texto = 'Fear'; }
+                    else if (fg < 55) { emoji = '😐'; texto = 'Neutral'; }
+                    else if (fg < 75) { emoji = '🤑'; texto = 'Greed'; }
+                    else { emoji = '🚀'; texto = 'Extreme Greed'; }
+
+                    const fearGreedEl = document.getElementById('fearGreed');
+                    if (fearGreedEl) {
+                        fearGreedEl.innerHTML = `<span style="font-size: 1.5rem;">${emoji}</span>`;
+                    }
+
+                    const fearGreedTextEl = document.getElementById('fearGreedText');
+                    if (fearGreedTextEl) {
+                        fearGreedTextEl.innerText = texto;
+                    }
+                }
+
+                renderGrid();
+
+            } catch (err) {
+                console.error('❌ Error cargando cryptos:', err);
+
+                const grid = document.getElementById('cryptoGrid');
+                if (grid) {
+                    grid.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
+                    <p class="text-secondary">Error al cargar datos de criptomonedas</p>
+                    <p class="text-secondary small">${err.message}</p>
+                </div>
+            `;
+                }
+            }
+        }
+
+        // ========================================
+        // FILTROS
+        // ========================================
+        function filtrarPorTop(top) {
+            document.querySelectorAll('[data-filter]').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[data-filter="${top}"]`).classList.add('active');
+
+            if (top === 'top10') {
+                filteredCryptos = cryptoData.slice(0, 10);
+            } else {
+                filteredCryptos = [...cryptoData];
+            }
+
+            aplicarFiltros();
+        }
+
+        function filtrarPorCategoria(categoria) {
+            // Aquí puedes agregar lógica de categorías si tu API las provee
+            aplicarFiltros();
+        }
+
+        function aplicarFiltros() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+            if (searchTerm) {
+                filteredCryptos = cryptoData.filter(crypto =>
+                    crypto.nombre.toLowerCase().includes(searchTerm) ||
+                    crypto.simbolo.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            renderGrid();
+        }
+
+        // ========================================
+        // RENDERIZADO
+        // ========================================
+        function renderGrid() {
+            const grid = document.getElementById('cryptoGrid');
+            document.getElementById('resultsCount').innerText = filteredCryptos.length;
+
+            if (filteredCryptos.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-12 text-center py-5">
+                        <i class="fas fa-search fa-3x text-secondary mb-3"></i>
+                        <p class="text-secondary">No se encontraron resultados</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const html = filteredCryptos.map(crypto => {
+                const isPositive = crypto.cambio24h >= 0;
+                const changeClass = isPositive ? 'crypto-change-up' : 'crypto-change-down';
+                const icon = cryptoIcons[crypto.simbolo] || '🪙';
+
+                return `
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <div class="crypto-card" onclick="window.location.href='/explorar/${crypto.ticker}'">
+                            <div class="crypto-header">
+                                <div class="crypto-icon">${icon}</div>
+                                <div class="crypto-info">
+                                    <div class="crypto-name">${crypto.nombre}</div>
+                                    <div class="crypto-symbol">${crypto.simbolo}</div>
+                                </div>
+                            </div>
+
+                            <div class="crypto-price ${isPositive ? 'text-up' : 'text-down'}">
+                                $${crypto.precio.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                            </div>
+
+                            <div class="crypto-change ${changeClass}">
+                                ${isPositive ? '▲' : '▼'} ${Math.abs(crypto.cambio24h).toFixed(2)}%
+                            </div>
+
+                            <div class="crypto-stats">
+                                <div class="crypto-stat-row">
+                                    <span class="crypto-stat-label">Market Cap</span>
+                                    <span class="crypto-stat-value">${formatearNumero(crypto.marketCap)}</span>
+                                </div>
+                                <div class="crypto-stat-row">
+                                    <span class="crypto-stat-label">Volumen 24h</span>
+                                    <span class="crypto-stat-value">${formatearNumero(crypto.volumen24h)}</span>
+                                </div>
+                                ${crypto.dominance ? `
+                                <div class="crypto-stat-row">
+                                    <span class="crypto-stat-label">Dominance</span>
+                                    <span class="crypto-stat-value">${crypto.dominance}%</span>
+                                </div>
+                                ` : ''}
+                            </div>
+
+                            <button class="btn-buy" onclick="event.stopPropagation(); comprarRapido('${crypto.ticker}', ${crypto.precio})">
+                                <i class="fas fa-shopping-cart me-2"></i>Comprar
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            grid.innerHTML = html;
+        }
+
+        // ========================================
+        // UTILIDADES
+        // ========================================
+        function formatearNumero(num) {
+            if (num >= 1e12) return '$' + (num / 1e12).toFixed(2) + 'T';
+            if (num >= 1e9) return '$' + (num / 1e9).toFixed(2) + 'B';
+            if (num >= 1e6) return '$' + (num / 1e6).toFixed(2) + 'M';
+            if (num >= 1e3) return '$' + (num / 1e3).toFixed(2) + 'K';
+            return '$' + num.toFixed(2);
+        }
+
+        function comprarRapido(ticker, precio) {
+            sessionStorage.setItem('quick_buy', JSON.stringify({
+                ticker: ticker,
+                precio: precio
+            }));
+            window.location.href = '/simulador';
+        }
+    </script>
+
+    <button id="wlToggleBtn" onclick="wlToggle()" title="Mis Activos Seguidos">
+        <i class="fas fa-star"></i>
+        <span id="wlBtnBadge" style="display:none"></span>
+    </button>
+
+    <!-- 2. Overlay oscuro -->
+    <div id="wlOverlay" onclick="wlClose()"></div>
+
+    <!-- 3. Panel lateral -->
+    <div id="wlSidebar">
+        <div id="wlHeader">
+            <div style="display:flex;align-items:center;gap:0.6rem">
+                <i class="fas fa-star" style="color:#ffa726"></i>
+                <span style="font-weight:600;color:#e0e3eb">Mis Activos</span>
+                <span id="wlBadge"></span>
+            </div>
+            <button onclick="wlClose()" id="wlCloseBtn"><i class="fas fa-times"></i></button>
+        </div>
+        <div id="wlList"></div>
+        <div id="wlAddRow">
+            <input id="wlInput" placeholder="Ej: AAPL, MELI" maxlength="10" onkeydown="if(event.key==='Enter') wlAdd()"
+                autocomplete="off" />
+            <button onclick="wlAdd()"><i class="fas fa-plus"></i> Agregar</button>
+        </div>
+        <div id="wlMsg"></div>
+    </div>
+
+
+    <!-- Modal Auth (Login/Register) -->
+    <div class="modal fade" id="modalAuth" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width:420px;">
+            <div class="modal-content"
+                style="background:var(--card-bg); border:1px solid var(--border); color:var(--text-primary);">
+                <div class="modal-header border-0 pb-0">
+                    <div style="display:flex; gap:0; width:100%;">
+                        <button class="auth-tab active" id="authTabLogin" onclick="switchAuthTab('login')"
+                            style="flex:1; padding:0.7rem; border:none; background:transparent; color:var(--text-primary); font-weight:700; font-size:0.95rem; border-bottom:2px solid var(--accent-blue); cursor:pointer; transition:all 0.2s;">
+                            Iniciar Sesión
+                        </button>
+                        <button class="auth-tab" id="authTabRegister" onclick="switchAuthTab('register')"
+                            style="flex:1; padding:0.7rem; border:none; background:transparent; color:var(--text-secondary); font-weight:600; font-size:0.95rem; border-bottom:2px solid transparent; cursor:pointer; transition:all 0.2s;">
+                            Crear Cuenta
+                        </button>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white position-absolute"
+                        style="top:0.7rem; right:0.7rem;" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body px-4 pb-4">
+
+                    <div id="authError"
+                        style="display:none; background:rgba(255,71,87,0.1); border:1px solid rgba(255,71,87,0.2); color:var(--negative); padding:0.6rem 1rem; border-radius:10px; font-size:0.85rem; margin-bottom:1rem;">
+                    </div>
+
+                    <!-- LOGIN FORM -->
+                    <div id="authLoginForm">
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Email</label>
+                            <input type="email" id="loginEmail" class="form-control" placeholder="tu@email.com"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;"
+                                onkeydown="if(event.key==='Enter') handleLogin()">
+                        </div>
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Contraseña</label>
+                            <input type="password" id="loginPassword" class="form-control" placeholder="••••••••"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;"
+                                onkeydown="if(event.key==='Enter') handleLogin()">
+                        </div>
+                        <button id="loginBtn" onclick="handleLogin()" class="btn w-100"
+                            style="background:linear-gradient(135deg, var(--accent-blue), #2855cc); color:white; font-weight:700; border:none; border-radius:10px; padding:0.75rem;">
+                            Iniciar Sesión
+                        </button>
+                        <div class="text-center mt-3" style="font-size:0.82rem; color:var(--text-secondary);">
+                            ¿No tenés cuenta? <a href="#" onclick="switchAuthTab('register'); return false;"
+                                style="color:var(--accent-blue); text-decoration:none; font-weight:600;">Registrate</a>
+                        </div>
+                    </div>
+
+                    <!-- REGISTER FORM -->
+                    <div id="authRegisterForm" style="display:none;">
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Nombre
+                                completo <span style="opacity:0.5;">(opcional)</span></label>
+                            <input type="text" id="registerName" class="form-control" placeholder="Juan Pérez"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;">
+                        </div>
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Nombre
+                                de usuario</label>
+                            <input type="text" id="registerUsername" class="form-control" placeholder="juanperez"
+                                maxlength="30"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;">
+                        </div>
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Email</label>
+                            <input type="email" id="registerEmail" class="form-control" placeholder="tu@email.com"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;">
+                        </div>
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Contraseña</label>
+                            <input type="password" id="registerPassword" class="form-control"
+                                placeholder="Mínimo 8 caracteres, 1 mayúscula, 1 número"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;">
+                        </div>
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Repetir
+                                contraseña</label>
+                            <input type="password" id="registerPassword2" class="form-control" placeholder="••••••••"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;"
+                                onkeydown="if(event.key==='Enter') handleRegister()">
+                        </div>
+                        <button id="registerBtn" onclick="handleRegister()" class="btn w-100"
+                            style="background:linear-gradient(135deg, var(--accent-blue), #2855cc); color:white; font-weight:700; border:none; border-radius:10px; padding:0.75rem;">
+                            Crear Cuenta
+                        </button>
+                        <div class="text-center mt-3" style="font-size:0.82rem; color:var(--text-secondary);">
+                            ¿Ya tenés cuenta? <a href="#" onclick="switchAuthTab('login'); return false;"
+                                style="color:var(--accent-blue); text-decoration:none; font-weight:600;">Iniciá
+                                sesión</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/auth_client.js"></script>
+    <script src="/static/js/watchlist_sidebar.js"></script>
+    <script src="/static/js/notifications.js"></script>
+    <script src="/static/perfil.js"></script>
+    <script src="/static/js/settings.js"></script>
+
+</body>
+
+</html>

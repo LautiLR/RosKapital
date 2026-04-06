@@ -1,0 +1,1995 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comunidad - RosKapital</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="icon" type="image/png" href="/static/img/favicon.png" media="(prefers-color-scheme: dark)">
+    <link rel="icon" type="image/png" href="/static/img/favicon-dark.png" media="(prefers-color-scheme: light)">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+
+    <style>
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .controls-bar,
+        .stock-table,
+        .crypto-card,
+        .glass-panel,
+        .comp-card,
+        .learn-card,
+        .market-stats {
+            animation: fadeInUp 0.4s ease-out both;
+        }
+
+        /* Navbar action badges */
+        .btn-outline-success.rounded-pill {
+            border-color: rgba(0, 212, 170, 0.3);
+            color: var(--positive);
+            font-weight: 600;
+            font-size: 0.78rem;
+            transition: all 0.2s;
+        }
+
+        .btn-outline-success.rounded-pill:hover {
+            background: rgba(0, 212, 170, 0.1);
+            border-color: var(--positive);
+            color: var(--positive);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline-warning.rounded-pill {
+            border-color: rgba(255, 167, 38, 0.3);
+            color: #ffa726;
+            font-weight: 600;
+            font-size: 0.78rem;
+            transition: all 0.2s;
+        }
+
+        .btn-outline-warning.rounded-pill:hover {
+            background: rgba(255, 167, 38, 0.1);
+            border-color: #ffa726;
+            color: #ffa726;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 768px) {
+            .learn-card {
+                padding: 1.2rem;
+                margin-bottom: 1rem;
+            }
+
+            .section-divider {
+                font-size: 1.1rem;
+                margin: 2rem 0 1rem 0;
+            }
+
+            .page-header h1 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Mobile navbar */
+        .navbar-toggler {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.4rem 0.6rem;
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: none;
+            border-color: var(--accent-blue);
+        }
+
+        /* Collapse menu en mobile */
+        @media (max-width: 991px) {
+            .navbar-collapse {
+                background: var(--card-bg);
+                border-radius: 12px;
+                margin-top: 0.5rem;
+                padding: 1rem;
+                border: 1px solid var(--border);
+            }
+        }
+
+        .loading-spinner {
+            width: 2rem;
+            height: 2rem;
+            border: 3px solid rgba(59, 125, 255, 0.15);
+            border-top: 3px solid var(--accent-blue);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Focus ring para accesibilidad */
+        :focus-visible {
+            outline: 2px solid var(--accent-blue);
+            outline-offset: 2px;
+        }
+
+        button:focus-visible,
+        .btn:focus-visible {
+            outline: 2px solid var(--accent-blue);
+            outline-offset: 2px;
+            box-shadow: 0 0 0 4px rgba(59, 125, 255, 0.15);
+        }
+
+        /* Scrollbar custom */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        ::selection {
+            background: rgba(59, 125, 255, 0.3);
+            color: white;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        footer {
+            margin-top: 60px;
+            border-top: 1px solid var(--border);
+            padding: 2rem 0;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            background: var(--bg-dark);
+        }
+
+        .modal select option {
+            background: #161921;
+            color: white;
+        }
+
+        :root,
+        [data-theme="dark"] {
+            --bg-dark: #0a0b0f;
+            --bg-dark-2: #0f1117;
+            --card-bg: #161921;
+            --card-bg-hover: #1a1f2b;
+            --text-primary: #e8eaed;
+            --text-secondary: #6b7080;
+            --accent-blue: #3b7dff;
+            --accent-blue-glow: rgba(59, 125, 255, 0.15);
+            --positive: #00d4aa;
+            --negative: #ff4757;
+            --border: rgba(255, 255, 255, 0.06);
+            --border-hover: rgba(255, 255, 255, 0.12);
+            --border-color: rgba(255, 255, 255, 0.06);
+            --glow: 0 0 40px rgba(59, 125, 255, 0.08);
+            --warning: #ffa500;
+            --navbar-bg: rgba(10, 11, 15, 0.85);
+            --modal-bg: #161921;
+            --input-bg: rgba(255, 255, 255, 0.05);
+            --table-header-bg: rgba(0, 0, 0, 0.3);
+            --table-hover: rgba(255, 255, 255, 0.02);
+            --scrollbar-thumb: rgba(255, 255, 255, 0.08);
+            --shadow-color: rgba(0, 0, 0, 0.3);
+        }
+
+        /* ── TEMA CLARO ── */
+        [data-theme="light"] {
+            --bg-dark: #f5f6fa;
+            --bg-dark-2: #ecedf1;
+            --card-bg: #ffffff;
+            --card-bg-hover: #f8f9fb;
+            --text-primary: #1a1d26;
+            --text-secondary: #6b7080;
+            --accent-blue: #2563eb;
+            --accent-blue-glow: rgba(37, 99, 235, 0.12);
+            --positive: #059669;
+            --negative: #dc2626;
+            --border: rgba(0, 0, 0, 0.08);
+            --border-hover: rgba(0, 0, 0, 0.15);
+            --border-color: rgba(0, 0, 0, 0.08);
+            --glow: 0 0 40px rgba(37, 99, 235, 0.06);
+            --warning: #d97706;
+            --navbar-bg: rgba(255, 255, 255, 0.9);
+            --modal-bg: #ffffff;
+            --input-bg: rgba(0, 0, 0, 0.04);
+            --table-header-bg: rgba(0, 0, 0, 0.03);
+            --table-hover: rgba(0, 0, 0, 0.02);
+            --scrollbar-thumb: rgba(0, 0, 0, 0.12);
+            --shadow-color: rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            padding-bottom: 60px;
+        }
+
+        .navbar {
+            background: rgba(10, 11, 15, 0.85);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: white !important;
+        }
+
+        .nav-link {
+            color: var(--text-secondary) !important;
+            transition: color 0.2s ease, background 0.2s ease;
+            border-radius: 8px;
+            padding: 0.5rem 0.9rem !important;
+        }
+
+        .nav-link:hover {
+            color: white !important;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .nav-link.active {
+            color: white !important;
+            background: rgba(59, 125, 255, 0.1);
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        /* Page Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-weight: 800;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        /* Tabs */
+        .community-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .tab-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 0.7rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--accent-blue);
+            color: white;
+        }
+
+        .tab-btn.active {
+            background: rgba(59, 125, 255, 0.15);
+            border-color: var(--accent-blue);
+            color: white;
+        }
+
+        /* Cards educativas */
+        .learn-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .learn-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+        }
+
+        .learn-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--glow);
+        }
+
+        .learn-card h3 {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .learn-card h3 .card-icon {
+            font-size: 1.5rem;
+        }
+
+        .learn-card p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 0.75rem;
+            font-size: 0.92rem;
+        }
+
+        .learn-card strong {
+            color: white;
+        }
+
+        /* Level badges */
+        .level-badge {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 2px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        .level-principiante {
+            background: rgba(8, 153, 129, 0.15);
+            color: var(--positive);
+            border: 1px solid rgba(8, 153, 129, 0.3);
+        }
+
+        .level-intermedio {
+            background: rgba(255, 167, 38, 0.15);
+            color: #ffa726;
+            border: 1px solid rgba(255, 167, 38, 0.3);
+        }
+
+        .level-avanzado {
+            background: rgba(242, 54, 69, 0.15);
+            color: var(--negative);
+            border: 1px solid rgba(242, 54, 69, 0.3);
+        }
+
+        /* Key concept highlight */
+        .key-concept {
+            background: rgba(59, 125, 255, 0.1);
+            border-left: 3px solid var(--accent-blue);
+            padding: 0.75rem 1rem;
+            border-radius: 0 12px 12px 0;
+            margin: 1rem 0;
+            font-size: 0.88rem;
+            color: var(--text-primary);
+        }
+
+        /* Section dividers */
+        .section-divider {
+            border-left: 4px solid var(--accent-blue);
+            padding-left: 15px;
+            margin: 2.5rem 0 1.5rem 0;
+            font-weight: 800;
+            font-size: 1.3rem;
+        }
+
+        /* Blog section */
+        .blog-placeholder {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .blog-placeholder-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Blog post preview cards */
+        .blog-post-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .blog-post-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+        }
+
+        .blog-post-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--glow);
+        }
+
+        .blog-author {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .blog-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(59, 125, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-blue);
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        .blog-author-name {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: white;
+        }
+
+        .blog-author-date {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .blog-post-title {
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .blog-post-excerpt {
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            line-height: 1.5;
+        }
+
+        .blog-post-footer {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .blog-post-footer span {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .blog-tag {
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        /* Accordion educativo */
+        .accordion-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+        }
+
+        .accordion-button {
+            background: var(--card-bg);
+            color: white;
+            box-shadow: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .accordion-button::after {
+            filter: invert(1);
+        }
+
+        .accordion-button:not(.collapsed) {
+            background: rgba(59, 125, 255, 0.1);
+            color: white;
+        }
+
+        .accordion-body {
+            color: var(--text-secondary);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            line-height: 1.7;
+            font-size: 0.92rem;
+        }
+
+        footer {
+            margin-top: 60px;
+            border-top: 1px solid var(--border);
+            padding: 30px 0;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #555;
+            background: #0a0b0e;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 0 0.5rem;
+            }
+
+            .community-tabs {
+                flex-direction: column;
+            }
+
+            .tab-btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .learn-card {
+                padding: 1.2rem;
+            }
+
+            .section-divider {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Portfolio público cards */
+        .public-portfolio-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            transition: all 0.2s;
+        }
+
+        .public-portfolio-card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .portfolio-ticker-tag {
+            display: inline-block;
+            background: rgba(59, 125, 255, 0.1);
+            color: #3b7dff;
+            border: 1px solid rgba(59, 125, 255, 0.2);
+            border-radius: 6px;
+            padding: 2px 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin: 2px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .portfolio-ticker-tag:hover {
+            background: rgba(59, 125, 255, 0.2);
+        }
+
+        .portfolio-empty {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/"><img src="/static/img/favicon.png" alt="Logo" height="35"
+                    class="me-2">RosKapital</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto ps-3">
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/mercado">Mercado</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/crypto">Crypto</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/explorar/AAPL">Explorar</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/heatmap">Heatmap</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/simulador">Simulador</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/comunidad">Comunidad</a></li>
+                </ul>
+                <div class="d-flex align-items-center gap-2">
+                    <!-- Auth buttons (sin login) -->
+                    <div id="authNavButtons" style="display:flex; gap:0.5rem;">
+                        <button class="btn btn-outline-primary rounded-pill px-3 btn-sm"
+                            onclick="abrirAuthModal('login')">
+                            <i class="bi bi-person me-1"></i>Ingresar
+                        </button>
+                    </div>
+                    <!-- User info (con login) -->
+                    <div id="userNavInfo" style="display:none; align-items:center; gap:0.5rem;"></div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-container">
+
+        <!-- Header -->
+        <div class="page-header">
+            <h1><i class="bi bi-people-fill me-2"></i>Comunidad RosKapital</h1>
+            <p>Aprendé sobre mercados financieros y compartí tus análisis con la comunidad.</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="community-tabs">
+            <button class="tab-btn active" onclick="switchTab('aprender')">
+                <i class="fas fa-graduation-cap me-2"></i>Aprender
+            </button>
+            <button class="tab-btn" onclick="switchTab('blog')">
+                <i class="fas fa-comments me-2"></i>Blog & Análisis
+            </button>
+            <button class="tab-btn" onclick="switchTab('portfolios')">
+                <i class="fas fa-briefcase me-2"></i>Portfolios
+            </button>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- TAB: APRENDER -->
+        <!-- ============================================ -->
+        <div id="tab-aprender">
+
+            <!-- SECCIÓN 1: ¿Qué es el mercado de capitales? -->
+            <h4 class="section-divider">¿Qué es el mercado de capitales?</h4>
+
+            <div class="learn-card">
+                <h3>
+                    <span class="card-icon">🏛️</span>
+                    ¿Cómo funciona la bolsa de valores?
+                    <span class="level-badge level-principiante">Principiante</span>
+                </h3>
+                <p>
+                    La bolsa de valores es un mercado organizado donde se compran y venden <strong>acciones, bonos y
+                        otros instrumentos financieros</strong>.
+                    Funciona como un punto de encuentro entre empresas que necesitan financiamiento y personas que
+                    quieren invertir su dinero.
+                </p>
+                <p>
+                    Cuando una empresa quiere crecer, puede ofrecer parte de su propiedad al público a través de
+                    acciones.
+                    Si comprás una acción de Mercado Libre (MELI), sos dueño de una pequeña fracción de esa empresa.
+                    Si a la empresa le va bien, el precio de tu acción sube y tu inversión vale más.
+                </p>
+                <div class="key-concept">
+                    <strong>Concepto clave:</strong> La bolsa no fija los precios — los precios surgen de la oferta y la
+                    demanda.
+                    Si muchos quieren comprar una acción, el precio sube. Si muchos quieren vender, baja.
+                </div>
+            </div>
+
+            <div class="learn-card">
+                <h3>
+                    <span class="card-icon">🇦🇷</span>
+                    El mercado argentino: BYMA y el Merval
+                    <span class="level-badge level-principiante">Principiante</span>
+                </h3>
+                <p>
+                    En Argentina, las acciones se negocian a través de <strong>BYMA</strong> (Bolsas y Mercados
+                    Argentinos).
+                    El índice más conocido es el <strong>Merval</strong>, que agrupa a las empresas más negociadas del
+                    país:
+                    bancos como Galicia (GGAL) y Macro (BMA), energéticas como Pampa Energía (PAMP) y YPF, industriales
+                    como Ternium (TXAR) y Aluar (ALUA).
+                </p>
+                <p>
+                    Cuando escuchás "el Merval subió 3% hoy", significa que el promedio ponderado de estas acciones
+                    argentinas aumentó ese porcentaje durante la jornada.
+                </p>
+                <div class="key-concept">
+                    <strong>Dato:</strong> El horario de operación de BYMA es de lunes a viernes de 11:00 a 17:00 (hora
+                    argentina).
+                    Wall Street opera de 10:30 a 17:00 hora argentina.
+                </div>
+            </div>
+
+            <!-- SECCIÓN 2: Instrumentos de inversión -->
+            <h4 class="section-divider">Instrumentos de inversión</h4>
+
+            <div class="learn-card">
+                <h3>
+                    <span class="card-icon">📄</span>
+                    Acciones: ser dueño de una empresa
+                    <span class="level-badge level-principiante">Principiante</span>
+                </h3>
+                <p>
+                    Una acción representa una <strong>fracción de propiedad</strong> de una empresa. Al comprar acciones
+                    de Apple (AAPL),
+                    te convertís en accionista y participás de las ganancias (o pérdidas) de la empresa.
+                </p>
+                <p>
+                    Las acciones pueden generar ganancias de dos formas: por la <strong>suba del precio</strong>
+                    (comprás a $100, vendés a $150)
+                    o por <strong>dividendos</strong> (la empresa reparte parte de sus ganancias en efectivo a sus
+                    accionistas).
+                </p>
+            </div>
+
+            <div class="learn-card">
+                <h3>
+                    <span class="card-icon">🔄</span>
+                    CEDEARs: invertir en el mundo desde Argentina
+                    <span class="level-badge level-principiante">Principiante</span>
+                </h3>
+                <p>
+                    Los CEDEARs (Certificados de Depósito Argentinos) son certificados que representan acciones de
+                    empresas extranjeras
+                    pero <strong>se compran y venden en pesos argentinos</strong> dentro de BYMA.
+                    Es la forma más accesible de invertir en Apple, Google, Amazon o Tesla sin necesidad de abrir una
+                    cuenta en el exterior.
+                </p>
+                <p>
+                    Cada CEDEAR equivale a una fracción de la acción original. Por ejemplo, se necesitan <strong>20
+                        CEDEARs de Apple para equivaler a 1 acción real</strong> (ratio 1:20).
+                    El precio en pesos se calcula: <strong>precio en USD ÷ ratio × dólar CCL</strong>.
+                </p>
+                <div class="key-concept">
+                    <strong>Ventaja:</strong> Al comprar CEDEARs, tu inversión queda atada al dólar.
+                    Si el peso se devalúa, el precio en pesos de tus CEDEARs sube proporcionalmente, protegiendo tu
+                    capital.
+                </div>
+            </div>
+
+            <div class="learn-card">
+                <h3>
+                    <span class="card-icon">🪙</span>
+                    Bonos: prestarle plata al gobierno o a empresas
+                    <span class="level-badge level-intermedio">Intermedio</span>
+                </h3>
+                <p>
+                    Un bono es un <strong>instrumento de deuda</strong>. Cuando comprás un bono, le estás prestando
+                    dinero al emisor
+                    (puede ser el gobierno o una empresa) a cambio de que te devuelva el capital más intereses en un
+                    plazo determinado.
+                </p>
+                <p>
+                    Los bonos suelen ser menos riesgosos que las acciones pero también ofrecen menor rendimiento.
+                    En Argentina, los bonos soberanos (emitidos por el Estado) son muy populares, como los
+                    <strong>Bonares</strong> (ley local)
+                    y los <strong>Globales</strong> (ley extranjera).
+                </p>
+            </div>
+
+            <div class="learn-card">
+                <h3>
+                    <span class="card-icon">📦</span>
+                    ETFs: diversificación en un solo instrumento
+                    <span class="level-badge level-intermedio">Intermedio</span>
+                </h3>
+                <p>
+                    Un ETF (Exchange-Traded Fund) es un fondo que agrupa múltiples activos y se negocia como una acción.
+                    Por ejemplo, el <strong>SPY</strong> replica al índice S&P 500: al comprar 1 unidad de SPY,
+                    estás invirtiendo en las 500 empresas más grandes de EE.UU. de una sola vez.
+                </p>
+                <p>
+                    Los ETFs son ideales para <strong>diversificar sin comprar cada acción individualmente</strong>.
+                    Existen ETFs de tecnología (QQQ), de mercados emergentes (EEM), de oro (GLD), de bonos (TLT) y
+                    muchos más.
+                </p>
+                <div class="key-concept">
+                    <strong>Tip:</strong> Muchos inversores profesionales recomiendan a principiantes empezar con ETFs
+                    antes que con acciones individuales,
+                    porque ofrecen diversificación automática y menor riesgo.
+                </div>
+            </div>
+
+            <!-- SECCIÓN 3: El dólar y la economía argentina -->
+            <h4 class="section-divider">El dólar y la economía argentina</h4>
+
+            <div class="learn-card">
+                <h3>
+                    <span class="card-icon">💵</span>
+                    Tipos de dólar: oficial, MEP, CCL y blue
+                    <span class="level-badge level-principiante">Principiante</span>
+                </h3>
+                <p>
+                    En Argentina existen múltiples cotizaciones del dólar, cada una con un mecanismo distinto:
+                </p>
+                <p>
+                    <strong>Dólar oficial:</strong> el tipo de cambio regulado por el Banco Central. Se usa para
+                    comercio exterior y operaciones formales.
+                    Tiene restricciones para su compra (cepo cambiario).
+                </p>
+                <p>
+                    <strong>Dólar MEP (Bolsa):</strong> se obtiene comprando un bono en pesos en Argentina y vendiéndolo
+                    en dólares.
+                    Es legal, se opera desde cualquier broker y no tiene restricciones de monto.
+                </p>
+                <p>
+                    <strong>Dólar CCL (Contado con Liquidación):</strong> similar al MEP, pero el bono se vende en el
+                    exterior.
+                    Es el tipo de cambio más relevante para los CEDEARs y refleja el valor real del dólar en el mercado
+                    financiero.
+                </p>
+                <p>
+                    <strong>Dólar blue:</strong> la cotización informal, que surge del mercado paralelo. No es legal
+                    pero sirve como referencia.
+                </p>
+                <div class="key-concept">
+                    <strong>¿Cuál importa para invertir?</strong> El dólar CCL es el más relevante porque es el que
+                    determina el precio de los CEDEARs
+                    y refleja las expectativas del mercado financiero.
+                </div>
+            </div>
+
+            <div class="learn-card">
+                <h3>
+                    <span class="card-icon">📊</span>
+                    Inflación y tasa de interés: cómo afectan tus inversiones
+                    <span class="level-badge level-intermedio">Intermedio</span>
+                </h3>
+                <p>
+                    La <strong>inflación</strong> es el aumento generalizado de precios. Si la inflación es del 3%
+                    mensual
+                    y tu inversión rinde 2% mensual, en términos reales estás perdiendo poder adquisitivo.
+                </p>
+                <p>
+                    La <strong>tasa de interés</strong> que fija el Banco Central influye en todo el sistema financiero.
+                    Cuando la tasa sube, los plazos fijos pagan más pero los créditos se encarecen y las acciones
+                    tienden a bajar
+                    (porque el dinero "seguro" en un plazo fijo se vuelve más atractivo).
+                </p>
+                <div class="key-concept">
+                    <strong>Regla de oro:</strong> Siempre medí tus rendimientos en términos reales (descontando
+                    inflación).
+                    Un plazo fijo que paga 30% TNA suena bien, pero si la inflación es 25%, tu ganancia real es apenas
+                    ~5%.
+                </div>
+            </div>
+
+            <!-- SECCIÓN 4: Conceptos para operar -->
+            <h4 class="section-divider">Conceptos clave para operar</h4>
+
+            <div class="learn-card">
+                <h3>
+                    <span class="card-icon">⚖️</span>
+                    Riesgo y diversificación
+                    <span class="level-badge level-principiante">Principiante</span>
+                </h3>
+                <p>
+                    "No pongas todos los huevos en la misma canasta." La <strong>diversificación</strong> es repartir tu
+                    inversión
+                    entre distintos activos, sectores y países para que si uno cae, los otros compensen.
+                </p>
+                <p>
+                    Una cartera diversificada podría incluir: acciones tech (AAPL, GOOGL), energía (YPF),
+                    bonos argentinos, un ETF del S&P 500 y algo de crypto. Si el sector tech baja,
+                    la energía o los bonos podrían mantener estable tu portfolio.
+                </p>
+            </div>
+
+            <div class="learn-card">
+                <h3>
+                    <span class="card-icon">📈</span>
+                    Análisis fundamental vs análisis técnico
+                    <span class="level-badge level-avanzado">Avanzado</span>
+                </h3>
+                <p>
+                    Existen dos grandes enfoques para decidir si comprar o vender un activo:
+                </p>
+                <p>
+                    <strong>Análisis fundamental:</strong> estudia los números de la empresa — ganancias, deuda,
+                    crecimiento,
+                    sector, competencia. Busca determinar si una acción está "cara" o "barata" respecto a su valor real.
+                    Las métricas que ves en la sección Explorar (P/E, PEG, Beta) son herramientas de análisis
+                    fundamental.
+                </p>
+                <p>
+                    <strong>Análisis técnico:</strong> estudia los gráficos de precios y volumen para identificar
+                    patrones y tendencias.
+                    No le importa qué hace la empresa, solo cómo se mueve el precio. Los gráficos de velas que ves en
+                    Explorar
+                    son la base del análisis técnico.
+                </p>
+                <div class="key-concept">
+                    <strong>¿Cuál es mejor?</strong> Ninguno es superior al otro. Muchos inversores combinan ambos:
+                    usan el fundamental para elegir QUÉ comprar y el técnico para decidir CUÁNDO comprar.
+                </div>
+            </div>
+
+            <!-- FAQ rápido -->
+            <h4 class="section-divider">Preguntas frecuentes</h4>
+
+            <div class="accordion" id="faqAccordion" style="margin-bottom: 2rem;">
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#faq1">
+                            ¿Cuánta plata necesito para empezar a invertir?
+                        </button>
+                    </h2>
+                    <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Menos de lo que pensás. Con algunos brokers argentinos podés empezar con <strong>$1,000
+                                pesos</strong>.
+                            Un CEDEAR de NVIDIA, por ejemplo, cuesta menos de $10,000 ARS.
+                            Lo importante no es el monto sino empezar a entender cómo funciona.
+                            Para eso, podés usar el <a href="/simulador" class="text-info">simulador de RosKapital</a>
+                            con dinero virtual.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#faq3">
+                            ¿Las inversiones en bolsa pagan impuestos?
+                        </button>
+                    </h2>
+                    <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Depende del instrumento. En Argentina, la compraventa de <strong>acciones argentinas está
+                                exenta de impuesto a las ganancias</strong>
+                            para personas humanas. Los CEDEARs estan exentos de impuestos a las ganancias.
+                            Los dividendos tienen su propio tratamiento impositivo.
+                            Siempre es recomendable consultar con un contador para tu situación particular.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#faq4">
+                            ¿Cuál es la diferencia entre invertir y especular?
+                        </button>
+                    </h2>
+                    <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            <strong>Invertir</strong> es comprar activos con visión a largo plazo, basándose en
+                            fundamentos sólidos de la empresa o instrumento.
+                            <strong>Especular</strong> es buscar ganancias rápidas aprovechando movimientos de precio a
+                            corto plazo.
+                            Ambas estrategias son válidas, pero la especulación implica mayor riesgo y requiere más
+                            experiencia.
+                            Si estás empezando, invertir a largo plazo es generalmente más seguro.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#faq5">
+                            ¿Puedo perder toda mi plata?
+                        </button>
+                    </h2>
+                    <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            En acciones, es teóricamente posible pero muy improbable si diversificás.
+                            Una empresa individual puede ir a quiebra (y su acción valer $0), pero si tenés 10 acciones
+                            diferentes,
+                            es prácticamente imposible que todas quiebren al mismo tiempo.
+                            <strong>La diversificación es tu mejor protección.</strong>
+                            Nunca inviertas dinero que necesitás para gastos esenciales.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- TAB: BLOG & ANÁLISIS -->
+        <!-- ============================================ -->
+        <div id="tab-blog" style="display:none;">
+
+            <!-- Botón crear post + filtro -->
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <button class="tab-btn active" onclick="filtrarPosts('all', this)"
+                        style="padding: 0.4rem 1rem; font-size: 0.8rem;">Todos</button>
+                    <button class="tab-btn" onclick="filtrarPosts('Análisis', this)"
+                        style="padding: 0.4rem 1rem; font-size: 0.8rem;">Análisis</button>
+                    <button class="tab-btn" onclick="filtrarPosts('Merval', this)"
+                        style="padding: 0.4rem 1rem; font-size: 0.8rem;">Merval</button>
+                    <button class="tab-btn" onclick="filtrarPosts('Crypto', this)"
+                        style="padding: 0.4rem 1rem; font-size: 0.8rem;">Crypto</button>
+                    <button class="tab-btn" onclick="filtrarPosts('CEDEARs', this)"
+                        style="padding: 0.4rem 1rem; font-size: 0.8rem;">CEDEARs</button>
+                    <button class="tab-btn" onclick="filtrarPosts('Consulta', this)"
+                        style="padding: 0.4rem 1rem; font-size: 0.8rem;">Consulta</button>
+                    <button class="tab-btn" onclick="filtrarPosts('Opinión', this)"
+                        style="padding: 0.4rem 1rem; font-size: 0.8rem;">Opinión</button>
+                    <button class="tab-btn" onclick="filtrarPosts('Educativo', this)"
+                        style="padding: 0.4rem 1rem; font-size: 0.8rem;">Educativo</button>
+                </div>
+                <button class="btn btn-primary rounded-pill px-4" onclick="abrirModalPost()">
+                    <i class="fas fa-pen me-2"></i>Publicar
+                </button>
+            </div>
+
+            <!-- Loading -->
+            <div id="blogLoading" class="text-center py-5">
+                <div class="spinner-border text-primary mb-3"></div>
+                <div class="text-secondary">Cargando publicaciones...</div>
+            </div>
+
+            <!-- Lista de posts -->
+            <div id="blogPosts"></div>
+
+            <!-- Empty state -->
+            <div id="blogEmpty" style="display:none;" class="text-center py-5">
+                <div style="font-size: 3rem; opacity: 0.5; margin-bottom: 1rem;">📝</div>
+                <h5 class="text-white">No hay publicaciones todavía</h5>
+                <p class="text-secondary">Sé el primero en compartir tu análisis con la comunidad.</p>
+                <button class="btn btn-primary rounded-pill px-4 mt-2" onclick="abrirModalPost()">
+                    <i class="fas fa-pen me-2"></i>Publicar
+                </button>
+            </div>
+
+            <!-- Post expandido (detalle) -->
+            <div id="blogPostDetalle" style="display:none;"></div>
+
+        </div>
+
+        <!-- ============================================ -->
+        <!-- TAB: PORTFOLIOS PÚBLICOS -->
+        <!-- ============================================ -->
+        <div id="tab-portfolios" style="display:none;">
+
+            <!-- Toggle para hacer público tu portfolio -->
+            <div id="portfolioToggleSection" style="display:none; margin-bottom:1.5rem;">
+                <div class="learn-card" style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <div class="fw-bold" style="color:var(--text-primary);">
+                            <i class="fas fa-eye me-2"></i>Compartir mi portfolio
+                        </div>
+                        <div style="font-size:0.8rem; color:var(--text-secondary);">
+                            Otros usuarios verán tus tickers y rendimiento, sin cantidades ni montos
+                        </div>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="publicPortfolioToggle"
+                            onchange="togglePublicPortfolio(this.checked)"
+                            style="cursor:pointer; width:2.5rem; height:1.25rem;">
+                    </div>
+                </div>
+            </div>
+
+            <div id="publicPortfoliosList">
+                <div class="text-center p-4">
+                    <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                    Cargando portfolios...
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="modalPost" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content"
+                style="background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); color: white;">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-pen me-2 text-primary"></i>Nueva Publicación</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label text-secondary small">Publicando como</label>
+                            <input type="text" id="postAutor" class="form-control" readonly
+                                style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); color: var(--text-primary); cursor:default; opacity:0.8;">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-secondary small">Categoría</label>
+                            <select id="postTag" class="form-select"
+                                style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;">
+                                <option value="Análisis">Análisis</option>
+                                <option value="Merval">Merval</option>
+                                <option value="Crypto">Crypto</option>
+                                <option value="CEDEARs">CEDEARs</option>
+                                <option value="Consulta">Consulta</option>
+                                <option value="Opinión">Opinión</option>
+                                <option value="Educativo">Educativo</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label text-secondary small">Título</label>
+                            <input type="text" id="postTitulo" class="form-control" maxlength="255"
+                                placeholder="Ej: ¿Es buen momento para entrar en NVIDIA?"
+                                style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label text-secondary small">Contenido</label>
+                            <textarea id="postContenido" class="form-control" rows="6" maxlength="5000"
+                                placeholder="Compartí tu análisis, opinión o consulta..."
+                                style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; resize: vertical;"></textarea>
+                            <div class="text-secondary small mt-1"><span id="postCharCount">0</span>/5000 caracteres
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label text-secondary small">Imagen (opcional, max 5MB)</label>
+                            <input type="file" id="postImagen" class="form-control" accept="image/*"
+                                style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;">
+                        </div>
+                    </div>
+                    <div id="postError" class="text-danger small mt-3" style="display:none;"></div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="btnPublicar" onclick="publicarPost()">
+                        <i class="fas fa-paper-plane me-2"></i>Publicar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p class="fw-bold mb-1">Desarrollado con Python & FastAPI</p>
+            <p class="text-secondary small mb-0">
+                <i class="fas fa-exclamation-triangle me-1 text-warning"></i>
+                Disclaimer: Este sitio es una herramienta educativa. No constituye asesoramiento financiero.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Modal Perfil Inversor -->
+    <div class="modal fade" id="modalPerfilInversor" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content glass-effect text-white"
+                style="background: var(--card-bg); border: 1px solid var(--border);">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">Test de Identidad Financiera</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="px-3 mt-3">
+                    <div class="progress" style="height: 5px; background: rgba(255, 255, 255, 0.06);">
+                        <div class="progress-bar bg-warning" id="barraProgreso" role="progressbar" style="width: 0%;">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body p-4 text-center" id="contenidoTest"></div>
+                <div class="modal-footer border-0 justify-content-center d-none" id="footerResultados">
+                    <button type="button" class="btn btn-primary rounded-pill px-4" data-bs-dismiss="modal"
+                        onclick="location.reload()">¡Entendido, vamos!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast para misiones -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1050">
+        <div id="liveToast" class="toast align-items-center text-white bg-success border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body fs-6">
+                    <i class="bi bi-trophy-fill text-warning me-2"></i>
+                    <span id="textoMision">¡Misión Completada!</span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Misiones -->
+    <div class="modal fade" id="modalMisiones" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content"
+                style="background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); color: white;">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold"><i class="bi bi-trophy-fill text-warning me-2"></i>Mis Misiones</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-0">
+                    <div class="mb-3">
+                        <div class="progress"
+                            style="height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px;">
+                            <div class="progress-bar bg-warning" id="misionesProgressBar"
+                                style="width: 0%; border-radius: 4px;"></div>
+                        </div>
+                        <div class="text-secondary small mt-1" id="misionesProgressText">0 de 11 completadas</div>
+                    </div>
+                    <div id="misionesLista"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Settings -->
+    <div class="modal fade" id="modalSettings" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content"
+                style="background: var(--card-bg); border: 1px solid var(--border); color: var(--text-primary);">
+                <div class="modal-header border-0 pb-0">
+                    <h6 class="modal-title fw-bold">⚙️ Configuración</h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Tema -->
+                    <div class="d-flex justify-content-between align-items-center mb-3 pb-3"
+                        style="border-bottom: 1px solid var(--border);">
+                        <div>
+                            <div class="fw-bold" style="font-size:0.9rem;">Tema</div>
+                            <div style="font-size:0.78rem; color:var(--text-secondary);">Apariencia de la plataforma
+                            </div>
+                        </div>
+                        <div class="d-flex gap-1">
+                            <button class="btn btn-sm theme-opt" data-theme-val="dark" onclick="setTheme('dark')"
+                                style="padding:0.3rem 0.7rem; border-radius:8px; font-size:0.78rem;">🌙 Oscuro</button>
+                            <button class="btn btn-sm theme-opt" data-theme-val="light" onclick="setTheme('light')"
+                                style="padding:0.3rem 0.7rem; border-radius:8px; font-size:0.78rem;">☀️ Claro</button>
+                        </div>
+                    </div>
+
+                    <!-- Modo Experto -->
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="fw-bold" style="font-size:0.9rem;">Modo Experto</div>
+                            <div style="font-size:0.78rem; color:var(--text-secondary);">Indicadores técnicos y métricas
+                                avanzadas</div>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="expertModeToggle"
+                                onchange="toggleExpertMode(this.checked)"
+                                style="cursor:pointer; width:2.5rem; height:1.25rem;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // ========================================
+        // TABS
+        // ========================================
+        function switchTab(tab) {
+            document.getElementById('tab-aprender').style.display = 'none';
+            document.getElementById('tab-blog').style.display = 'none';
+            document.getElementById('tab-portfolios').style.display = 'none';
+
+            document.querySelectorAll('.community-tabs > .tab-btn').forEach(b => b.classList.remove('active'));
+
+            document.getElementById(`tab-${tab}`).style.display = 'block';
+            event.target.closest('.tab-btn').classList.add('active');
+
+            // Cargar posts al entrar al blog
+            if (tab === 'blog') {
+                cargarPosts();
+            }
+
+            if (tab === 'portfolios') {
+                document.getElementById('tab-portfolios').style.display = 'block';
+                cargarPortfoliosPublicos();
+            }
+        }
+
+        // ========================================
+        // BLOG - SISTEMA DE POSTS
+        // ========================================
+        let tagActual = 'all';
+
+        // Cargar posts al cambiar al tab blog
+        function cargarPosts() {
+            const url = tagActual === 'all' ? '/api/community/posts' : `/api/community/posts?tag=${tagActual}`;
+
+            document.getElementById('blogLoading').style.display = 'block';
+            document.getElementById('blogPosts').innerHTML = '';
+            document.getElementById('blogEmpty').style.display = 'none';
+            document.getElementById('blogPostDetalle').style.display = 'none';
+
+            fetch(url)
+                .then(r => r.json())
+                .then(posts => {
+                    document.getElementById('blogLoading').style.display = 'none';
+
+                    if (posts.length === 0) {
+                        document.getElementById('blogEmpty').style.display = 'block';
+                        return;
+                    }
+
+                    document.getElementById('blogPosts').innerHTML = posts.map(p => renderPostCard(p)).join('');
+                })
+                .catch(err => {
+                    document.getElementById('blogLoading').style.display = 'none';
+                    document.getElementById('blogPosts').innerHTML = '<div class="text-center text-danger py-4">Error al cargar publicaciones</div>';
+                });
+        }
+
+        function renderPostCard(p) {
+            const iniciales = p.autor.substring(0, 2).toUpperCase();
+            const fecha = new Date(p.fecha).toLocaleDateString('es-AR', { day: 'numeric', month: 'short', year: 'numeric' });
+            const excerpt = p.contenido.length > 200 ? p.contenido.substring(0, 200) + '...' : p.contenido;
+            const tagColors = {
+                'Análisis': '#2962ff', 'Merval': '#089981', 'Crypto': '#f7931a',
+                'CEDEARs': '#00bcd4', 'Consulta': '#9c27b0', 'Opinión': '#ffa726', 'Educativo': '#4caf50'
+            };
+            const tagColor = tagColors[p.tag] || '#787b86';
+            const liked = isPostLiked(p.id);
+
+            return `
+                <div class="blog-post-card" onclick="verPost(${p.id})">
+                    <div class="blog-author">
+                        <div class="blog-avatar" style="background: ${tagColor}22; color: ${tagColor};">${iniciales}</div>
+                        <div>
+                            <div class="blog-author-name">${p.autor}
+                                <span class="blog-tag ms-2" style="border-color: ${tagColor}44; color: ${tagColor};">${p.tag}</span>
+                            </div>
+                            <div class="blog-author-date">${fecha}</div>
+                        </div>
+                    </div>
+                    <div class="blog-post-title">${p.titulo}</div>
+                    <div class="blog-post-excerpt">${excerpt}</div>
+                    ${p.imagen ? `<img src="${p.imagen}" style="max-width:100%; border-radius:8px; margin-top:0.75rem; max-height:300px; object-fit:cover;">` : ''}
+                    <div class="blog-post-footer">
+                        <span onclick="event.stopPropagation(); likePost(${p.id}, this)" style="cursor:pointer; ${liked ? 'color:#f23645;' : ''}">
+                            <i class="${liked ? 'fas' : 'far'} fa-heart"></i> ${p.likes}
+                        </span>
+                        <span><i class="far fa-comment"></i> ${p.comentarios_count}</span>
+                         ${(typeof getUser === 'function' && getUser() && getUser().username === p.autor) ?
+                    `<span onclick="event.stopPropagation(); eliminarPost(${p.id})" style="cursor:pointer; margin-left:auto; color:var(--text-secondary); transition:color 0.2s;" onmouseover="this.style.color='var(--negative)'" onmouseout="this.style.color='var(--text-secondary)'" title="Eliminar publicación">
+                                <i class="fas fa-trash-alt"></i>
+                            </span>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Ver post completo con comentarios
+        async function verPost(postId) {
+            document.getElementById('blogPosts').style.display = 'none';
+            document.getElementById('blogPostDetalle').style.display = 'block';
+            document.getElementById('blogPostDetalle').innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary"></div></div>';
+
+            try {
+                const res = await fetch(`/api/community/posts/${postId}`);
+                const p = await res.json();
+
+                const fecha = new Date(p.fecha).toLocaleDateString('es-AR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                const iniciales = p.autor.substring(0, 2).toUpperCase();
+                const liked = isPostLiked(p.id);
+                const tagColors = {
+                    'Análisis': '#2962ff', 'Merval': '#089981', 'Crypto': '#f7931a',
+                    'CEDEARs': '#00bcd4', 'Consulta': '#9c27b0', 'Opinión': '#ffa726', 'Educativo': '#4caf50'
+                };
+                const tagColor = tagColors[p.tag] || '#787b86';
+
+                let comentariosHtml = '';
+                if (p.comentarios && p.comentarios.length > 0) {
+                    comentariosHtml = p.comentarios.map(c => {
+                        const cFecha = new Date(c.fecha).toLocaleDateString('es-AR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+                        const cIniciales = c.autor.substring(0, 2).toUpperCase();
+                        return `
+                            <div style="display:flex; gap:0.75rem; padding:0.75rem 0; border-bottom:1px solid rgba(255,255,255,0.05);">
+                                <div class="blog-avatar" style="width:28px; height:28px; font-size:0.65rem; flex-shrink:0; background:rgba(255,255,255,0.1); color:var(--text-secondary);">${cIniciales}</div>
+                                <div style="flex:1;">
+                                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                                        <span style="font-weight:600; font-size:0.85rem;">${c.autor}</span>
+                                        <span style="font-size:0.7rem; color:var(--text-secondary);">${cFecha}</span>
+                                    </div>
+                                    <p style="margin:0.25rem 0 0; font-size:0.88rem; color:var(--text-secondary); line-height:1.5;">${c.contenido}</p>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    comentariosHtml = '<p class="text-secondary small text-center py-3">No hay comentarios todavía. ¡Sé el primero!</p>';
+                }
+
+                document.getElementById('blogPostDetalle').innerHTML = `
+                    <div class="learn-card" style="margin-bottom:0;">
+                        <button class="btn btn-sm text-secondary mb-3" onclick="volverALista()" style="font-size:0.85rem;">
+                            <i class="fas fa-arrow-left me-2"></i>Volver a publicaciones
+                        </button>
+                        
+                        <div class="blog-author" style="margin-bottom:1rem;">
+                            <div class="blog-avatar" style="background:${tagColor}22; color:${tagColor}; width:40px; height:40px; font-size:0.9rem;">${iniciales}</div>
+                            <div>
+                                <div class="blog-author-name" style="font-size:1rem;">${p.autor}
+                                    <span class="blog-tag ms-2" style="border-color:${tagColor}44; color:${tagColor};">${p.tag}</span>
+                                </div>
+                                <div class="blog-author-date">${fecha}</div>
+                            </div>
+                        </div>
+
+                        <h4 class="fw-bold mb-3">${p.titulo}</h4>
+                        <div style="color:var(--text-secondary); line-height:1.8; white-space:pre-wrap; font-size:0.95rem;">${p.contenido}</div>
+                        
+                        ${p.imagen ? `<img src="${p.imagen}" style="max-width:100%; border-radius:8px; margin-top:1rem;">` : ''}
+
+                        <div style="display:flex; gap:1.5rem; margin-top:1.5rem; padding-top:1rem; border-top:1px solid rgba(255,255,255,0.08); font-size:0.9rem;">
+                            <span onclick="likePost(${p.id}, this)" style="cursor:pointer; ${liked ? 'color:#f23645;' : 'color:var(--text-secondary);'}">
+                                <i class="${liked ? 'fas' : 'far'} fa-heart me-1"></i><span id="likeCount-${p.id}">${p.likes}</span> likes
+                            </span>
+                            <span class="text-secondary"><i class="far fa-comment me-1"></i>${p.comentarios ? p.comentarios.length : 0} comentarios</span>
+                        </div>
+
+                        <!-- Comentarios -->
+                        <div style="margin-top:1.5rem; padding-top:1rem; border-top:1px solid rgba(255,255,255,0.08);">
+                            <h6 class="text-secondary mb-3"><i class="fas fa-comments me-2"></i>Comentarios</h6>
+                            ${comentariosHtml}
+                        </div>
+
+                        <!-- Agregar comentario -->
+                        <div style="margin-top:1rem; padding-top:1rem; border-top:1px solid rgba(255,255,255,0.08);">
+                            <div class="row g-2">
+                                <div class="col-md-3">
+                                    <input type="text" id="commentAutor" class="form-control form-control-sm" placeholder="Tu nombre"
+                                        style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:white;">
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" id="commentContenido" class="form-control form-control-sm" placeholder="Escribí tu comentario..."
+                                        style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:white;"
+                                        onkeydown="if(event.key==='Enter') comentarPost(${p.id})">
+                                </div>
+                                <div class="col-md-2">
+                                    <button class="btn btn-primary btn-sm w-100" onclick="comentarPost(${p.id})">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="commentError" class="text-danger small mt-1" style="display:none;"></div>
+                        </div>
+                    </div>
+                `;
+            } catch (e) {
+                document.getElementById('blogPostDetalle').innerHTML = '<div class="text-center text-danger py-4">Error al cargar el post</div>';
+            }
+        }
+
+        function volverALista() {
+            document.getElementById('blogPostDetalle').style.display = 'none';
+            document.getElementById('blogPosts').style.display = 'block';
+        }
+
+        // Filtrar posts por tag
+        function filtrarPosts(tag, btn) {
+            tagActual = tag;
+            // Actualizar botones activos
+            document.querySelectorAll('#tab-blog .tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            cargarPosts();
+        }
+
+        // Publicar post
+        async function publicarPost() {
+
+            // Verificar login
+            if (typeof isLoggedIn === 'function' && !isLoggedIn()) {
+                if (typeof switchAuthTab === 'function') switchAuthTab('login');
+                new bootstrap.Modal(document.getElementById('modalAuth')).show();
+                return;
+            }
+
+            const autor = document.getElementById('postAutor').value.trim();
+            const titulo = document.getElementById('postTitulo').value.trim();
+            const contenido = document.getElementById('postContenido').value.trim();
+            const tag = document.getElementById('postTag').value;
+            const imagen = document.getElementById('postImagen').files[0];
+            const errorEl = document.getElementById('postError');
+
+            // Validaciones
+            if (!autor || autor.length < 2) { errorEl.textContent = 'Ingresá tu nombre (mín. 2 caracteres)'; errorEl.style.display = 'block'; return; }
+            if (!titulo || titulo.length < 5) { errorEl.textContent = 'El título debe tener al menos 5 caracteres'; errorEl.style.display = 'block'; return; }
+            if (!contenido || contenido.length < 20) { errorEl.textContent = 'El contenido debe tener al menos 20 caracteres'; errorEl.style.display = 'block'; return; }
+
+            errorEl.style.display = 'none';
+            document.getElementById('btnPublicar').disabled = true;
+            document.getElementById('btnPublicar').innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Publicando...';
+
+            const formData = new FormData();
+            formData.append('autor', autor);
+            formData.append('titulo', titulo);
+            formData.append('contenido', contenido);
+            formData.append('tag', tag);
+            if (imagen) formData.append('imagen', imagen);
+
+            try {
+                const res = await fetch('/api/community/posts', { method: 'POST', body: formData });
+
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.detail || 'Error al publicar');
+                }
+
+                // Cerrar modal y recargar
+                bootstrap.Modal.getInstance(document.getElementById('modalPost')).hide();
+                document.getElementById('postAutor').value = '';
+                document.getElementById('postTitulo').value = '';
+                document.getElementById('postContenido').value = '';
+                document.getElementById('postImagen').value = '';
+                document.getElementById('postCharCount').textContent = '0';
+                cargarPosts();
+
+            } catch (e) {
+                errorEl.textContent = e.message;
+                errorEl.style.display = 'block';
+            } finally {
+                document.getElementById('btnPublicar').disabled = false;
+                document.getElementById('btnPublicar').innerHTML = '<i class="fas fa-paper-plane me-2"></i>Publicar';
+            }
+        }
+
+        // Like post
+        async function likePost(postId, el) {
+            const liked = isPostLiked(postId);
+
+            try {
+                const endpoint = liked ? 'unlike' : 'like';
+                const res = await fetch(`/api/community/posts/${postId}/${endpoint}`, { method: 'POST' });
+                if (res.ok) {
+                    const data = await res.json();
+                    let likedPosts = JSON.parse(localStorage.getItem('roskapital_liked_posts') || '[]');
+
+                    if (liked) {
+                        likedPosts = likedPosts.filter(id => id !== postId);
+                        el.style.color = '';
+                        el.querySelector('i').className = 'far fa-heart me-1';
+                    } else {
+                        likedPosts.push(postId);
+                        el.style.color = '#f23645';
+                        el.querySelector('i').className = 'fas fa-heart me-1';
+                    }
+
+                    localStorage.setItem('roskapital_liked_posts', JSON.stringify(likedPosts));
+
+                    const countEl = document.getElementById(`likeCount-${postId}`);
+                    if (countEl) countEl.textContent = data.likes;
+
+                    if (document.getElementById('blogPosts').style.display !== 'none') {
+                        cargarPosts();
+                    }
+                }
+            } catch (e) {
+                console.warn('Error al dar/quitar like:', e);
+            }
+        }
+
+        function isPostLiked(postId) {
+            const liked = JSON.parse(localStorage.getItem('roskapital_liked_posts') || '[]');
+            return liked.includes(postId);
+        }
+
+        // Comentar post
+        async function comentarPost(postId) {
+            const autor = document.getElementById('commentAutor').value.trim();
+            const contenido = document.getElementById('commentContenido').value.trim();
+            const errorEl = document.getElementById('commentError');
+
+            if (!autor || autor.length < 2) { errorEl.textContent = 'Ingresá tu nombre'; errorEl.style.display = 'block'; return; }
+            if (!contenido || contenido.length < 5) { errorEl.textContent = 'El comentario es muy corto'; errorEl.style.display = 'block'; return; }
+
+            errorEl.style.display = 'none';
+
+            const formData = new FormData();
+            formData.append('autor', autor);
+            formData.append('contenido', contenido);
+
+            try {
+                const res = await fetch(`/api/community/posts/${postId}/comment`, { method: 'POST', body: formData });
+                if (res.ok) {
+                    verPost(postId); // Recargar post con nuevo comentario
+                } else {
+                    const err = await res.json();
+                    errorEl.textContent = err.detail || 'Error al comentar';
+                    errorEl.style.display = 'block';
+                }
+            } catch (e) {
+                errorEl.textContent = 'Error de conexión';
+                errorEl.style.display = 'block';
+            }
+        }
+
+        async function reaccionarPost(postId, tipo) {
+            try {
+                const endpoint = tipo === 'like'
+                    ? `/api/comunidad/posts/${postId}/like`
+                    : `/api/comunidad/posts/${postId}/react/${tipo}`;
+
+                const res = await fetch(endpoint, { method: 'POST' });
+                if (res.ok) {
+                    cargarPosts(); // Recargar posts para actualizar contadores
+                }
+            } catch (e) {
+                console.error('Error reaccionando:', e);
+            }
+        }
+
+        async function eliminarPost(postId) {
+            if (!confirm('¿Seguro que querés eliminar esta publicación?')) return;
+
+            try {
+                const res = await authFetch(`/api/community/posts/${postId}`, {
+                    method: 'DELETE'
+                });
+
+                if (!res.ok) {
+                    const data = await res.json();
+                    alert(data.detail || 'Error al eliminar');
+                    return;
+                }
+
+                cargarPosts();
+            } catch (err) {
+                alert('Error de conexión');
+            }
+        }
+
+        // Modal helpers
+        function abrirModalPost() {
+            if (typeof isLoggedIn === 'function' && !isLoggedIn()) {
+                alert('Para publicar necesitás iniciar sesión o crear una cuenta.');
+                if (typeof switchAuthTab === 'function') switchAuthTab('login');
+                new bootstrap.Modal(document.getElementById('modalAuth')).show();
+                return;
+            }
+            new bootstrap.Modal(document.getElementById('modalPost')).show();
+
+            const user = getUser();
+            if (user) {
+                document.getElementById('postAutor').value = user.username;
+            }
+
+            new bootstrap.Modal(document.getElementById('modalPost')).show();
+        }
+
+
+        // Contador de caracteres
+        document.addEventListener('DOMContentLoaded', function () {
+            const textarea = document.getElementById('postContenido');
+            if (textarea) {
+                textarea.addEventListener('input', function () {
+                    document.getElementById('postCharCount').textContent = this.value.length;
+                });
+            }
+            document.getElementById('modalPost').addEventListener('hidden.bs.modal', function () {
+                document.body.classList.remove('modal-open');
+                const backdrop = document.querySelector('.modal-backdrop');
+                if (backdrop) backdrop.remove();
+                document.body.style.overflow = '';
+                document.body.style.paddingRight = '';
+            });
+        });
+
+    </script>
+
+    <!-- Modal Auth (Login/Register) -->
+    <div class="modal fade" id="modalAuth" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width:420px;">
+            <div class="modal-content"
+                style="background:var(--card-bg); border:1px solid var(--border); color:var(--text-primary);">
+                <div class="modal-header border-0 pb-0">
+                    <div style="display:flex; gap:0; width:100%;">
+                        <button class="auth-tab active" id="authTabLogin" onclick="switchAuthTab('login')"
+                            style="flex:1; padding:0.7rem; border:none; background:transparent; color:var(--text-primary); font-weight:700; font-size:0.95rem; border-bottom:2px solid var(--accent-blue); cursor:pointer; transition:all 0.2s;">
+                            Iniciar Sesión
+                        </button>
+                        <button class="auth-tab" id="authTabRegister" onclick="switchAuthTab('register')"
+                            style="flex:1; padding:0.7rem; border:none; background:transparent; color:var(--text-secondary); font-weight:600; font-size:0.95rem; border-bottom:2px solid transparent; cursor:pointer; transition:all 0.2s;">
+                            Crear Cuenta
+                        </button>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white position-absolute"
+                        style="top:0.7rem; right:0.7rem;" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body px-4 pb-4">
+
+                    <div id="authError"
+                        style="display:none; background:rgba(255,71,87,0.1); border:1px solid rgba(255,71,87,0.2); color:var(--negative); padding:0.6rem 1rem; border-radius:10px; font-size:0.85rem; margin-bottom:1rem;">
+                    </div>
+
+                    <!-- LOGIN FORM -->
+                    <div id="authLoginForm">
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Email</label>
+                            <input type="email" id="loginEmail" class="form-control" placeholder="tu@email.com"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;"
+                                onkeydown="if(event.key==='Enter') handleLogin()">
+                        </div>
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Contraseña</label>
+                            <input type="password" id="loginPassword" class="form-control" placeholder="••••••••"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;"
+                                onkeydown="if(event.key==='Enter') handleLogin()">
+                        </div>
+                        <button id="loginBtn" onclick="handleLogin()" class="btn w-100"
+                            style="background:linear-gradient(135deg, var(--accent-blue), #2855cc); color:white; font-weight:700; border:none; border-radius:10px; padding:0.75rem;">
+                            Iniciar Sesión
+                        </button>
+                        <div class="text-center mt-3" style="font-size:0.82rem; color:var(--text-secondary);">
+                            ¿No tenés cuenta? <a href="#" onclick="switchAuthTab('register'); return false;"
+                                style="color:var(--accent-blue); text-decoration:none; font-weight:600;">Registrate</a>
+                        </div>
+                    </div>
+
+                    <!-- REGISTER FORM -->
+                    <div id="authRegisterForm" style="display:none;">
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Nombre
+                                completo <span style="opacity:0.5;">(opcional)</span></label>
+                            <input type="text" id="registerName" class="form-control" placeholder="Juan Pérez"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;">
+                        </div>
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Nombre
+                                de usuario</label>
+                            <input type="text" id="registerUsername" class="form-control" placeholder="juanperez"
+                                maxlength="30"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;">
+                        </div>
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Email</label>
+                            <input type="email" id="registerEmail" class="form-control" placeholder="tu@email.com"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;">
+                        </div>
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Contraseña</label>
+                            <input type="password" id="registerPassword" class="form-control"
+                                placeholder="Mínimo 8 caracteres, 1 mayúscula, 1 número"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;">
+                        </div>
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Repetir
+                                contraseña</label>
+                            <input type="password" id="registerPassword2" class="form-control" placeholder="••••••••"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;"
+                                onkeydown="if(event.key==='Enter') handleRegister()">
+                        </div>
+                        <button id="registerBtn" onclick="handleRegister()" class="btn w-100"
+                            style="background:linear-gradient(135deg, var(--accent-blue), #2855cc); color:white; font-weight:700; border:none; border-radius:10px; padding:0.75rem;">
+                            Crear Cuenta
+                        </button>
+                        <div class="text-center mt-3" style="font-size:0.82rem; color:var(--text-secondary);">
+                            ¿Ya tenés cuenta? <a href="#" onclick="switchAuthTab('login'); return false;"
+                                style="color:var(--accent-blue); text-decoration:none; font-weight:600;">Iniciá
+                                sesión</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function cargarPortfoliosPublicos() {
+            // Mostrar toggle si está logueado
+            if (typeof isLoggedIn === 'function' && isLoggedIn()) {
+                document.getElementById('portfolioToggleSection').style.display = 'block';
+                try {
+                    const res = await authFetch('/api/portfolio/perfil');
+                    if (res.ok) {
+                        const data = await res.json();
+                        document.getElementById('publicPortfolioToggle').checked = data.portfolio_public || false;
+                    }
+                } catch (e) {}
+            }
+
+            const container = document.getElementById('publicPortfoliosList');
+
+            try {
+                const res = await fetch('/api/portfolio/public-portfolios');
+                if (!res.ok) throw new Error('Error');
+                const portfolios = await res.json();
+
+                if (portfolios.length === 0) {
+                    container.innerHTML = `
+                        <div class="portfolio-empty">
+                            <i class="fas fa-briefcase" style="font-size:2rem; opacity:0.3; display:block; margin-bottom:1rem;"></i>
+                            Todavía nadie compartió su portfolio.<br>
+                            <span style="font-size:0.85rem;">¡Sé el primero en mostrar tu estrategia!</span>
+                        </div>`;
+                    return;
+                }
+
+                const profileIcons = {
+                    'Conservador': '🛡️',
+                    'Moderado': '⚖️',
+                    'Arriesgado': '🚀'
+                };
+
+                const profileColors = {
+                    'Agresivo': '#f23645',
+                    'Equilibrado': '#ffa726',
+                    'Defensivo': '#089981',
+                    'Conservador': '#089981',
+                    'Moderado': '#ffa726',
+                    'Arriesgado': '#f23645'
+                };
+
+                container.innerHTML = portfolios.map(p => {
+                    const icon = profileIcons[p.investor_profile] || '👤';
+                    const tickers = p.tickers.map(t =>
+                        `<span class="portfolio-ticker-tag" onclick="window.location.href='/explorar/${t}'">${t}</span>`
+                    ).join('');
+
+                    return `
+                        <div class="public-portfolio-card">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.8rem;">
+                                <div>
+                                    <div style="font-weight:700; color:var(--text-primary); font-size:1rem;">
+                                        ${icon} ${p.username}
+                                    </div>
+                                    <div style="font-size:0.75rem;">
+                                        <span style="color:${profileColors[p.investor_profile] || 'var(--text-secondary)'}">${p.investor_profile || 'Inversor'}</span>
+                                        <span style="color:var(--text-secondary);"> · ${p.num_positions} posiciones</span>
+                                    </div>
+                                </div>
+                                <div id="rendimiento-${p.username}" style="text-align:right;">
+                                    <div class="spinner-border spinner-border-sm text-secondary" style="width:1rem; height:1rem;"></div>
+                                </div>
+                            </div>
+                            <div style="margin-top:0.5rem;">
+                                ${tickers}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                // Calcular rendimiento de cada portfolio
+                for (const p of portfolios) {
+                    calcularRendimientoPublico(p);
+                }
+
+            } catch (e) {
+                container.innerHTML = '<div class="portfolio-empty">Error cargando portfolios</div>';
+            }
+        }
+
+        async function calcularRendimientoPublico(portfolio) {
+            const el = document.getElementById(`rendimiento-${portfolio.username}`);
+            if (!el) return;
+
+            try {
+                const tickers = portfolio.tickers.join(',');
+                const res = await fetch(`/api/cotizaciones?tickers=${tickers}`);
+                if (!res.ok) throw new Error();
+                const precios = await res.json();
+
+                // Calcular rendimiento real: (precio actual - precio compra) / precio compra
+                let totalCost = 0;
+                let totalValue = 0;
+
+                for (const ticker of portfolio.tickers) {
+                    const precioCompra = portfolio.cost_basis[ticker] || 0;
+                    const precioActual = precios[ticker]?.precio || precioCompra;
+                    if (precioCompra > 0) {
+                        totalCost += precioCompra;
+                        totalValue += precioActual;
+                    }
+                }
+
+                // Calcular rendimiento ponderado real
+                let rendTotal = 0;
+                for (const ticker of portfolio.tickers) {
+                    const precioCompra = portfolio.cost_basis[ticker] || 0;
+                    const precioActual = precios[ticker]?.precio || precioCompra;
+                    const weight = portfolio.weights[ticker] || 0;
+                    if (precioCompra > 0) {
+                        const rendTicker = ((precioActual - precioCompra) / precioCompra) * 100;
+                        rendTotal += rendTicker * weight;
+                    }
+                }
+
+                // Variación del día (promedio)
+                let totalVar = 0;
+                let count = 0;
+                for (const ticker of portfolio.tickers) {
+                    if (precios[ticker]?.variacion !== undefined) {
+                        totalVar += precios[ticker].variacion;
+                        count++;
+                    }
+                }
+                const varHoy = count > 0 ? (totalVar / count) : 0;
+
+                const colorTotal = rendTotal >= 0 ? 'var(--positive)' : 'var(--negative)';
+                const signTotal = rendTotal >= 0 ? '+' : '';
+                const colorHoy = varHoy >= 0 ? 'var(--positive)' : 'var(--negative)';
+                const signHoy = varHoy >= 0 ? '+' : '';
+
+                el.innerHTML = `
+                    <div style="font-weight:700; font-size:1.1rem; color:${colorTotal};">${signTotal}${rendTotal.toFixed(2)}%</div>
+                    <div style="font-size:0.68rem; color:var(--text-secondary);">rendimiento total</div>
+                    <div style="font-size:0.82rem; color:${colorHoy}; margin-top:4px;">${signHoy}${varHoy.toFixed(2)}% hoy</div>
+                `;
+            } catch (e) {
+                el.innerHTML = '<span style="color:var(--text-secondary); font-size:0.8rem;">-</span>';
+            }
+        }
+
+        async function togglePublicPortfolio(enabled) {
+            if (typeof isLoggedIn !== 'function' || !isLoggedIn()) return;
+
+            try {
+                const res = await authFetch('/api/portfolio/public-toggle', { method: 'PUT' });
+                if (res.ok) {
+                    const data = await res.json();
+                    document.getElementById('publicPortfolioToggle').checked = data.public;
+                    cargarPortfoliosPublicos();
+                }
+            } catch (e) {
+                console.warn('Error toggling portfolio público:', e);
+            }
+        }
+
+    </script>
+
+    <script src="/static/js/auth_client.js"></script>
+    <script src="/static/js/notifications.js"></script>
+    <script src="/static/perfil.js"></script>
+    <script src="/static/js/settings.js"></script>
+
+</body>
+
+</html>

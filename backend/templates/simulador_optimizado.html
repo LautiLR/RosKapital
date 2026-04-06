@@ -1,0 +1,2206 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador - RosKapital</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="icon" type="image/png" href="/static/img/favicon.png" media="(prefers-color-scheme: dark)">
+    <link rel="icon" type="image/png" href="/static/img/favicon-dark.png" media="(prefers-color-scheme: light)">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .controls-bar,
+        .stock-table,
+        .crypto-card,
+        .glass-panel,
+        .comp-card,
+        .learn-card,
+        .market-stats {
+            animation: fadeInUp 0.4s ease-out both;
+        }
+
+        /* Navbar action badges */
+        .btn-outline-success.rounded-pill {
+            border-color: rgba(0, 212, 170, 0.3);
+            color: var(--positive);
+            font-weight: 600;
+            font-size: 0.78rem;
+            transition: all 0.2s;
+        }
+
+        .btn-outline-success.rounded-pill:hover {
+            background: rgba(0, 212, 170, 0.1);
+            border-color: var(--positive);
+            color: var(--positive);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline-warning.rounded-pill {
+            border-color: rgba(255, 167, 38, 0.3);
+            color: #ffa726;
+            font-weight: 600;
+            font-size: 0.78rem;
+            transition: all 0.2s;
+        }
+
+        .btn-outline-warning.rounded-pill:hover {
+            background: rgba(255, 167, 38, 0.1);
+            border-color: #ffa726;
+            color: #ffa726;
+            transform: translateY(-1px);
+        }
+
+        /* Mobile navbar */
+        .navbar-toggler {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.4rem 0.6rem;
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: none;
+            border-color: var(--accent-blue);
+        }
+
+        /* Collapse menu en mobile */
+        @media (max-width: 991px) {
+            .navbar-collapse {
+                background: var(--card-bg);
+                border-radius: 12px;
+                margin-top: 0.5rem;
+                padding: 1rem;
+                border: 1px solid var(--border);
+            }
+        }
+
+        /* Focus ring para accesibilidad */
+        :focus-visible {
+            outline: 2px solid var(--accent-blue);
+            outline-offset: 2px;
+        }
+
+        button:focus-visible,
+        .btn:focus-visible {
+            outline: 2px solid var(--accent-blue);
+            outline-offset: 2px;
+            box-shadow: 0 0 0 4px rgba(59, 125, 255, 0.15);
+        }
+
+        /* Scrollbar custom */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        ::selection {
+            background: rgba(59, 125, 255, 0.3);
+            color: white;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        :root,
+        [data-theme="dark"] {
+            --bg-dark: #0a0b0f;
+            --bg-dark-2: #0f1117;
+            --card-bg: #161921;
+            --card-bg-hover: #1a1f2b;
+            --text-primary: #e8eaed;
+            --text-secondary: #6b7080;
+            --accent-blue: #3b7dff;
+            --accent-blue-glow: rgba(59, 125, 255, 0.15);
+            --positive: #00d4aa;
+            --negative: #ff4757;
+            --border: rgba(255, 255, 255, 0.06);
+            --border-hover: rgba(255, 255, 255, 0.12);
+            --border-color: rgba(255, 255, 255, 0.06);
+            --glow: 0 0 40px rgba(59, 125, 255, 0.08);
+            --warning: #ffa500;
+            --navbar-bg: rgba(10, 11, 15, 0.85);
+            --modal-bg: #161921;
+            --input-bg: rgba(255, 255, 255, 0.05);
+            --table-header-bg: rgba(0, 0, 0, 0.3);
+            --table-hover: rgba(255, 255, 255, 0.02);
+            --scrollbar-thumb: rgba(255, 255, 255, 0.08);
+            --shadow-color: rgba(0, 0, 0, 0.3);
+        }
+
+        /* ── TEMA CLARO ── */
+        [data-theme="light"] {
+            --bg-dark: #f5f6fa;
+            --bg-dark-2: #ecedf1;
+            --card-bg: #ffffff;
+            --card-bg-hover: #f8f9fb;
+            --text-primary: #1a1d26;
+            --text-secondary: #6b7080;
+            --accent-blue: #2563eb;
+            --accent-blue-glow: rgba(37, 99, 235, 0.12);
+            --positive: #059669;
+            --negative: #dc2626;
+            --border: rgba(0, 0, 0, 0.08);
+            --border-hover: rgba(0, 0, 0, 0.15);
+            --border-color: rgba(0, 0, 0, 0.08);
+            --glow: 0 0 40px rgba(37, 99, 235, 0.06);
+            --warning: #d97706;
+            --navbar-bg: rgba(255, 255, 255, 0.9);
+            --modal-bg: #ffffff;
+            --input-bg: rgba(0, 0, 0, 0.04);
+            --table-header-bg: rgba(0, 0, 0, 0.03);
+            --table-hover: rgba(0, 0, 0, 0.02);
+            --scrollbar-thumb: rgba(0, 0, 0, 0.12);
+            --shadow-color: rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            padding-bottom: 50px;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(10, 11, 15, 0.85);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: white !important;
+        }
+
+        .nav-link {
+            color: var(--text-secondary) !important;
+            transition: color 0.2s ease, background 0.2s ease;
+            border-radius: 8px;
+            padding: 0.5rem 0.9rem !important;
+        }
+
+        .nav-link:hover {
+            color: white !important;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .nav-link.active {
+            color: white !important;
+            background: rgba(59, 125, 255, 0.1);
+        }
+
+        /* Paneles */
+        .glass-panel {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+        }
+
+        /* Dashboard Header */
+        .equity-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: white;
+            letter-spacing: -1px;
+        }
+
+        /* Tabla */
+        .table-custom {
+            color: var(--text-primary);
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            letter-spacing: 0.08em;
+        }
+
+        .table-custom th {
+            color: #787b86;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 10px;
+            white-space: nowrap;
+        }
+
+        .table-custom td {
+            padding: 15px 10px;
+            border-bottom: 1px solid #2a2e39;
+            vertical-align: middle;
+        }
+
+        /* Inputs */
+        .form-control {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: white;
+        }
+
+        .form-control:focus {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-color: var(--accent-blue);
+            box-shadow: none;
+        }
+
+        .text-up {
+            color: var(--positive);
+        }
+
+        .text-down {
+            color: var(--negative);
+        }
+
+        /* Badge para Variación */
+        .badge-var {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .badge-up {
+            background-color: rgba(8, 153, 129, 0.15);
+            color: var(--positive);
+        }
+
+        .badge-down {
+            background-color: rgba(242, 54, 69, 0.15);
+            color: var(--negative);
+        }
+
+        /* Modal */
+        .modal-content {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            color: white;
+        }
+
+        .modal-header {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-footer {
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn-close {
+            filter: invert(1);
+        }
+
+        /* Tabs personalizados */
+
+        .nav-tabs {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-tabs .nav-link {
+            color: var(--text-secondary);
+            border: none;
+            border-bottom: 2px solid transparent;
+            background: transparent;
+            padding: 0.75rem 1.5rem;
+        }
+
+        .nav-tabs .nav-link:hover {
+            color: var(--text-primary);
+            border-bottom-color: var(--accent-blue);
+        }
+
+        .nav-tabs .nav-link.active {
+            color: var(--text-primary);
+            background: transparent;
+            border-bottom-color: var(--accent-blue);
+        }
+
+        /* Toast personalizado */
+        .toast {
+            max-width: 400px;
+        }
+
+        /* Spinner para botón */
+        .fa-spin {
+            animation: fa-spin 1s infinite linear;
+        }
+
+        @keyframes fa-spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Stats cards */
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--glow);
+        }
+
+        .stat-card:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.08em;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .stat-detail {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        /* Chart container */
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+            margin-top: 1rem;
+        }
+
+        /* Badge auto-refresh */
+        .badge-status {
+            font-size: 0.7rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .badge-active {
+            background: rgba(8, 153, 129, 0.2);
+            color: var(--positive);
+        }
+
+        .badge-paused {
+            background: rgba(255, 165, 0, 0.2);
+            color: var(--warning);
+        }
+
+        /*footer*/
+        footer {
+            margin-top: 60px;
+            border-top: 1px solid var(--border);
+            padding: 2rem 0;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            background: var(--bg-dark);
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 0 0.5rem;
+            }
+        }
+
+        #pieChartSection {
+            width: 100%;
+        }
+
+        #pieChartSection>div {
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+
+        .text-up {
+            color: #089981;
+        }
+
+        .text-down {
+            color: #f23645;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/"><img src="/static/img/favicon.png" alt="Logo" height="35"
+                    class="me-2"></i>RosKapital</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto ps-3">
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/mercado">Mercado</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/crypto">Crypto</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/explorar/AAPL">Explorar</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/heatmap">Heatmap</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/simulador">Simulador</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/comunidad">Comunidad</a></li>
+                </ul>
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn btn-outline-success rounded-pill px-3 btn-sm" onclick="abrirModalMisiones()">
+                        <i class="bi bi-trophy me-1"></i><span id="misionesCount">0</span>/11
+                    </button>
+                    <button class="btn btn-outline-warning rounded-pill px-3 btn-sm" id="btnTestInversor"
+                        onclick="abrirTestInversor()">
+                        <i class="bi bi-person-vcard me-1"></i><span id="textoBotonPerfil">Mi Perfil</span>
+                    </button>
+                    <button class="btn btn-outline-secondary rounded-pill px-3 btn-sm" data-bs-toggle="modal"
+                        data-bs-target="#modalSettings">
+                        <i class="bi bi-gear"></i>
+                    </button>
+                    <!-- Auth buttons (sin login) -->
+                    <div id="authNavButtons" style="display:flex; gap:0.5rem;">
+                        <button class="btn btn-outline-primary rounded-pill px-3 btn-sm"
+                            onclick="abrirAuthModal('login')">
+                            <i class="bi bi-person me-1"></i>Ingresar
+                        </button>
+                    </div>
+                    <!-- User info (con login) -->
+                    <div id="userNavInfo" style="display:none; align-items:center; gap:0.5rem;"></div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="container">
+
+        <!-- Dashboard Principal -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="glass-panel text-center position-relative">
+                    <button class="btn btn-sm btn-outline-secondary position-absolute top-0 end-0 m-3"
+                        onclick="abrirModalCapital()" title="Configurar Capital Inicial">
+                        <i class="fas fa-cog"></i> Configurar
+                    </button>
+
+                    <h6 class="text-secondary text-uppercase mb-2">Patrimonio Total (U$S)</h6>
+                    <div class="equity-value" id="totalEquity">$0.00</div>
+
+                    <div class="d-flex justify-content-center gap-4 mt-3">
+                        <div class="text-start">
+                            <div class="small text-secondary">Efectivo Disponible</div>
+                            <div class="fs-5 fw-bold text-white" id="cashAvailable">$0.00</div>
+                        </div>
+                        <div class="vr bg-secondary"></div>
+                        <div class="text-start">
+                            <div class="small text-secondary">Ganancia / Pérdida Total</div>
+                            <div class="fs-5 fw-bold text-up" id="pnlDisplay">+$0.00 (0.00%)</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <button class="btn btn-success me-2" onclick="abrirModalCompra()">
+                            <i class="fas fa-plus-circle me-2"></i>Comprar
+                        </button>
+                        <button class="btn btn-primary me-2" onclick="actualizarPrecios()">
+                            <i class="fas fa-sync-alt me-2"></i>Actualizar Mercado
+                        </button>
+                        <button class="btn btn-success" id="btnAutoRefresh" onclick="toggleAutoRefresh()">
+                            <i class="fas fa-play me-1"></i><span id="autoRefreshText">Auto (5m)</span>
+                        </button>
+                        <span class="badge badge-status badge-paused ms-2" id="autoRefreshStatus">Pausado</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estadísticas de Performance -->
+        <div class="row mb-4" id="statsSection" style="display: none;">
+            <div class="col-12">
+                <div class="glass-panel">
+                    <h6 class="text-secondary mb-3">
+                        <i class="fas fa-chart-bar me-2"></i>Estadísticas de Trading
+                    </h6>
+                    <div id="statsContainer"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="glass-panel">
+                    <ul class="nav nav-tabs mb-3" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="portfolio-tab" data-bs-toggle="tab"
+                                data-bs-target="#portfolio" type="button" role="tab">
+                                <i class="fas fa-briefcase me-2"></i>Portfolio Actual
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="historial-tab" data-bs-toggle="tab" data-bs-target="#historial"
+                                type="button" role="tab">
+                                <i class="fas fa-history me-2"></i>Historial de Trades
+                            </button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <!-- TAB 1: Portfolio Actual -->
+                        <div class="tab-pane fade show active" id="portfolio" role="tabpanel">
+                            <div class="table-responsive">
+                                <table class="table-custom">
+                                    <thead>
+                                        <tr>
+                                            <th class="ps-4">ACTIVO</th>
+                                            <th class="text-end">CANT.</th>
+                                            <th class="text-end">P. PROMEDIO</th>
+                                            <th class="text-end">P. ACTUAL</th>
+                                            <th class="text-end">VAR. HOY</th>
+                                            <th class="text-end">REND. TOTAL</th>
+                                            <th class="text-end">G/P ($)</th>
+                                            <th class="text-center">ACCIÓN</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="portfolioTable"></tbody>
+                                </table>
+                            </div>
+
+                            <div id="emptyState" class="text-center py-5" style="display: none;">
+                                <i class="fas fa-inbox fa-3x text-secondary mb-3"></i>
+                                <p class="text-secondary">No tienes posiciones abiertas.</p>
+                                <button class="btn btn-success" onclick="abrirModalCompra()">
+                                    <i class="fas fa-plus-circle me-2"></i>Comprar tu primera acción
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- TAB 2: Historial de Trades -->
+                        <div class="tab-pane fade" id="historial" role="tabpanel">
+                            <div class="table-responsive">
+                                <table class="table-custom">
+                                    <thead>
+                                        <tr>
+                                            <th>FECHA</th>
+                                            <th>TIPO</th>
+                                            <th>TICKER</th>
+                                            <th class="text-end">CANTIDAD</th>
+                                            <th class="text-end">PRECIO</th>
+                                            <th class="text-end">TOTAL</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="historialTable"></tbody>
+                                </table>
+                            </div>
+
+                            <div id="emptyHistorial" class="text-center py-5">
+                                <i class="fas fa-history fa-3x text-secondary mb-3"></i>
+                                <p class="text-secondary">Aún no has realizado ninguna operación.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-3 pt-3"
+                        style="border-top: 1px solid var(--border-color);">
+                        <button class="btn btn-outline-info btn-sm" onclick="abrirModalEscenario()">
+                            <i class="fas fa-flask me-2"></i>Simular Escenario
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm" onclick="borrarTodo()">
+                            <i class="fas fa-trash-alt me-2"></i>Reiniciar Simulador
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráfico de Evolución -->
+        <div class="row mb-4" id="chartSection" style="display: none;">
+            <div class="col-12">
+                <div class="glass-panel">
+                    <h6 class="text-secondary mb-3">
+                        <i class="fas fa-chart-line me-2"></i>Evolución del Portfolio
+                    </h6>
+                    <div class="chart-wrapper">
+                        <canvas id="equityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Gráficos de Diversificación -->
+        <div class="row mb-4" id="pieChartSection" style="display: none;">
+            <div class="col-12 col-md-6 mb-3 mb-md-0">
+                <div class="glass-panel">
+                    <h6 class="text-secondary mb-3">
+                        <i class="fas fa-chart-pie me-2"></i>Diversificación por Activo
+                    </h6>
+                    <div class="chart-wrapper" style="height: 350px;">
+                        <canvas id="portfolioPieChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="glass-panel">
+                    <h6 class="text-secondary mb-3">
+                        <i class="fas fa-percentage me-2"></i>Composición del Portfolio
+                    </h6>
+                    <div id="portfolioBreakdown" style="padding-top: 1rem;"></div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <!-- Modal: Configurar Capital -->
+    <div class="modal fade" id="modalCapital" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-wallet me-2"></i>Configurar Capital Inicial</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <label class="form-label">Capital Inicial (USD)</label>
+                    <input type="number" class="form-control form-control-lg" id="inputCapital" placeholder="Ej: 100000"
+                        min="1000" step="1000">
+                    <small class="text-secondary d-block mt-2">
+                        <i class="fas fa-info-circle me-1"></i>Este será tu capital virtual para practicar.
+                    </small>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="guardarCapital()">
+                        <i class="fas fa-save me-2"></i>Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Comprar Acción -->
+    <div class="modal fade" id="modalCompra" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-cart-plus me-2"></i>Nueva Operación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Ticker</label>
+                        <input type="text" class="form-control text-uppercase" id="tickerInput"
+                            placeholder="Ej: AAPL, TSLA, GGAL.BA" maxlength="10" onchange="verificarPerfilCompra()"
+                            onblur="verificarPerfilCompra()">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Cantidad</label>
+                        <input type="number" class="form-control" id="quantityInput" placeholder="Ej: 10" min="1">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Precio de Compra (USD)</label>
+                        <input type="number" class="form-control" id="priceInput" placeholder="Ej: 185.50" step="0.01"
+                            min="0.01">
+                    </div>
+                    <div id="perfilCompraAviso" style="display:none;" class="mb-3"></div>
+                    <div class="alert alert-info mb-0">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        <strong>Tip:</strong> Busca el precio actual en la sección "Explorar" o "Mercado".
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" onclick="comprarAccion()">
+                        <i class="fas fa-check me-2"></i>Comprar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Simular Escenario -->
+    <div class="modal fade" id="modalEscenario" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-flask me-2"></i>Simulador de Escenarios</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-secondary">
+                        ¿Qué pasaría con tu portfolio si el mercado subiera o bajara? Prueba diferentes escenarios.
+                    </p>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col">
+                            <button class="btn btn-danger w-100" onclick="calcularEscenario(-20)">
+                                📉 Caída -20%
+                            </button>
+                        </div>
+                        <div class="col">
+                            <button class="btn btn-warning w-100" onclick="calcularEscenario(-10)">
+                                📊 Caída -10%
+                            </button>
+                        </div>
+                        <div class="col">
+                            <button class="btn btn-success w-100" onclick="calcularEscenario(10)">
+                                📈 Suba +10%
+                            </button>
+                        </div>
+                        <div class="col">
+                            <button class="btn btn-primary w-100" onclick="calcularEscenario(20)">
+                                🚀 Suba +20%
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="resultado-escenario" class="d-none">
+                        <div class="alert alert-dark text-center">
+                            <h6 class="text-secondary mb-2">NUEVO PATRIMONIO PROYECTADO</h6>
+                            <div id="proyeccion-saldo" class="fw-bold display-6">$0.00</div>
+                            <div id="diferencia-proyeccion" class="mt-2"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Perfil Inversor -->
+    <div class="modal fade" id="modalPerfilInversor" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content glass-effect text-white"
+                style="background: var(--card-bg); border: 1px solid var(--border);">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">Test de Identidad Financiera</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="px-3 mt-3">
+                    <div class="progress" style="height: 5px; background: rgba(255, 255, 255, 0.06);">
+                        <div class="progress-bar bg-warning" id="barraProgreso" role="progressbar" style="width: 0%;">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body p-4 text-center" id="contenidoTest"></div>
+                <div class="modal-footer border-0 justify-content-center d-none" id="footerResultados">
+                    <button type="button" class="btn btn-primary rounded-pill px-4" data-bs-dismiss="modal"
+                        onclick="location.reload()">¡Entendido, vamos!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container (para notificaciones) -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;"></div>
+
+    <footer>
+        <div class="container">
+            <p class="fw-bold mb-1">Desarrollado con Python & FastAPI</p>
+            <p class="text-secondary small mb-3">
+                <i class="fas fa-exclamation-triangle me-1 text-warning"></i>
+                Advertencia: La información de los tickers puede tener un retraso de 15-20 minutos.
+            </p>
+            <p class="text-secondary" style="font-size: 0.75rem; opacity: 0.7;">
+                Disclaimer: Este sitio es una herramienta educativa y de consulta. No constituye asesoramiento
+                financiero ni recomendación de inversión. El usuario es responsable de sus propias decisiones de
+                capital.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Modal Misiones -->
+    <div class="modal fade" id="modalMisiones" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content"
+                style="background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); color: white;">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold"><i class="bi bi-trophy-fill text-warning me-2"></i>Mis Misiones</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-0">
+                    <div class="mb-3">
+                        <div class="progress"
+                            style="height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px;">
+                            <div class="progress-bar bg-warning" id="misionesProgressBar"
+                                style="width: 0%; border-radius: 4px;"></div>
+                        </div>
+                        <div class="text-secondary small mt-1" id="misionesProgressText">0 de 11 completadas</div>
+                    </div>
+                    <div id="misionesLista"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1050">
+        <div id="liveToast" class="toast align-items-center text-white bg-success border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body fs-6">
+                    <i class="bi bi-trophy-fill text-warning me-2"></i>
+                    <span id="textoMision">¡Misión Completada!</span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Onboarding -->
+    <div class="modal fade" id="modalOnboarding" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content"
+                style="background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); color: white;">
+                <div class="modal-body p-4 text-center" id="onboardingBody">
+                </div>
+                <div class="modal-footer border-0 justify-content-between px-4 pb-4">
+                    <button class="btn btn-sm text-secondary" id="onboardingSkip" onclick="cerrarOnboarding()">
+                        Saltar tutorial
+                    </button>
+                    <div>
+                        <span class="text-secondary small me-3" id="onboardingStep">1/4</span>
+                        <button class="btn btn-primary rounded-pill px-4" id="onboardingNext"
+                            onclick="siguientePasoOnboarding()">
+                            Siguiente <i class="fas fa-arrow-right ms-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Settings -->
+    <div class="modal fade" id="modalSettings" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content"
+                style="background: var(--card-bg); border: 1px solid var(--border); color: var(--text-primary);">
+                <div class="modal-header border-0 pb-0">
+                    <h6 class="modal-title fw-bold">⚙️ Configuración</h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Tema -->
+                    <div class="d-flex justify-content-between align-items-center mb-3 pb-3"
+                        style="border-bottom: 1px solid var(--border);">
+                        <div>
+                            <div class="fw-bold" style="font-size:0.9rem;">Tema</div>
+                            <div style="font-size:0.78rem; color:var(--text-secondary);">Apariencia de la plataforma
+                            </div>
+                        </div>
+                        <div class="d-flex gap-1">
+                            <button class="btn btn-sm theme-opt" data-theme-val="dark" onclick="setTheme('dark')"
+                                style="padding:0.3rem 0.7rem; border-radius:8px; font-size:0.78rem;">🌙 Oscuro</button>
+                            <button class="btn btn-sm theme-opt" data-theme-val="light" onclick="setTheme('light')"
+                                style="padding:0.3rem 0.7rem; border-radius:8px; font-size:0.78rem;">☀️ Claro</button>
+                        </div>
+                    </div>
+
+                    <!-- Modo Experto -->
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="fw-bold" style="font-size:0.9rem;">Modo Experto</div>
+                            <div style="font-size:0.78rem; color:var(--text-secondary);">Indicadores técnicos y métricas
+                                avanzadas</div>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="expertModeToggle"
+                                onchange="toggleExpertMode(this.checked)"
+                                style="cursor:pointer; width:2.5rem; height:1.25rem;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <script>// ========================================
+        // AVISO DE PERFIL EN MODAL DE COMPRA
+        // ========================================
+        const perfilSectoresSimulador = {
+            'Don Horacio': ['Utilities', 'Consumer Defensive', 'Healthcare', 'Real Estate'],
+            'Valeria': ['Financial Services', 'Industrials', 'Energy', 'Healthcare', 'Real Estate', 'Basic Materials'],
+            'Enzo': ['Technology', 'Consumer Cyclical', 'Communication Services', 'Basic Materials']
+        };
+
+        async function verificarPerfilCompra() {
+            const ticker = document.getElementById('tickerInput').value.trim().toUpperCase();
+            const aviso = document.getElementById('perfilCompraAviso');
+            if (!ticker || ticker.length < 1) {
+                aviso.style.display = 'none';
+                return;
+            }
+
+            const perfil = JSON.parse(localStorage.getItem('perfil_inversor') || 'null');
+            if (!perfil) {
+                aviso.style.display = 'none';
+                return;
+            }
+
+            const sectoresOk = perfilSectoresSimulador[perfil.personaje];
+            if (!sectoresOk) return;
+
+            try {
+                const res = await fetch(`/api/fundamentals/${ticker}`);
+                if (!res.ok) {
+                    aviso.style.display = 'none';
+                    return;
+                }
+                const data = await res.json();
+
+                if (sectoresOk.includes(data.sector)) {
+                    aviso.innerHTML = `
+                        <div style="background:rgba(8,153,129,0.1); border:1px solid rgba(8,153,129,0.2); border-radius:8px; padding:0.5rem 1rem; font-size:0.85rem; color:#089981;">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <strong>${data.ticker}</strong> (${data.sector}) — Alineado con tu perfil
+                        </div>`;
+                } else {
+                    aviso.innerHTML = `
+                        <div style="background:rgba(255,167,38,0.1); border:1px solid rgba(255,167,38,0.2); border-radius:8px; padding:0.5rem 1rem; font-size:0.85rem; color:#ffa726;">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>${data.ticker}</strong> (${data.sector}) — Puede no alinearse con tu perfil
+                        </div>`;
+                }
+                aviso.style.display = 'block';
+            } catch (e) {
+                aviso.style.display = 'none';
+            }
+        }
+    </script>
+
+    <script> // ========================================
+        // ONBOARDING (primera vez)
+        // ========================================
+        const ONBOARDING_KEY = 'roskapital_onboarding_simulador';
+        let pasoActual = 0;
+
+        const pasosOnboarding = [
+            {
+                icono: '👋',
+                titulo: '¡Bienvenido al Simulador!',
+                texto: 'Acá vas a poder practicar trading con <strong>dinero virtual</strong> y precios reales del mercado. Sin riesgo, todo lo que aprendas queda.'
+            },
+            {
+                icono: '💰',
+                titulo: 'Configurá tu capital',
+                texto: 'Arriba a la derecha tenés el botón <strong>"Configurar"</strong> para ajustar tu capital inicial. Podés empezar con el monto que quieras.'
+            },
+            {
+                icono: '🛒',
+                titulo: 'Hacé tu primera compra',
+                texto: 'Hacé click en <strong>"Comprar"</strong>, escribí el ticker (ej: AAPL, TSLA, GOOGL), elegí la cantidad y confirmá. ¡Así de simple!'
+            },
+            {
+                icono: '📊',
+                titulo: 'Seguí tu portfolio',
+                texto: 'Abajo vas a ver tu <strong>portfolio actual</strong>, el historial de trades, y estadísticas de rendimiento. Podés actualizar los precios con <strong>"Actualizar Mercado"</strong> o activar la actualización automática.'
+            }
+        ];
+
+        function mostrarPasoOnboarding() {
+            const paso = pasosOnboarding[pasoActual];
+            document.getElementById('onboardingBody').innerHTML = `
+                <div style="font-size: 3rem; margin-bottom: 1rem;">${paso.icono}</div>
+                <h5 class="fw-bold mb-3">${paso.titulo}</h5>
+                <p class="text-secondary" style="font-size: 0.95rem; line-height: 1.6;">${paso.texto}</p>
+            `;
+            document.getElementById('onboardingStep').textContent = `${pasoActual + 1}/${pasosOnboarding.length}`;
+
+            // Último paso: cambiar botón
+            if (pasoActual === pasosOnboarding.length - 1) {
+                document.getElementById('onboardingNext').innerHTML = '¡Empezar! <i class="fas fa-rocket ms-1"></i>';
+                document.getElementById('onboardingSkip').style.display = 'none';
+            }
+        }
+
+        function siguientePasoOnboarding() {
+            pasoActual++;
+            if (pasoActual >= pasosOnboarding.length) {
+                cerrarOnboarding();
+                return;
+            }
+            mostrarPasoOnboarding();
+        }
+
+        function cerrarOnboarding() {
+            localStorage.setItem(ONBOARDING_KEY, 'true');
+            bootstrap.Modal.getInstance(document.getElementById('modalOnboarding')).hide();
+        }
+
+        function iniciarOnboarding() {
+            if (localStorage.getItem(ONBOARDING_KEY)) return;
+            pasoActual = 0;
+            mostrarPasoOnboarding();
+            const modal = new bootstrap.Modal(document.getElementById('modalOnboarding'));
+            modal.show();
+        }
+
+        // Lanzar onboarding al cargar
+        document.addEventListener('DOMContentLoaded', function () {
+            setTimeout(iniciarOnboarding, 1000);
+        });
+    </script>
+
+    <script>
+        // ========================================
+        // VARIABLES GLOBALES
+        // ========================================
+        let capitalInicial = parseFloat(localStorage.getItem('fintech_capital') || 100000);
+        let autoRefreshInterval = null;
+        let isAutoRefreshEnabled = false;
+        let equityChart = null;
+        let portfolioPieChart = null;
+
+        // ========================================
+        // INICIALIZACIÓN
+        // ========================================
+        document.addEventListener('DOMContentLoaded', async function () {
+            // Cargar datos de DB si está logueado (sincroniza localStorage)
+            if (typeof isLoggedIn === 'function' && isLoggedIn()) {
+                await getPortfolioSmart();
+                await getTradeHistorySmart();
+            }
+
+            renderTable();
+            renderHistorial();
+            actualizarEstadisticas();
+            crearGraficoEquity();
+
+            // ⬇️ DETECTAR COMPRA RÁPIDA ⬇️
+            const quickBuy = sessionStorage.getItem('quick_buy');
+            if (quickBuy) {
+                const data = JSON.parse(quickBuy);
+                document.getElementById('tickerInput').value = data.ticker;
+                document.getElementById('priceInput').value = data.precio.toFixed(2);
+                sessionStorage.removeItem('quick_buy');
+                abrirModalCompra();
+            }
+
+            // Si hay posiciones pero no hay historial de equity, crear snapshot inicial
+            const snapshots = JSON.parse(localStorage.getItem('fintech_equity_history') || '[]');
+            if (snapshots.length === 0 && getPortfolio().length > 0) {
+                guardarSnapshot();
+            }
+
+            try {
+                    const res = await authFetch('/api/portfolio/snapshots');
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data.length > 0) {
+                            localStorage.setItem('fintech_equity_history', JSON.stringify(data));
+                        }
+                    }
+                } catch (e) { console.warn('Error cargando snapshots:', e); }
+
+            if (typeof completarMision === "function") {
+                completarMision('explorador');
+            }
+
+            if (getPortfolio().length > 0) {
+                actualizarPrecios();
+            }
+        });
+
+        // ========================================
+        // GESTIÓN DE PORTFOLIO
+        // ========================================
+        function getPortfolio() {
+            const data = localStorage.getItem('fintech_sim_portfolio');
+            return data ? JSON.parse(data) : [];
+        }
+
+        // Smart: si está logueado, consulta la DB y sincroniza localStorage
+        async function getPortfolioSmart() {
+            if (typeof isLoggedIn === 'function' && isLoggedIn()) {
+                try {
+                    const res = await authFetch('/api/portfolio/');
+                    if (res.ok) {
+                        const data = await res.json();
+                        const positions = data.positions || [];
+                        localStorage.setItem('fintech_sim_portfolio', JSON.stringify(positions));
+                        // Sincronizar capital inicial desde DB
+                        if (data.initial_capital) {
+                            capitalInicial = data.initial_capital;
+                            localStorage.setItem('fintech_capital', capitalInicial);
+                        }
+                        return positions;
+                    }
+                } catch (e) { console.warn('Error cargando portfolio de DB:', e); }
+            }
+            return getPortfolio();
+        }
+
+        async function savePortfolio(portfolio) {
+            localStorage.setItem('fintech_sim_portfolio', JSON.stringify(portfolio));
+            renderTable();
+            renderHistorial();
+            actualizarEstadisticas();
+        }
+
+        function calcularCash() {
+            const portfolio = getPortfolio();
+            let gastado = 0;
+            portfolio.forEach(p => gastado += p.q * p.price);
+            return capitalInicial - gastado;
+        }
+
+        // ========================================
+        // GESTIÓN DE HISTORIAL
+        // ========================================
+        function getTradeHistory() {
+            const history = localStorage.getItem('fintech_trade_history');
+            return history ? JSON.parse(history) : [];
+        }
+
+        // Smart: si está logueado, consulta la DB y sincroniza localStorage
+        async function getTradeHistorySmart() {
+            if (typeof isLoggedIn === 'function' && isLoggedIn()) {
+                try {
+                    const res = await authFetch('/api/portfolio/trades');
+                    if (res.ok) {
+                        const data = await res.json();
+                        // Mapear formato DB al formato localStorage
+                        const trades = data.map(t => ({
+                            id: t.id,
+                            timestamp: t.timestamp,
+                            tipo: t.tipo === 'BUY' ? 'COMPRA' : (t.tipo === 'SELL' ? 'VENTA' : t.tipo),
+                            ticker: t.ticker,
+                            cantidad: t.cantidad,
+                            precio: t.precio,
+                            total: t.total
+                        }));
+                        localStorage.setItem('fintech_trade_history', JSON.stringify(trades));
+                        return trades;
+                    }
+                } catch (e) { console.warn('Error cargando trades de DB:', e); }
+            }
+            return getTradeHistory();
+        }
+
+        function registrarTrade(tipo, ticker, cantidad, precio) {
+            const history = getTradeHistory();
+            const trade = {
+                id: Date.now(),
+                timestamp: new Date().toISOString(),
+                tipo: tipo,
+                ticker: ticker,
+                cantidad: cantidad,
+                precio: precio,
+                total: cantidad * precio
+            };
+            history.push(trade);
+            localStorage.setItem('fintech_trade_history', JSON.stringify(history));
+        }
+
+        // ========================================
+        // SISTEMA DE NOTIFICACIONES
+        // ========================================
+        function mostrarNotificacion(mensaje, tipo = 'success') {
+            const container = document.querySelector('.toast-container');
+            const toastId = 'toast_' + Date.now();
+
+            const bgClass = {
+                'success': 'bg-success',
+                'error': 'bg-danger',
+                'warning': 'bg-warning',
+                'info': 'bg-info'
+            }[tipo] || 'bg-success';
+
+            const iconClass = {
+                'success': 'fa-check-circle',
+                'error': 'fa-times-circle',
+                'warning': 'fa-exclamation-triangle',
+                'info': 'fa-info-circle'
+            }[tipo] || 'fa-check-circle';
+
+            const toast = document.createElement('div');
+            toast.id = toastId;
+            toast.className = `toast align-items-center text-white ${bgClass} border-0`;
+            toast.setAttribute('role', 'alert');
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <i class="fas ${iconClass} me-2"></i>${mensaje}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            `;
+
+            container.appendChild(toast);
+            const bsToast = new bootstrap.Toast(toast, { delay: 4000 });
+            bsToast.show();
+
+            toast.addEventListener('hidden.bs.toast', () => toast.remove());
+        }
+
+        // ========================================
+        // COMPRAR ACCIÓN (CON VALIDACIONES)
+        // ========================================
+        async function comprarAccion() {
+            const ticker = document.getElementById('tickerInput').value.trim().toUpperCase();
+            const quantity = parseInt(document.getElementById('quantityInput').value);
+            const price = parseFloat(document.getElementById('priceInput').value);
+
+            if (!ticker || ticker.length === 0) { mostrarNotificacion('⚠️ Debes ingresar un ticker válido', 'error'); return; }
+            if (isNaN(quantity) || quantity <= 0) { mostrarNotificacion('⚠️ La cantidad debe ser mayor a 0', 'error'); return; }
+            if (isNaN(price) || price <= 0) { mostrarNotificacion('⚠️ El precio debe ser mayor a $0', 'error'); return; }
+
+            const costoTotal = quantity * price;
+            const cashDisponible = calcularCash();
+
+            if (costoTotal > cashDisponible) {
+                mostrarNotificacion(`❌ Fondos insuficientes. Necesitas $${costoTotal.toFixed(2)} pero tienes $${cashDisponible.toFixed(2)}`, 'error');
+                return;
+            }
+
+            // Guardar en DB si está logueado
+            if (typeof isLoggedIn === 'function' && isLoggedIn()) {
+                try {
+                    const res = await authFetch('/api/portfolio/trade', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ ticker, quantity, price, trade_type: 'BUY' })
+                    });
+                    if (!res.ok) {
+                        const data = await res.json();
+                        mostrarNotificacion(data.detail || 'Error en la compra', 'error');
+                        return;
+                    }
+                } catch (e) { console.warn('Error guardando trade en DB:', e); }
+            }
+
+            // Guardar en localStorage
+            const portfolio = getPortfolio();
+            const existe = portfolio.findIndex(p => p.ticker === ticker);
+
+            if (existe !== -1) {
+                const pos = portfolio[existe];
+                const nuevaCantidad = pos.q + quantity;
+                const nuevoPrecioPromedio = ((pos.q * pos.price) + (quantity * price)) / nuevaCantidad;
+                portfolio[existe].q = nuevaCantidad;
+                portfolio[existe].price = nuevoPrecioPromedio;
+            } else {
+                portfolio.push({ ticker, q: quantity, price });
+            }
+
+            savePortfolio(portfolio);
+            registrarTrade('COMPRA', ticker, quantity, price);
+            guardarSnapshot();
+
+            document.getElementById('tickerInput').value = '';
+            document.getElementById('quantityInput').value = '';
+            document.getElementById('priceInput').value = '';
+
+            bootstrap.Modal.getInstance(document.getElementById('modalCompra')).hide();
+            mostrarNotificacion(`✅ Compra exitosa: ${quantity} ${ticker} @ $${price.toFixed(2)}`);
+
+            if (typeof completarMision === 'function') completarMision('inversor');
+
+            actualizarPrecios();
+        }
+
+        // ========================================
+        // ELIMINAR POSICIÓN
+        // ========================================
+        async function eliminarPosicion(index) {
+            if (!confirm('¿Estás seguro de eliminar esta posición?')) return;
+
+            const portfolio = getPortfolio();
+            const pos = portfolio[index];
+
+            // Guardar SELL en DB si está logueado
+            if (typeof isLoggedIn === 'function' && isLoggedIn()) {
+                try {
+                    const res = await authFetch('/api/portfolio/trade', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ ticker: pos.ticker, quantity: pos.q, price: pos.price, trade_type: 'SELL' })
+                    });
+                    if (!res.ok) {
+                        const data = await res.json();
+                        mostrarNotificacion(data.detail || 'Error al registrar la venta', 'error');
+                        return;
+                    }
+                } catch (e) { console.warn('Error guardando trade en DB:', e); }
+            }
+
+            // Registrar como venta en el historial
+            registrarTrade('VENTA', pos.ticker, pos.q, pos.price);
+
+            portfolio.splice(index, 1);
+            savePortfolio(portfolio);
+            guardarSnapshot();
+
+            mostrarNotificacion(`📉 Posición vendida: ${pos.ticker}`, 'info');
+        }
+
+        // ========================================
+        // RENDERIZADO DE TABLA PORTFOLIO
+        // ========================================
+        function renderTable(preciosActuales = {}) {
+            const list = getPortfolio();
+            const tbody = document.getElementById('portfolioTable');
+            tbody.innerHTML = '';
+
+            if (list.length === 0) {
+                document.getElementById('emptyState').style.display = 'block';
+                actualizarDashboard(capitalInicial, 0);
+                return;
+            } else {
+                document.getElementById('emptyState').style.display = 'none';
+            }
+
+            let valorTotalCartera = 0;
+            let costoTotalCartera = 0;
+
+            list.forEach((pos, index) => {
+                const dataAPI = preciosActuales[pos.ticker];
+                const precioHoy = dataAPI ? dataAPI.precio : pos.price;
+                const variacionDia = dataAPI ? dataAPI.variacion : 0.0;
+
+                const rendimientoTotalPct = ((precioHoy - pos.price) / pos.price) * 100;
+                const valorPosicion = precioHoy * pos.q;
+                const costoPosicion = pos.price * pos.q;
+                const pnlDinero = valorPosicion - costoPosicion;
+
+                valorTotalCartera += valorPosicion;
+                costoTotalCartera += costoPosicion;
+
+                const classVarDia = variacionDia >= 0 ? 'badge-up' : 'badge-down';
+                const iconVarDia = variacionDia >= 0 ? 'fa-caret-up' : 'fa-caret-down';
+                const classTotal = rendimientoTotalPct >= 0 ? 'text-up' : 'text-down';
+                const signTotal = rendimientoTotalPct >= 0 ? '+' : '';
+
+                const row = `
+                    <tr>
+                        <td class="ps-4 fw-bold text-white">${pos.ticker}</td>
+                        <td class="text-end text-white">${pos.q}</td>
+                        <td class="text-end text-secondary">$${pos.price.toFixed(2)}</td>
+                        <td class="text-end text-white">$${precioHoy.toFixed(2)}</td>
+                        <td class="text-end">
+                            <span class="badge-var ${classVarDia}">
+                                <i class="fas ${iconVarDia} me-1"></i>${Math.abs(variacionDia).toFixed(2)}%
+                            </span>
+                        </td>
+                        <td class="text-end fw-bold ${classTotal}">
+                            ${signTotal}${rendimientoTotalPct.toFixed(2)}%
+                        </td>
+                        <td class="text-end ${classTotal}">
+                            ${pnlDinero >= 0 ? '+' : ''}$${pnlDinero.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                        </td>
+                        <td class="text-center">
+                            <button class="btn btn-sm btn-link text-secondary" onclick="eliminarPosicion(${index})" title="Eliminar posición">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+
+            const cash = capitalInicial - costoTotalCartera;
+            actualizarDashboard(cash, valorTotalCartera);
+            crearGraficoDiversificacion(list, preciosActuales);
+        }
+
+        // ========================================
+        // RENDERIZADO DE HISTORIAL
+        // ========================================
+        function renderHistorial() {
+            const history = getTradeHistory();
+            const tbody = document.getElementById('historialTable');
+            const emptyState = document.getElementById('emptyHistorial');
+
+            tbody.innerHTML = '';
+
+            if (history.length === 0) {
+                emptyState.style.display = 'block';
+                return;
+            } else {
+                emptyState.style.display = 'none';
+            }
+
+            // Últimas 50 operaciones (más recientes primero)
+            history.slice(-50).reverse().forEach(trade => {
+                const fecha = new Date(trade.timestamp).toLocaleString('es-AR', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                const tipoClass = trade.tipo === 'COMPRA' ? 'text-success' : 'text-danger';
+                const tipoIcon = trade.tipo === 'COMPRA' ? '📈' : '📉';
+
+                const row = `
+                    <tr>
+                        <td class="text-secondary">${fecha}</td>
+                        <td class="${tipoClass} fw-bold">${tipoIcon} ${trade.tipo}</td>
+                        <td class="text-white">${trade.ticker}</td>
+                        <td class="text-end">${trade.cantidad}</td>
+                        <td class="text-end text-secondary">$${trade.precio.toFixed(2)}</td>
+                        <td class="text-end text-white">$${trade.total.toFixed(2)}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        // ========================================
+        // ACTUALIZAR DASHBOARD
+        // ========================================
+        function actualizarDashboard(cash, valorAcciones) {
+            const equity = cash + valorAcciones;
+            const pnlTotal = equity - capitalInicial;
+            const pnlPct = (pnlTotal / capitalInicial) * 100;
+
+            document.getElementById('totalEquity').innerText = `$${equity.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+            document.getElementById('cashAvailable').innerText = `$${cash.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+
+            const pnlEl = document.getElementById('pnlDisplay');
+            const sign = pnlTotal >= 0 ? '+' : '';
+            pnlEl.innerText = `${sign}$${pnlTotal.toLocaleString('en-US', { minimumFractionDigits: 2 })} (${sign}${pnlPct.toFixed(2)}%)`;
+            pnlEl.className = pnlTotal >= 0 ? "fs-5 fw-bold text-up" : "fs-5 fw-bold text-down";
+        }
+
+        // ========================================
+        // ACTUALIZAR PRECIOS (API)
+        // ========================================
+        async function actualizarPrecios() {
+            const list = getPortfolio();
+            if (list.length === 0) {
+                mostrarNotificacion('No tienes posiciones para actualizar', 'info');
+                return;
+            }
+
+            const tickers = [...new Set(list.map(i => i.ticker))].join(',');
+            const btnIcon = document.querySelector('.fa-sync-alt');
+            btnIcon.classList.add('fa-spin');
+
+            try {
+                const res = await fetch(`/api/cotizaciones?tickers=${tickers}`);
+                if (!res.ok) throw new Error('Error en la API');
+
+                const data = await res.json();
+                renderTable(data);
+                actualizarEstadisticas();
+                guardarSnapshot();
+                mostrarNotificacion('✅ Precios actualizados correctamente', 'success');
+            } catch (e) {
+                console.error(e);
+                mostrarNotificacion('❌ Error al actualizar precios. Intenta de nuevo.', 'error');
+            } finally {
+                btnIcon.classList.remove('fa-spin');
+            }
+        }
+
+        // ========================================
+        // AUTO-ACTUALIZACIÓN
+        // ========================================
+        function toggleAutoRefresh() {
+            isAutoRefreshEnabled = !isAutoRefreshEnabled;
+
+            const btn = document.getElementById('btnAutoRefresh');
+            const status = document.getElementById('autoRefreshStatus');
+
+            if (isAutoRefreshEnabled) {
+                // ACTIVO: Botón amarillo/warning con ícono de pausa
+                btn.className = 'btn btn-sm btn-warning';
+                btn.innerHTML = '<i class="fas fa-pause me-1"></i><span id="autoRefreshText">Pausar Auto</span>';
+                status.className = 'badge badge-status badge-active ms-2';
+                status.innerText = 'Activo';
+
+                // Iniciar interval
+                if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+                autoRefreshInterval = setInterval(() => {
+                    if (getPortfolio().length > 0) {
+                        actualizarPrecios();
+                    }
+                }, 300000);
+
+                mostrarNotificacion('🔄 Auto-actualización activada (cada 5m)', 'info');
+            } else {
+                // PAUSADO: Botón verde/success con ícono de play
+                btn.className = 'btn btn-sm btn-success';
+                btn.innerHTML = '<i class="fas fa-play me-1"></i><span id="autoRefreshText">Iniciar Auto</span>';
+                status.className = 'badge badge-status badge-paused ms-2';
+                status.innerText = 'Pausado';
+
+                // Detener interval
+                if (autoRefreshInterval) {
+                    clearInterval(autoRefreshInterval);
+                    autoRefreshInterval = null;
+                }
+
+                mostrarNotificacion('⏸️ Auto-actualización pausada', 'info');
+            }
+        }
+
+        // ========================================
+        // CAPITAL INICIAL
+        // ========================================
+        function abrirModalCapital() {
+            document.getElementById('inputCapital').value = capitalInicial;
+            new bootstrap.Modal(document.getElementById('modalCapital')).show();
+        }
+
+        function guardarCapital() {
+            const nuevoCapital = parseFloat(document.getElementById('inputCapital').value);
+
+            if (isNaN(nuevoCapital) || nuevoCapital < 1000) {
+                mostrarNotificacion('⚠️ El capital debe ser mínimo $1,000', 'error');
+                return;
+            }
+
+            capitalInicial = nuevoCapital;
+            localStorage.setItem('fintech_capital', capitalInicial);
+            bootstrap.Modal.getInstance(document.getElementById('modalCapital')).hide();
+
+            renderTable();
+            mostrarNotificacion('✅ Capital actualizado correctamente', 'success');
+        }
+
+        // ========================================
+        // MODAL COMPRA
+        // ========================================
+        function abrirModalCompra() {
+            new bootstrap.Modal(document.getElementById('modalCompra')).show();
+        }
+
+        // ========================================
+        // MODAL ESCENARIO
+        // ========================================
+        function abrirModalEscenario() {
+            document.getElementById('resultado-escenario').classList.add('d-none');
+            new bootstrap.Modal(document.getElementById('modalEscenario')).show();
+        }
+
+        function calcularEscenario(porcentaje) {
+            const equityElement = document.getElementById('totalEquity');
+            const cashElement = document.getElementById('cashAvailable');
+
+            if (!equityElement || !cashElement) {
+                mostrarNotificacion('Error al calcular escenario', 'error');
+                return;
+            }
+
+            const limpiarPrecio = (texto) => parseFloat(texto.replace(/[$,]/g, '')) || 0;
+
+            const equityTotal = limpiarPrecio(equityElement.innerText);
+            const efectivo = limpiarPrecio(cashElement.innerText);
+            const valorAcciones = equityTotal - efectivo;
+
+            const impacto = valorAcciones * (porcentaje / 100);
+            const nuevoEquity = equityTotal + impacto;
+
+            const txtSaldo = document.getElementById('proyeccion-saldo');
+            const txtDiff = document.getElementById('diferencia-proyeccion');
+            const cajaResultado = document.getElementById('resultado-escenario');
+
+            const formateador = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+
+            txtSaldo.innerText = formateador.format(nuevoEquity);
+
+            if (impacto >= 0) {
+                txtSaldo.className = "fw-bold text-success display-6";
+                txtDiff.innerHTML = `Ganancia: <span class="text-success fw-bold">+${formateador.format(impacto)}</span>`;
+            } else {
+                txtSaldo.className = "fw-bold text-danger display-6";
+                txtDiff.innerHTML = `Pérdida: <span class="text-danger fw-bold">${formateador.format(impacto)}</span>`;
+            }
+
+            cajaResultado.classList.remove('d-none');
+        }
+
+        // ========================================
+        // BORRAR TODO
+        // ========================================
+        async function borrarTodo() {
+            if (!confirm("¿Seguro que deseas reiniciar el simulador? Se borrarán todas las posiciones e historial.")) return;
+
+            // Borrar todo en DB si está logueado
+            if (typeof isLoggedIn === 'function' && isLoggedIn()) {
+                try {
+                    await authFetch('/api/portfolio/reset', { method: 'DELETE' });
+                } catch (e) { console.warn('Error reseteando portfolio en DB:', e); }
+            }
+
+            capitalInicial = 100000;
+            localStorage.removeItem('fintech_sim_portfolio');
+            localStorage.removeItem('fintech_trade_history');
+            localStorage.removeItem('fintech_equity_history');
+            localStorage.setItem('fintech_capital', '100000');
+
+            renderTable();
+            renderHistorial();
+            actualizarEstadisticas();
+            crearGraficoEquity();
+
+            if (portfolioPieChart) portfolioPieChart.destroy();
+            document.getElementById('pieChartSection').style.display = 'none';
+
+            mostrarNotificacion('🔄 Simulador reiniciado correctamente', 'info');
+        }
+
+        // ========================================
+        // GRÁFICO DE DIVERSIFICACIÓN (PIE)
+        // ========================================
+        function crearGraficoDiversificacion(portfolio, preciosActuales = {}) {
+            const ctx = document.getElementById('portfolioPieChart');
+            if (!ctx) return;
+
+            if (portfolio.length === 0) {
+                document.getElementById('pieChartSection').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('pieChartSection').style.display = 'flex';
+
+            // Calcular el valor de cada posición
+            const posiciones = portfolio.map(pos => {
+                const dataAPI = preciosActuales[pos.ticker];
+                const precioHoy = dataAPI ? dataAPI.precio : pos.price;
+                const valor = precioHoy * pos.q;
+
+                return {
+                    ticker: pos.ticker,
+                    valor: valor,
+                    cantidad: pos.q,
+                    precio: precioHoy
+                };
+            });
+
+            // Calcular total del portfolio
+            const totalPortfolio = posiciones.reduce((sum, p) => sum + p.valor, 0);
+
+            // Calcular porcentajes
+            const labels = posiciones.map(p => p.ticker);
+            const data = posiciones.map(p => p.valor);
+            const porcentajes = posiciones.map(p => ((p.valor / totalPortfolio) * 100).toFixed(1));
+
+            // Colores vibrantes para cada activo
+            const colores = [
+                '#089981', // Verde
+                '#2962ff', // Azul
+                '#f23645', // Rojo
+                '#ffa500', // Naranja
+                '#9c27b0', // Púrpura
+                '#00bcd4', // Cyan
+                '#4caf50', // Verde claro
+                '#ff9800', // Naranja oscuro
+                '#e91e63', // Rosa
+                '#3f51b5', // Índigo
+                '#ffeb3b', // Amarillo
+                '#795548'  // Marrón
+            ];
+
+            // Destruir gráfico anterior si existe
+            if (portfolioPieChart) portfolioPieChart.destroy();
+
+            // Crear gráfico de torta
+            portfolioPieChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colores.slice(0, portfolio.length),
+                        borderColor: '#1e222d',
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: '#e0e3eb',
+                                padding: 15,
+                                font: { size: 12 },
+                                generateLabels: function (chart) {
+                                    const data = chart.data;
+                                    return data.labels.map((label, i) => {
+                                        return {
+                                            text: `${label} (${porcentajes[i]}%)`,
+                                            fillStyle: data.datasets[0].backgroundColor[i],
+                                            hidden: false,
+                                            index: i
+                                        };
+                                    });
+                                }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#1e222d',
+                            titleColor: '#e0e3eb',
+                            bodyColor: '#e0e3eb',
+                            borderColor: '#2a2e39',
+                            borderWidth: 1,
+                            callbacks: {
+                                label: function (context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed || 0;
+                                    const percentage = ((value / totalPortfolio) * 100).toFixed(1);
+                                    return `${label}: $${value.toLocaleString('en-US', { minimumFractionDigits: 2 })} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Actualizar breakdown textual
+            actualizarBreakdown(posiciones, totalPortfolio, colores);
+        }
+
+        // ========================================
+        // BREAKDOWN TEXTUAL DEL PORTFOLIO
+        // ========================================
+        function actualizarBreakdown(posiciones, total, colores) {
+            const container = document.getElementById('portfolioBreakdown');
+
+            let html = '<div style="max-height: 280px; overflow-y: auto;">';
+
+            posiciones.forEach((pos, index) => {
+                const porcentaje = ((pos.valor / total) * 100).toFixed(1);
+                const color = colores[index];
+
+                html += `
+                    <div style="display: flex; align-items: center; padding: 0.75rem; border-bottom: 1px solid var(--border-color);">
+                        <div style="width: 12px; height: 12px; background: ${color}; border-radius: 3px; margin-right: 1rem;"></div>
+                        <div style="flex: 1;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <strong style="color: var(--text-primary);">${pos.ticker}</strong>
+                                <span style="color: ${color}; font-weight: 600;">${porcentaje}%</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-top: 0.25rem; font-size: 0.85rem; color: var(--text-secondary);">
+                                <span>${pos.cantidad} acciones @ $${pos.precio.toFixed(2)}</span>
+                                <span>$${pos.valor.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        // ========================================
+        // SNAPSHOTS DE EQUITY (PARA GRÁFICO)
+        // ========================================
+        async function guardarSnapshot() {
+            const snapshots = JSON.parse(localStorage.getItem('fintech_equity_history') || '[]');
+            const equity = parseFloat(document.getElementById('totalEquity').innerText.replace(/[$,]/g, ''));
+
+            snapshots.push({
+                timestamp: Date.now(),
+                equity: equity
+            });
+
+            if (snapshots.length > 100) snapshots.shift();
+            localStorage.setItem('fintech_equity_history', JSON.stringify(snapshots));
+
+            // Guardar en DB si está logueado
+            if (typeof isLoggedIn === 'function' && isLoggedIn()) {
+                try {
+                    await authFetch('/api/portfolio/snapshots', { method: 'POST' });
+                } catch (e) { console.warn('Error guardando snapshot en DB:', e); }
+            }
+
+            crearGraficoEquity();
+        }
+
+        // ========================================
+        // GRÁFICO DE EQUITY
+        // ========================================
+        function crearGraficoEquity() {
+            const ctx = document.getElementById('equityChart');
+            if (!ctx) return;
+
+            const snapshots = JSON.parse(localStorage.getItem('fintech_equity_history') || '[]');
+
+            if (snapshots.length < 2) {
+                document.getElementById('chartSection').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('chartSection').style.display = 'block';
+
+            const labels = snapshots.map(s => new Date(s.timestamp).toLocaleDateString('es-AR', {
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            }));
+            const data = snapshots.map(s => s.equity);
+
+            if (equityChart) equityChart.destroy();
+
+            equityChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Equity Total',
+                        data: data,
+                        borderColor: '#089981',
+                        backgroundColor: 'rgba(8, 153, 129, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 3,
+                        pointHoverRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#1e222d',
+                            titleColor: '#e0e3eb',
+                            bodyColor: '#e0e3eb',
+                            borderColor: '#2a2e39',
+                            borderWidth: 1,
+                            displayColors: false,
+                            callbacks: {
+                                label: (context) => `$${context.parsed.y.toLocaleString('en-US', { minimumFractionDigits: 2 })}`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                color: '#787b86',
+                                callback: (value) => '$' + value.toLocaleString('en-US')
+                            },
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#787b86',
+                                maxRotation: 45,
+                                minRotation: 45
+                            },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ========================================
+        // ESTADÍSTICAS DE PERFORMANCE
+        // ========================================
+        function actualizarEstadisticas() {
+            const history = getTradeHistory();
+            const portfolio = getPortfolio();
+
+            if (history.length === 0) {
+                document.getElementById('statsSection').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('statsSection').style.display = 'block';
+
+            const totalInvertido = history
+                .filter(t => t.tipo === 'COMPRA')
+                .reduce((sum, t) => sum + t.total, 0);
+
+            const numCompras = history.filter(t => t.tipo === 'COMPRA').length;
+            const numVentas = history.filter(t => t.tipo === 'VENTA').length;
+
+            // Activo principal = el de mayor peso en cartera
+            let activoFavorito = 'N/A';
+            let mayorValor = 0;
+            if (portfolio.length > 0) {
+                portfolio.forEach(pos => {
+                    const valorPos = pos.q * pos.price;
+                    if (valorPos > mayorValor) {
+                        mayorValor = valorPos;
+                        activoFavorito = pos.ticker;
+                    }
+                });
+            }
+
+            // PnL - leer del display ya actualizado
+            const posicionesActuales = portfolio.length;
+            const equityText = document.getElementById('totalEquity').innerText;
+            const pnlText = document.getElementById('pnlDisplay').innerText;
+
+            // Extraer el PnL directamente del display de PnL (que ya tiene el cálculo correcto)
+            let pnlTotal = 0;
+            const pnlMatch = pnlText.match(/([+-]?\$?[\d,.]+)/);
+            if (pnlMatch) {
+                pnlTotal = parseFloat(pnlMatch[0].replace(/[\$,]/g, ''));
+            }
+
+            const container = document.getElementById('statsContainer');
+            container.innerHTML = `
+            <div class="row g-3">
+                <div class="col">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Invertido</div>
+                        <div class="stat-value text-info">$${totalInvertido.toLocaleString('en-US', { maximumFractionDigits: 0 })}</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Trades</div>
+                        <div class="stat-value">${numCompras + numVentas}</div>
+                        <div class="stat-detail">${numCompras} compras · ${numVentas} ventas</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="stat-card">
+                        <div class="stat-label">Ganancia/Pérdida Total</div>
+                        <div class="stat-value ${pnlTotal >= 0 ? 'text-up' : 'text-down'}">
+                            ${pnlTotal >= 0 ? '+' : ''}$${pnlTotal.toLocaleString('en-US', { maximumFractionDigits: 0 })}
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="stat-card">
+                        <div class="stat-label">Activo Principal</div>
+                        <div class="stat-value">${activoFavorito}</div>
+                        <div class="stat-detail">${posicionesActuales} posiciones abiertas</div>
+                    </div>
+                </div>
+                <div class="col expert-only">
+                    <div class="stat-card">
+                        <div class="stat-label">Sharpe Ratio</div>
+                        <div class="stat-value">${pnlTotal !== 0 ? (pnlTotal / Math.max(capitalInicial * 0.15, 1)).toFixed(2) : '—'}</div>
+                        <div class="stat-detail">Retorno ajustado por riesgo</div>
+                    </div>
+                </div>
+                <div class="col expert-only">
+                    <div class="stat-card">
+                        <div class="stat-label">Max Drawdown</div>
+                        <div class="stat-value ${pnlTotal < 0 ? 'text-down' : ''}">${pnlTotal < 0 ? ((pnlTotal / capitalInicial) * 100).toFixed(1) + '%' : '0%'}</div>
+                        <div class="stat-detail">Máxima caída desde el pico</div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+            // Mostrar perfil de volatilidad si existe
+            const perfilPortfolio = JSON.parse(localStorage.getItem('roskapital_perfil_portfolio') || 'null');
+            if (perfilPortfolio) {
+                // Agregar card de perfil al row existente
+                const row = container.querySelector('.row');
+                const perfilCol = document.createElement('div');
+                perfilCol.className = 'col';
+                perfilCol.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-label">Perfil de Cartera</div>
+                    <div class="stat-value">${perfilPortfolio.icono}</div>
+                    <div class="stat-detail"><span style="color:${perfilPortfolio.color}">${perfilPortfolio.tipo} — ${perfilPortfolio.desc}</span></div>
+                </div>
+            `;
+                row.appendChild(perfilCol);
+            }
+        }
+    </script>
+
+    <button id="wlToggleBtn" onclick="wlToggle()" title="Mis Activos Seguidos">
+        <i class="fas fa-star"></i>
+        <span id="wlBtnBadge" style="display:none"></span>
+    </button>
+
+    <!-- 2. Overlay oscuro -->
+    <div id="wlOverlay" onclick="wlClose()"></div>
+
+    <!-- 3. Panel lateral -->
+    <div id="wlSidebar">
+        <div id="wlHeader">
+            <div style="display:flex;align-items:center;gap:0.6rem">
+                <i class="fas fa-star" style="color:#ffa726"></i>
+                <span style="font-weight:600;color:#e0e3eb">Mis Activos</span>
+                <span id="wlBadge"></span>
+            </div>
+            <button onclick="wlClose()" id="wlCloseBtn"><i class="fas fa-times"></i></button>
+        </div>
+        <div id="wlList"></div>
+        <div id="wlAddRow">
+            <input id="wlInput" placeholder="Ej: AAPL, MELI" maxlength="10" onkeydown="if(event.key==='Enter') wlAdd()"
+                autocomplete="off" />
+            <button onclick="wlAdd()"><i class="fas fa-plus"></i> Agregar</button>
+        </div>
+        <div id="wlMsg"></div>
+    </div>
+
+    <!-- Modal Auth (Login/Register) -->
+    <div class="modal fade" id="modalAuth" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width:420px;">
+            <div class="modal-content"
+                style="background:var(--card-bg); border:1px solid var(--border); color:var(--text-primary);">
+                <div class="modal-header border-0 pb-0">
+                    <div style="display:flex; gap:0; width:100%;">
+                        <button class="auth-tab active" id="authTabLogin" onclick="switchAuthTab('login')"
+                            style="flex:1; padding:0.7rem; border:none; background:transparent; color:var(--text-primary); font-weight:700; font-size:0.95rem; border-bottom:2px solid var(--accent-blue); cursor:pointer; transition:all 0.2s;">
+                            Iniciar Sesión
+                        </button>
+                        <button class="auth-tab" id="authTabRegister" onclick="switchAuthTab('register')"
+                            style="flex:1; padding:0.7rem; border:none; background:transparent; color:var(--text-secondary); font-weight:600; font-size:0.95rem; border-bottom:2px solid transparent; cursor:pointer; transition:all 0.2s;">
+                            Crear Cuenta
+                        </button>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white position-absolute"
+                        style="top:0.7rem; right:0.7rem;" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body px-4 pb-4">
+
+                    <div id="authError"
+                        style="display:none; background:rgba(255,71,87,0.1); border:1px solid rgba(255,71,87,0.2); color:var(--negative); padding:0.6rem 1rem; border-radius:10px; font-size:0.85rem; margin-bottom:1rem;">
+                    </div>
+
+                    <!-- LOGIN FORM -->
+                    <div id="authLoginForm">
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Email</label>
+                            <input type="email" id="loginEmail" class="form-control" placeholder="tu@email.com"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;"
+                                onkeydown="if(event.key==='Enter') handleLogin()">
+                        </div>
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Contraseña</label>
+                            <input type="password" id="loginPassword" class="form-control" placeholder="••••••••"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;"
+                                onkeydown="if(event.key==='Enter') handleLogin()">
+                        </div>
+                        <button id="loginBtn" onclick="handleLogin()" class="btn w-100"
+                            style="background:linear-gradient(135deg, var(--accent-blue), #2855cc); color:white; font-weight:700; border:none; border-radius:10px; padding:0.75rem;">
+                            Iniciar Sesión
+                        </button>
+                        <div class="text-center mt-3" style="font-size:0.82rem; color:var(--text-secondary);">
+                            ¿No tenés cuenta? <a href="#" onclick="switchAuthTab('register'); return false;"
+                                style="color:var(--accent-blue); text-decoration:none; font-weight:600;">Registrate</a>
+                        </div>
+                    </div>
+
+                    <!-- REGISTER FORM -->
+                    <div id="authRegisterForm" style="display:none;">
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Nombre
+                                completo <span style="opacity:0.5;">(opcional)</span></label>
+                            <input type="text" id="registerName" class="form-control" placeholder="Juan Pérez"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;">
+                        </div>
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Nombre
+                                de usuario</label>
+                            <input type="text" id="registerUsername" class="form-control" placeholder="juanperez"
+                                maxlength="30"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;">
+                        </div>
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Email</label>
+                            <input type="email" id="registerEmail" class="form-control" placeholder="tu@email.com"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;">
+                        </div>
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Contraseña</label>
+                            <input type="password" id="registerPassword" class="form-control"
+                                placeholder="Mínimo 8 caracteres, 1 mayúscula, 1 número"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;">
+                        </div>
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Repetir
+                                contraseña</label>
+                            <input type="password" id="registerPassword2" class="form-control" placeholder="••••••••"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;"
+                                onkeydown="if(event.key==='Enter') handleRegister()">
+                        </div>
+                        <button id="registerBtn" onclick="handleRegister()" class="btn w-100"
+                            style="background:linear-gradient(135deg, var(--accent-blue), #2855cc); color:white; font-weight:700; border:none; border-radius:10px; padding:0.75rem;">
+                            Crear Cuenta
+                        </button>
+                        <div class="text-center mt-3" style="font-size:0.82rem; color:var(--text-secondary);">
+                            ¿Ya tenés cuenta? <a href="#" onclick="switchAuthTab('login'); return false;"
+                                style="color:var(--accent-blue); text-decoration:none; font-weight:600;">Iniciá
+                                sesión</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/auth_client.js"></script>
+    <script src="/static/js/watchlist_sidebar.js"></script>
+    <script src="/static/js/notifications.js"></script>
+    <script src="/static/perfil.js"></script>
+    <script src="/static/js/settings.js"></script>
+
+</body>
+
+</html>

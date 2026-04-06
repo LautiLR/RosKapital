@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitor de Mercado - RosKapital</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="icon" type="image/png" href="/static/img/favicon.png" media="(prefers-color-scheme: dark)">
+    <link rel="icon" type="image/png" href="/static/img/favicon-dark.png" media="(prefers-color-scheme: light)">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .controls-bar,
+        .stock-table,
+        .crypto-card,
+        .glass-panel,
+        .comp-card,
+        .learn-card,
+        .market-stats {
+            animation: fadeInUp 0.4s ease-out both;
+        }
+
+        /* Navbar action badges */
+        .btn-outline-success.rounded-pill {
+            border-color: rgba(0, 212, 170, 0.3);
+            color: var(--positive);
+            font-weight: 600;
+            font-size: 0.78rem;
+            transition: all 0.2s;
+        }
+
+        .btn-outline-success.rounded-pill:hover {
+            background: rgba(0, 212, 170, 0.1);
+            border-color: var(--positive);
+            color: var(--positive);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline-warning.rounded-pill {
+            border-color: rgba(255, 167, 38, 0.3);
+            color: #ffa726;
+            font-weight: 600;
+            font-size: 0.78rem;
+            transition: all 0.2s;
+        }
+
+        .btn-outline-warning.rounded-pill:hover {
+            background: rgba(255, 167, 38, 0.1);
+            border-color: #ffa726;
+            color: #ffa726;
+            transform: translateY(-1px);
+        }
+
+        /* Mobile navbar */
+        .navbar-toggler {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.4rem 0.6rem;
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: none;
+            border-color: var(--accent-blue);
+        }
+
+        /* Collapse menu en mobile */
+        @media (max-width: 991px) {
+            .navbar-collapse {
+                background: var(--card-bg);
+                border-radius: 12px;
+                margin-top: 0.5rem;
+                padding: 1rem;
+                border: 1px solid var(--border);
+            }
+        }
+
+        .loading-spinner {
+            width: 2rem;
+            height: 2rem;
+            border: 3px solid rgba(59, 125, 255, 0.15);
+            border-top: 3px solid var(--accent-blue);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Dot pulsante para indicar datos en vivo */
+        .live-dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: var(--positive);
+            border-radius: 50%;
+            margin-right: 4px;
+            animation: livePulse 2s ease-in-out infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes livePulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                box-shadow: 0 0 0 0 rgba(0, 212, 170, 0.4);
+            }
+
+            50% {
+                opacity: 0.6;
+                box-shadow: 0 0 0 4px rgba(0, 212, 170, 0);
+            }
+        }
+
+        /* Focus ring para accesibilidad */
+        :focus-visible {
+            outline: 2px solid var(--accent-blue);
+            outline-offset: 2px;
+        }
+
+        button:focus-visible,
+        .btn:focus-visible {
+            outline: 2px solid var(--accent-blue);
+            outline-offset: 2px;
+            box-shadow: 0 0 0 4px rgba(59, 125, 255, 0.15);
+        }
+
+        /* Scrollbar custom */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        ::selection {
+            background: rgba(59, 125, 255, 0.3);
+            color: white;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        :root,
+        [data-theme="dark"] {
+            --bg-dark: #0a0b0f;
+            --bg-dark-2: #0f1117;
+            --card-bg: #161921;
+            --card-bg-hover: #1a1f2b;
+            --text-primary: #e8eaed;
+            --text-secondary: #6b7080;
+            --accent-blue: #3b7dff;
+            --accent-blue-glow: rgba(59, 125, 255, 0.15);
+            --positive: #00d4aa;
+            --negative: #ff4757;
+            --border: rgba(255, 255, 255, 0.06);
+            --border-hover: rgba(255, 255, 255, 0.12);
+            --border-color: rgba(255, 255, 255, 0.06);
+            --glow: 0 0 40px rgba(59, 125, 255, 0.08);
+            --warning: #ffa500;
+            --navbar-bg: rgba(10, 11, 15, 0.85);
+            --modal-bg: #161921;
+            --input-bg: rgba(255, 255, 255, 0.05);
+            --table-header-bg: rgba(0, 0, 0, 0.3);
+            --table-hover: rgba(255, 255, 255, 0.02);
+            --scrollbar-thumb: rgba(255, 255, 255, 0.08);
+            --shadow-color: rgba(0, 0, 0, 0.3);
+        }
+
+        /* ── TEMA CLARO ── */
+        [data-theme="light"] {
+            --bg-dark: #f5f6fa;
+            --bg-dark-2: #ecedf1;
+            --card-bg: #ffffff;
+            --card-bg-hover: #f8f9fb;
+            --text-primary: #1a1d26;
+            --text-secondary: #6b7080;
+            --accent-blue: #2563eb;
+            --accent-blue-glow: rgba(37, 99, 235, 0.12);
+            --positive: #059669;
+            --negative: #dc2626;
+            --border: rgba(0, 0, 0, 0.08);
+            --border-hover: rgba(0, 0, 0, 0.15);
+            --border-color: rgba(0, 0, 0, 0.08);
+            --glow: 0 0 40px rgba(37, 99, 235, 0.06);
+            --warning: #d97706;
+            --navbar-bg: rgba(255, 255, 255, 0.9);
+            --modal-bg: #ffffff;
+            --input-bg: rgba(0, 0, 0, 0.04);
+            --table-header-bg: rgba(0, 0, 0, 0.03);
+            --table-hover: rgba(0, 0, 0, 0.02);
+            --scrollbar-thumb: rgba(0, 0, 0, 0.12);
+            --shadow-color: rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            padding-bottom: 50px;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(10, 11, 15, 0.85);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: white !important;
+        }
+
+        .nav-link {
+            color: var(--text-secondary) !important;
+            transition: color 0.2s ease, background 0.2s ease;
+            border-radius: 8px;
+            padding: 0.5rem 0.9rem !important;
+        }
+
+        .nav-link:hover {
+            color: white !important;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .nav-link.active {
+            color: white !important;
+            background: rgba(59, 125, 255, 0.1);
+        }
+
+        /* Controls Bar */
+        .controls-bar {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-secondary);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        .filter-btn.active {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: white;
+        }
+
+        .search-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-blue);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(41, 98, 255, 0.1);
+        }
+
+        .search-box option {
+            background: var(--card-bg);
+            color: white;
+        }
+
+        .search-box select,
+        select.search-box {
+            cursor: pointer;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23787b86' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            padding-right: 2.5rem;
+        }
+
+        /* Stock Table */
+        .stock-table {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .stock-table::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+            z-index: 1;
+        }
+
+        .stock-table table {
+            width: 100%;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .stock-table th {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .stock-table th:hover {
+            color: var(--accent-blue);
+        }
+
+        .stock-table th i {
+            font-size: 0.7rem;
+            margin-left: 0.25rem;
+            opacity: 0.5;
+        }
+
+        .stock-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            vertical-align: middle;
+        }
+
+        .stock-table tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .stock-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Badges */
+        .badge-country {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .badge-arg {
+            background: rgba(116, 172, 223, 0.2);
+            color: #7Zacd f;
+        }
+
+        .badge-usa {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .badge-sector {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+        }
+
+        .badge-rsi {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-weight: 600;
+        }
+
+        .badge-rsi-over {
+            background: rgba(242, 54, 69, 0.2);
+            color: var(--negative);
+        }
+
+        .badge-rsi-under {
+            background: rgba(8, 153, 129, 0.2);
+            color: var(--positive);
+        }
+
+        .badge-rsi-neutral {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+        }
+
+        .text-up {
+            color: var(--positive);
+            font-weight: 600;
+        }
+
+        .text-down {
+            color: var(--negative);
+            font-weight: 600;
+        }
+
+        /* Action Buttons */
+        .btn-buy {
+            background: linear-gradient(135deg, var(--positive), #00d68f);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+
+        .btn-buy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 212, 170, 0.3);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Results Counter */
+        .results-counter {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            padding: 0.5rem 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stock-table {
+                overflow-x: auto;
+            }
+
+            .controls-bar {
+                padding: 1rem;
+            }
+
+            .filter-btn {
+                font-size: 0.85rem;
+                padding: 0.4rem 0.8rem;
+            }
+        }
+
+        /*footer*/
+        footer {
+            margin-top: 60px;
+            border-top: 1px solid var(--border);
+            padding: 30px 0;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #555;
+            background: #0a0b0e;
+        }
+
+        /* Tabs de sección */
+        .tab-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            padding: 0.55rem 1.2rem;
+            font-size: 0.88rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--accent-blue);
+            color: var(--text-primary);
+        }
+
+        .tab-btn.active {
+            background: rgba(59, 125, 255, 0.15);
+            border-color: var(--accent-blue);
+            color: #fff;
+        }
+
+        .tab-btn.active .tab-count {
+            background: rgba(59, 125, 255, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/"><img src="/static/img/favicon.png" alt="Logo" height="35"
+                    class="me-2"></i>RosKapital</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto ps-3">
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/mercado"><span
+                                class="live-dot"></span>Mercado</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/crypto">Crypto</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/explorar/AAPL">Explorar</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/heatmap">Heatmap</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/simulador">Simulador</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/comunidad">Comunidad</a></li>
+                </ul>
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn btn-outline-success rounded-pill px-3 btn-sm" onclick="abrirModalMisiones()">
+                        <i class="bi bi-trophy me-1"></i><span id="misionesCount">0</span>/11
+                    </button>
+                    <button class="btn btn-outline-warning rounded-pill px-3 btn-sm" id="btnTestInversor"
+                        onclick="abrirTestInversor()">
+                        <i class="bi bi-person-vcard me-1"></i><span id="textoBotonPerfil">Mi Perfil</span>
+                    </button>
+                    <button class="btn btn-outline-secondary rounded-pill px-3 btn-sm" data-bs-toggle="modal"
+                        data-bs-target="#modalSettings">
+                        <i class="bi bi-gear"></i>
+                    </button>
+                    <!-- Auth buttons (sin login) -->
+                    <div id="authNavButtons" style="display:flex; gap:0.5rem;">
+                        <button class="btn btn-outline-primary rounded-pill px-3 btn-sm"
+                            onclick="abrirAuthModal('login')">
+                            <i class="bi bi-person me-1"></i>Ingresar
+                        </button>
+                    </div>
+                    <!-- User info (con login) -->
+                    <div id="userNavInfo" style="display:none; align-items:center; gap:0.5rem;"></div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="container-fluid px-4">
+
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h4 class="text-white fw-bold mb-1">
+                    <i class="fas fa-chart-bar me-2"></i>Monitor de Mercado
+                </h4>
+                <p class="text-secondary mb-0">Acciones argentinas y estadounidenses en tiempo real</p>
+            </div>
+        </div>
+
+        <!-- Tabs de sección -->
+        <div class="d-flex gap-2 mb-4 flex-wrap">
+            <button class="tab-btn active" id="tab-usa" onclick="cambiarTab('usa')">
+                🇺🇸 S&P500 <span class="tab-count" id="count-usa">75</span>
+            </button>
+            <button class="tab-btn" id="tab-cedears" onclick="cambiarTab('cedears')">
+                CEDEARs <span class="tab-count" id="count-cedears">49</span>
+            </button>
+            <button class="tab-btn" id="tab-arg" onclick="cambiarTab('arg')">
+                🇦🇷 Merval <span class="tab-count" id="count-arg">23</span>
+            </button>
+        </div>
+
+        <!-- Barra de búsqueda y filtros -->
+        <div class="controls-bar mb-3">
+            <div class="row g-3 align-items-center">
+                <div class="col-md-4">
+                    <input type="text" id="searchInput" class="search-box w-100"
+                        placeholder="🔍 Buscar por ticker o nombre..." oninput="aplicarFiltros()">
+                </div>
+                <div class="col-md-3">
+                    <select id="sectorFilter" class="search-box w-100" onchange="aplicarFiltros()">
+                        <option value="all">Todos los sectores</option>
+                        <option value="Technology">Tecnología</option>
+                        <option value="Financial Services">Financiero</option>
+                        <option value="Energy">Energía</option>
+                        <option value="Consumer Cyclical">Consumo Cíclico</option>
+                        <option value="Consumer Defensive">Consumo Defensivo</option>
+                        <option value="Healthcare">Salud</option>
+                        <option value="Industrials">Industrial</option>
+                        <option value="Communication Services">Comunicaciones</option>
+                        <option value="Basic Materials">Materiales</option>
+                        <option value="Real Estate">Real Estate</option>
+                        <option value="Utilities">Servicios Públicos</option>
+                        <option value="N/A">Sin sector</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button class="btn w-100" id="btnPerfilFilter" onclick="toggleFiltroPerfil()"
+                        style="border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.9rem; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: var(--text-secondary); transition: all 0.3s;">
+                        <i class="fas fa-user-shield me-2"></i><span id="perfilFilterText">Para tu perfil</span>
+                    </button>
+                </div>
+                <div class="col-md-2 text-secondary" style="font-size:0.85rem">
+                    Mostrando <strong id="resultsCount" class="text-white">0</strong> activos
+                </div>
+            </div>
+            <div id="perfilFilterBanner" style="display:none; margin-top: 0.75rem;">
+                <div
+                    style="background: rgba(41,98,255,0.1); border: 1px solid rgba(41,98,255,0.2); border-radius: 8px; padding: 0.5rem 1rem; display: flex; align-items: center; justify-content: space-between;">
+                    <span style="font-size: 0.85rem;" id="perfilBannerText">
+                        <i class="fas fa-filter me-2 text-info"></i>Mostrando activos recomendados para tu perfil
+                    </span>
+                    <button class="btn btn-sm text-secondary" onclick="toggleFiltroPerfil()" style="font-size: 0.8rem;">
+                        <i class="fas fa-times"></i> Quitar filtro
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección USA -->
+        <div id="section-usa">
+            <div id="spinner-usa" class="text-center py-5">
+                <div class="spinner-border text-primary mb-3" style="width:2.5rem;height:2.5rem"></div>
+                <div class="text-secondary">Cargando 75 acciones del S&P500...</div>
+            </div>
+            <div class="stock-table" id="table-usa" style="display:none">
+                <table>
+                    <thead>
+                        <tr>
+                            <th onclick="ordenar('ticker')">TICKER <i class="fas fa-sort"></i></th>
+                            <th onclick="ordenar('nombre')">NOMBRE <i class="fas fa-sort"></i></th>
+                            <th>SECTOR</th>
+                            <th class="text-end" onclick="ordenar('precio')">PRECIO USD <i class="fas fa-sort"></i></th>
+                            <th class="text-end" onclick="ordenar('cambio')">CAMBIO <i class="fas fa-sort"></i></th>
+                            <th class="text-center">VOLUMEN</th>
+                            <th class="text-center">VER</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stocksTable"></tbody>
+                </table>
+            </div>
+            <div id="empty-usa" class="empty-state" style="display:none">
+                <i class="fas fa-search"></i>
+                <h5 class="text-white mt-3">Sin resultados</h5>
+                <p class="text-secondary">Intentá con otros filtros</p>
+            </div>
+        </div>
+
+        <!-- Sección CEDEARs -->
+        <div id="section-cedears" style="display:none">
+            <div id="spinner-cedears" class="text-center py-5">
+                <div class="spinner-border text-warning mb-3" style="width:2.5rem;height:2.5rem"></div>
+                <div class="text-secondary">Cargando CEDEARs y cotización del dólar MEP...</div>
+            </div>
+            <div id="dolar-mep-info" style="display:none" class="mb-3 px-1">
+                <small class="text-secondary">
+                    <i class="fas fa-dollar-sign me-1"></i>
+                    Precio ARS calculado con Dólar MEP: <strong class="text-warning" id="dolarMepVal">—</strong>
+                    &nbsp;·&nbsp; Fórmula: precio USD ÷ ratio × dólar MEP
+                </small>
+            </div>
+            <div class="stock-table" id="table-cedears" style="display:none">
+                <table>
+                    <thead>
+                        <tr>
+                            <th onclick="ordenarCedear('ticker')">TICKER <i class="fas fa-sort"></i></th>
+                            <th onclick="ordenarCedear('nombre')">NOMBRE <i class="fas fa-sort"></i></th>
+                            <th>SECTOR</th>
+                            <th class="text-center">RATIO</th>
+                            <th class="text-end" onclick="ordenarCedear('precio_usd')">PRECIO USD <i
+                                    class="fas fa-sort"></i></th>
+                            <th class="text-end" onclick="ordenarCedear('precio_ars')">PRECIO ARS <i
+                                    class="fas fa-sort"></i></th>
+                            <th class="text-end" onclick="ordenarCedear('cambio')">CAMBIO <i class="fas fa-sort"></i>
+                            </th>
+                            <th class="text-center">VOLUMEN</th>
+                            <th class="text-center">VER</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cedearsTable"></tbody>
+                </table>
+            </div>
+            <div id="empty-cedears" class="empty-state" style="display:none">
+                <i class="fas fa-search"></i>
+                <h5 class="text-white mt-3">Sin resultados</h5>
+                <p class="text-secondary">Intentá con otros filtros</p>
+            </div>
+        </div>
+
+        <!-- Sección ARG -->
+        <div id="section-arg" style="display:none">
+            <div id="spinner-arg" class="text-center py-5">
+                <div class="spinner-border text-success mb-3" style="width:2.5rem;height:2.5rem"></div>
+                <div class="text-secondary">Cargando acciones del Merval...</div>
+            </div>
+            <div class="stock-table" id="table-arg" style="display:none">
+                <table>
+                    <thead>
+                        <tr>
+                            <th onclick="ordenar('ticker')">TICKER <i class="fas fa-sort"></i></th>
+                            <th onclick="ordenar('nombre')">NOMBRE <i class="fas fa-sort"></i></th>
+                            <th>SECTOR</th>
+                            <th class="text-end" onclick="ordenar('precio')">PRECIO ARS <i class="fas fa-sort"></i></th>
+                            <th class="text-end" onclick="ordenar('cambio')">CAMBIO <i class="fas fa-sort"></i></th>
+                            <th class="text-center">VOLUMEN</th>
+                            <th class="text-center">VER</th>
+                        </tr>
+                    </thead>
+                    <tbody id="argTable"></tbody>
+                </table>
+            </div>
+            <div id="empty-arg" class="empty-state" style="display:none">
+                <i class="fas fa-search"></i>
+                <h5 class="text-white mt-3">Sin resultados</h5>
+                <p class="text-secondary">Intentá con otros filtros</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal Perfil Inversor -->
+    <div class="modal fade" id="modalPerfilInversor" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content glass-effect text-white"
+                style="background: var(--card-bg); border: 1px solid var(--border);">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">Test de Identidad Financiera</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="px-3 mt-3">
+                    <div class="progress" style="height: 5px; background: rgba(255, 255, 255, 0.06);">
+                        <div class="progress-bar bg-warning" id="barraProgreso" role="progressbar" style="width: 0%;">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body p-4 text-center" id="contenidoTest"></div>
+                <div class="modal-footer border-0 justify-content-center d-none" id="footerResultados">
+                    <button type="button" class="btn btn-primary rounded-pill px-4" data-bs-dismiss="modal"
+                        onclick="location.reload()">¡Entendido, vamos!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p class="fw-bold mb-1">Desarrollado con Python & FastAPI</p>
+            <p class="text-secondary small mb-3">
+                <i class="fas fa-exclamation-triangle me-1 text-warning"></i>
+                Advertencia: La información de los tickers puede tener un retraso de 15-20 minutos.
+            </p>
+            <p class="text-secondary" style="font-size: 0.75rem; opacity: 0.7;">
+                Disclaimer: Este sitio es una herramienta educativa y de consulta. No constituye asesoramiento
+                financiero ni recomendación de inversión.
+            </p>
+        </div>
+    </footer>
+
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1050">
+        <div id="liveToast" class="toast align-items-center text-white bg-success border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body fs-6">
+                    <i class="bi bi-trophy-fill text-warning me-2"></i>
+                    <span id="textoMision">¡Misión Completada!</span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Misiones -->
+    <div class="modal fade" id="modalMisiones" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content"
+                style="background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); color: white;">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold"><i class="bi bi-trophy-fill text-warning me-2"></i>Mis Misiones</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-0">
+                    <div class="mb-3">
+                        <div class="progress"
+                            style="height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px;">
+                            <div class="progress-bar bg-warning" id="misionesProgressBar"
+                                style="width: 0%; border-radius: 4px;"></div>
+                        </div>
+                        <div class="text-secondary small mt-1" id="misionesProgressText">0 de 11 completadas</div>
+                    </div>
+                    <div id="misionesLista"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Settings -->
+    <div class="modal fade" id="modalSettings" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content"
+                style="background: var(--card-bg); border: 1px solid var(--border); color: var(--text-primary);">
+                <div class="modal-header border-0 pb-0">
+                    <h6 class="modal-title fw-bold">⚙️ Configuración</h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Tema -->
+                    <div class="d-flex justify-content-between align-items-center mb-3 pb-3"
+                        style="border-bottom: 1px solid var(--border);">
+                        <div>
+                            <div class="fw-bold" style="font-size:0.9rem;">Tema</div>
+                            <div style="font-size:0.78rem; color:var(--text-secondary);">Apariencia de la plataforma
+                            </div>
+                        </div>
+                        <div class="d-flex gap-1">
+                            <button class="btn btn-sm theme-opt" data-theme-val="dark" onclick="setTheme('dark')"
+                                style="padding:0.3rem 0.7rem; border-radius:8px; font-size:0.78rem;">🌙 Oscuro</button>
+                            <button class="btn btn-sm theme-opt" data-theme-val="light" onclick="setTheme('light')"
+                                style="padding:0.3rem 0.7rem; border-radius:8px; font-size:0.78rem;">☀️ Claro</button>
+                        </div>
+                    </div>
+
+                    <!-- Modo Experto -->
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="fw-bold" style="font-size:0.9rem;">Modo Experto</div>
+                            <div style="font-size:0.78rem; color:var(--text-secondary);">Indicadores técnicos y métricas
+                                avanzadas</div>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="expertModeToggle"
+                                onchange="toggleExpertMode(this.checked)"
+                                style="cursor:pointer; width:2.5rem; height:1.25rem;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>// ========================================================
+        // FILTRO POR PERFIL DE INVERSOR
+        // ========================================================
+        let filtroPerfil = false;
+
+        const perfilSectores = {
+            'Don Horacio': {
+                sectores: ['Utilities', 'Consumer Defensive', 'Healthcare', 'Real Estate'],
+                label: '🛡️ Don Horacio — Activos defensivos (Beta baja < 0.9)',
+                color: '#089981'
+            },
+            'Valeria': {
+                sectores: ['Financial Services', 'Industrials', 'Energy', 'Healthcare', 'Real Estate', 'Basic Materials'],
+                label: '⚖️ Valeria — Activos equilibrados (Beta ~1.0)',
+                color: '#ffa726'
+            },
+            'Enzo': {
+                sectores: ['Technology', 'Consumer Cyclical', 'Communication Services', 'Basic Materials'],
+                label: '🚀 Enzo — Activos de alto crecimiento (Beta alta > 1.1)',
+                color: '#f23645'
+            }
+        };
+
+        function getPerfilInversor() {
+            const data = localStorage.getItem('perfil_inversor');
+            return data ? JSON.parse(data) : null;
+        }
+
+        function toggleFiltroPerfil() {
+            const perfil = getPerfilInversor();
+
+            if (!perfil) {
+                alert('Primero completá el Test de Inversor para usar este filtro.');
+                return;
+            }
+
+            filtroPerfil = !filtroPerfil;
+
+            const btn = document.getElementById('btnPerfilFilter');
+            const banner = document.getElementById('perfilFilterBanner');
+            const config = perfilSectores[perfil.personaje];
+
+            if (filtroPerfil && config) {
+                btn.style.background = `rgba(41,98,255,0.15)`;
+                btn.style.borderColor = `rgba(41,98,255,0.3)`;
+                btn.style.color = 'white';
+                document.getElementById('perfilFilterText').textContent = perfil.personaje;
+                document.getElementById('perfilBannerText').innerHTML = `<i class="fas fa-filter me-2" style="color:${config.color}"></i>${config.label}`;
+                banner.style.display = 'block';
+            } else {
+                btn.style.background = 'rgba(255,255,255,0.05)';
+                btn.style.borderColor = 'rgba(255,255,255,0.1)';
+                btn.style.color = 'var(--text-secondary)';
+                document.getElementById('perfilFilterText').textContent = 'Para tu perfil';
+                banner.style.display = 'none';
+            }
+
+            aplicarFiltros();
+        }
+
+        // Inicializar botón con nombre del mentor si existe
+        document.addEventListener('DOMContentLoaded', function () {
+            const perfil = getPerfilInversor();
+            if (perfil && perfil.personaje) {
+                document.getElementById('perfilFilterText').textContent = `Para tu perfil`;
+            }
+        });
+    </script>
+
+    <script>
+        // ========================================================
+        // ESTADO GLOBAL
+        // ========================================================
+        const state = {
+            usa: { data: null, filtered: [], loaded: false },
+            cedears: { data: null, filtered: [], loaded: false },
+            arg: { data: null, filtered: [], loaded: false },
+        };
+        let tabActual = 'usa';
+        let sortCol = 'ticker';
+        let sortDir = 'asc';
+
+        // ========================================================
+        // INIT
+        // ========================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            cargarSeccion('usa');  // lazy: solo carga la primera tab
+        });
+
+        // ========================================================
+        // TABS
+        // ========================================================
+        function cambiarTab(tab) {
+            tabActual = tab;
+            // Actualizar botones
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.add('active');
+            // Mostrar/ocultar secciones
+            ['usa', 'cedears', 'arg'].forEach(t => {
+                document.getElementById('section-' + t).style.display = t === tab ? 'block' : 'none';
+            });
+            // Lazy load: solo fetchea si no cargó antes
+            if (!state[tab].loaded) cargarSeccion(tab);
+            else aplicarFiltros();
+        }
+
+        // ========================================================
+        // CARGA DE DATOS
+        // ========================================================
+        async function cargarSeccion(tab) {
+            const endpoints = {
+                usa: '/api/stocks/usa',
+                cedears: '/api/stocks/cedears',
+                arg: '/api/stocks/arg',
+            };
+            try {
+                const res = await fetch(endpoints[tab]);
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const data = await res.json();
+                state[tab].data = data;
+                state[tab].loaded = true;
+                state[tab].filtered = [...data];
+
+                // Actualizar contador del tab
+                document.getElementById('count-' + tab).textContent = data.length;
+
+                // Si es cedears, mostrar info dólar MEP
+                if (tab === 'cedears' && data.length > 0) {
+                    const mep = data[0].dolar_ccl;
+                    document.getElementById('dolarMepVal').textContent =
+                        '$' + mep.toLocaleString('es-AR', { minimumFractionDigits: 0 });
+                    document.getElementById('dolar-mep-info').style.display = 'block';
+                }
+
+                aplicarFiltros();
+            } catch (err) {
+                console.error('[Mercado] Error cargando ' + tab + ':', err);
+                document.getElementById('spinner-' + tab).innerHTML = `
+                    <div class="text-danger py-4">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Error al cargar datos. Recargá la página.
+                    </div>`;
+            }
+        }
+
+        // ========================================================
+        // FILTROS
+        // ========================================================
+        function aplicarFiltros() {
+            if (!state[tabActual].data) return;
+
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const sector = document.getElementById('sectorFilter').value;
+            const perfil = getPerfilInversor();
+            const config = perfil ? perfilSectores[perfil.personaje] : null;
+
+            state[tabActual].filtered = state[tabActual].data.filter(s => {
+                const matchSearch = !search ||
+                    s.ticker.toLowerCase().includes(search) ||
+                    (s.nombre || '').toLowerCase().includes(search);
+                const matchSector = sector === 'all' || s.sector === sector;
+
+                // Filtro por perfil de inversor
+                let matchPerfil = true;
+                if (filtroPerfil && config) {
+                    matchPerfil = config.sectores.includes(s.sector);
+                }
+
+                return matchSearch && matchSector && matchPerfil;
+            });
+
+            renderTabla();
+        }
+
+        // ========================================================
+        // ORDENAMIENTO
+        // ========================================================
+        function ordenar(col) {
+            if (sortCol === col) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+            else { sortCol = col; sortDir = 'asc'; }
+            state[tabActual].filtered.sort((a, b) => {
+                let av = a[col], bv = b[col];
+                if (typeof av === 'number') return sortDir === 'asc' ? av - bv : bv - av;
+                return sortDir === 'asc' ? String(av).localeCompare(String(bv)) : String(bv).localeCompare(String(av));
+            });
+            renderTabla();
+        }
+
+        function ordenarCedear(col) { ordenar(col); }
+
+        // ========================================================
+        // RENDER
+        // ========================================================
+        function renderTabla() {
+            const tab = tabActual;
+            const data = state[tab].filtered;
+            const spinner = document.getElementById('spinner-' + tab);
+            const tableWrap = document.getElementById('table-' + tab);
+            const empty = document.getElementById('empty-' + tab);
+
+            spinner.style.display = 'none';
+
+            document.getElementById('resultsCount').textContent = data.length;
+
+            if (data.length === 0) {
+                tableWrap.style.display = 'none';
+                empty.style.display = 'block';
+                return;
+            }
+
+            empty.style.display = 'none';
+            tableWrap.style.display = 'block';
+
+            if (tab === 'cedears') renderCedears(data);
+            else if (tab === 'arg') renderArg(data);
+            else renderUsa(data);
+        }
+
+        function cambioHtml(c) {
+            const pos = c >= 0;
+            return `<span class="${pos ? 'text-up' : 'text-down'} fw-bold">
+                ${pos ? '▲' : '▼'} ${Math.abs(c).toFixed(2)}%
+            </span>`;
+        }
+
+        function formatVolumen(vol) {
+            if (!vol) return 'N/A';
+            if (vol >= 1e12) return (vol / 1e12).toFixed(1) + 'T';
+            if (vol >= 1e9) return (vol / 1e9).toFixed(1) + 'B';
+            if (vol >= 1e6) return (vol / 1e6).toFixed(1) + 'M';
+            if (vol >= 1e3) return (vol / 1e3).toFixed(1) + 'K';
+            return vol.toString();
+        }
+
+        function renderUsa(data) {
+            document.getElementById('stocksTable').innerHTML = data.map(s => `
+                <tr onclick="window.location.href='/explorar/${s.ticker}'" style="cursor:pointer">
+                    <td><span class="fw-bold text-white">${s.ticker}</span></td>
+                    <td><span class="text-secondary" style="font-size:0.85rem">${s.nombre}</span></td>
+                    <td><span class="badge-sector">${s.sector || 'N/A'}</span></td>
+                    <td class="text-end fw-bold text-white">$${s.precio.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+                    <td class="text-end">${cambioHtml(s.cambio)}</td>
+                    <td class="text-center text-secondary" style="font-size:0.85rem">${formatVolumen(s.volumen)}</td>
+                    <td class="text-center">
+                        <a href="/explorar/${s.ticker}" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size:0.75rem">
+                            <i class="fas fa-chart-line"></i>
+                        </a>
+                    </td>
+                </tr>`).join('');
+        }
+
+        function renderCedears(data) {
+            document.getElementById('cedearsTable').innerHTML = data.map(s => `
+                <tr onclick="window.location.href='/explorar/${s.ticker}'" style="cursor:pointer">
+                    <td><span class="fw-bold text-white">${s.ticker}</span></td>
+                    <td><span class="text-secondary" style="font-size:0.85rem">${s.nombre}</span></td>
+                    <td><span class="badge-sector">${s.sector || 'N/A'}</span></td>
+                    <td class="text-center">
+                        <span style="background:rgba(255,167,38,0.12);color:#ffa726;border:1px solid rgba(255,167,38,0.3);
+                            border-radius:6px;padding:1px 8px;font-size:0.75rem;font-weight:600">
+                            1:${s.ratio}
+                        </span>
+                    </td>
+                    <td class="text-end text-secondary">$${(s.precio_usd ?? 0).toFixed(2)}</td>
+                    <td class="text-end fw-bold text-white">$${(s.precio_ars ?? 0).toLocaleString('es-AR', { minimumFractionDigits: 0 })}</td>
+                    <td class="text-end">${cambioHtml(s.cambio)}</td>
+                    <td class="text-center text-secondary" style="font-size:0.85rem">${formatVolumen(s.volumen)}</td>
+                    <td class="text-center">
+                        <a href="/explorar/${s.ticker}" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size:0.75rem">
+                            <i class="fas fa-chart-line"></i>
+                        </a>
+                    </td>
+                </tr>`).join('');
+        }
+
+        function renderArg(data) {
+            document.getElementById('argTable').innerHTML = data.map(s => {
+                const tickerLimpio = s.ticker.replace('.BA', '');
+                return `
+                <tr onclick="window.location.href='/explorar/${s.ticker}'" style="cursor:pointer">
+                    <td><span class="fw-bold text-white">${tickerLimpio}</span><small class="text-secondary ms-1">.BA</small></td>
+                    <td><span class="text-secondary" style="font-size:0.85rem">${s.nombre}</span></td>
+                    <td><span class="badge-sector">${s.sector || 'N/A'}</span></td>
+                    <td class="text-end fw-bold text-white">$${s.precio.toLocaleString('es-AR', { minimumFractionDigits: 2 })}</td>
+                    <td class="text-end">${cambioHtml(s.cambio)}</td>
+                    <td class="text-center text-secondary" style="font-size:0.85rem">${formatVolumen(s.volumen)}</td>
+                    <td class="text-center">
+                        <a href="/explorar/${s.ticker}" class="btn btn-sm btn-outline-success py-0 px-2" style="font-size:0.75rem">
+                            <i class="fas fa-chart-line"></i>
+                        </a>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+    </script>
+
+    <button id="wlToggleBtn" onclick="wlToggle()" title="Mis Activos Seguidos">
+        <i class="fas fa-star"></i>
+        <span id="wlBtnBadge" style="display:none"></span>
+    </button>
+
+    <!-- 2. Overlay oscuro -->
+    <div id="wlOverlay" onclick="wlClose()"></div>
+
+    <!-- 3. Panel lateral -->
+    <div id="wlSidebar">
+        <div id="wlHeader">
+            <div style="display:flex;align-items:center;gap:0.6rem">
+                <i class="fas fa-star" style="color:#ffa726"></i>
+                <span style="font-weight:600;color:#e0e3eb">Mis Activos</span>
+                <span id="wlBadge"></span>
+            </div>
+            <button onclick="wlClose()" id="wlCloseBtn"><i class="fas fa-times"></i></button>
+        </div>
+        <div id="wlList"></div>
+        <div id="wlAddRow">
+            <input id="wlInput" placeholder="Ej: AAPL, MELI" maxlength="10" onkeydown="if(event.key==='Enter') wlAdd()"
+                autocomplete="off" />
+            <button onclick="wlAdd()"><i class="fas fa-plus"></i> Agregar</button>
+        </div>
+        <div id="wlMsg"></div>
+    </div>
+
+
+    <!-- Modal Auth (Login/Register) -->
+    <div class="modal fade" id="modalAuth" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width:420px;">
+            <div class="modal-content"
+                style="background:var(--card-bg); border:1px solid var(--border); color:var(--text-primary);">
+                <div class="modal-header border-0 pb-0">
+                    <div style="display:flex; gap:0; width:100%;">
+                        <button class="auth-tab active" id="authTabLogin" onclick="switchAuthTab('login')"
+                            style="flex:1; padding:0.7rem; border:none; background:transparent; color:var(--text-primary); font-weight:700; font-size:0.95rem; border-bottom:2px solid var(--accent-blue); cursor:pointer; transition:all 0.2s;">
+                            Iniciar Sesión
+                        </button>
+                        <button class="auth-tab" id="authTabRegister" onclick="switchAuthTab('register')"
+                            style="flex:1; padding:0.7rem; border:none; background:transparent; color:var(--text-secondary); font-weight:600; font-size:0.95rem; border-bottom:2px solid transparent; cursor:pointer; transition:all 0.2s;">
+                            Crear Cuenta
+                        </button>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white position-absolute"
+                        style="top:0.7rem; right:0.7rem;" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body px-4 pb-4">
+
+                    <div id="authError"
+                        style="display:none; background:rgba(255,71,87,0.1); border:1px solid rgba(255,71,87,0.2); color:var(--negative); padding:0.6rem 1rem; border-radius:10px; font-size:0.85rem; margin-bottom:1rem;">
+                    </div>
+
+                    <!-- LOGIN FORM -->
+                    <div id="authLoginForm">
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Email</label>
+                            <input type="email" id="loginEmail" class="form-control" placeholder="tu@email.com"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;"
+                                onkeydown="if(event.key==='Enter') handleLogin()">
+                        </div>
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Contraseña</label>
+                            <input type="password" id="loginPassword" class="form-control" placeholder="••••••••"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;"
+                                onkeydown="if(event.key==='Enter') handleLogin()">
+                        </div>
+                        <button id="loginBtn" onclick="handleLogin()" class="btn w-100"
+                            style="background:linear-gradient(135deg, var(--accent-blue), #2855cc); color:white; font-weight:700; border:none; border-radius:10px; padding:0.75rem;">
+                            Iniciar Sesión
+                        </button>
+                        <div class="text-center mt-3" style="font-size:0.82rem; color:var(--text-secondary);">
+                            ¿No tenés cuenta? <a href="#" onclick="switchAuthTab('register'); return false;"
+                                style="color:var(--accent-blue); text-decoration:none; font-weight:600;">Registrate</a>
+                        </div>
+                    </div>
+
+                    <!-- REGISTER FORM -->
+                    <div id="authRegisterForm" style="display:none;">
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Nombre
+                                completo <span style="opacity:0.5;">(opcional)</span></label>
+                            <input type="text" id="registerName" class="form-control" placeholder="Juan Pérez"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;">
+                        </div>
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Nombre
+                                de usuario</label>
+                            <input type="text" id="registerUsername" class="form-control" placeholder="juanperez"
+                                maxlength="30"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;">
+                        </div>
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Email</label>
+                            <input type="email" id="registerEmail" class="form-control" placeholder="tu@email.com"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;">
+                        </div>
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Contraseña</label>
+                            <input type="password" id="registerPassword" class="form-control"
+                                placeholder="Mínimo 8 caracteres, 1 mayúscula, 1 número"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;">
+                        </div>
+                        <div class="mb-3">
+                            <label
+                                style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.3rem; display:block;">Repetir
+                                contraseña</label>
+                            <input type="password" id="registerPassword2" class="form-control" placeholder="••••••••"
+                                style="background:var(--input-bg); border:1px solid var(--border); color:var(--text-primary); border-radius:10px; padding:0.7rem 1rem;"
+                                onkeydown="if(event.key==='Enter') handleRegister()">
+                        </div>
+                        <button id="registerBtn" onclick="handleRegister()" class="btn w-100"
+                            style="background:linear-gradient(135deg, var(--accent-blue), #2855cc); color:white; font-weight:700; border:none; border-radius:10px; padding:0.75rem;">
+                            Crear Cuenta
+                        </button>
+                        <div class="text-center mt-3" style="font-size:0.82rem; color:var(--text-secondary);">
+                            ¿Ya tenés cuenta? <a href="#" onclick="switchAuthTab('login'); return false;"
+                                style="color:var(--accent-blue); text-decoration:none; font-weight:600;">Iniciá
+                                sesión</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/auth_client.js"></script>
+    <script src="/static/js/watchlist_sidebar.js"></script>
+    <script src="/static/js/notifications.js"></script>
+    <script src="/static/perfil.js"></script>
+    <script src="/static/js/settings.js"></script>
+
+</body>
+
+</html>
