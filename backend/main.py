@@ -76,7 +76,7 @@ app.add_middleware(GZipMiddleware, minimum_size=1000)
 if settings.ENVIRONMENT == "production":
     app.add_middleware(
         TrustedHostMiddleware,
-        allowed_hosts=["roskapital-qjes.onrender.com", "*.onrender.com", "localhost"]
+        allowed_hosts=["https://roskapital.up.railway.app", "*.up.railway.app", "localhost"]
     )
 
 # Security Headers
