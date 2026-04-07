@@ -256,15 +256,22 @@ async def crypto(request: Request):
 
 
 @app.get("/explorar/{ticker}")
+import requests as req_lib
+
+def get_yf_session():
+    session = req_lib.Session()
+    session.headers.update({
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5',
+        'Origin': 'https://finance.yahoo.com',
+        'Referer': 'https://finance.yahoo.com/'
+    })
+    return session
+
 async def explorar(request: Request, ticker: str):
     """Terminal de análisis con datos completos + cálculo manual de PEG"""
     import yfinance as yf
-    import requests as req_lib
-
-    session = req_lib.Session()
-    session.headers.update({
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-    })
     
     # Valores por defecto
     precio = "0.00"
