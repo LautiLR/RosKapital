@@ -69,13 +69,11 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 # CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins_list,
-    allow_origins=["*"]
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=["*"],
-)
+) # <--- FIJATE QUE ESTE PARÉNTESIS ESTÉ CERRANDO BIEN
 
 # GZIP Compression
 app.add_middleware(GZipMiddleware, minimum_size=1000)
