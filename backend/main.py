@@ -4,7 +4,6 @@ Aplicación principal optimizada y segura
 """
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -22,6 +21,14 @@ from app.database import init_db
 
 # Importar routers
 from app.routers import auth, market, portfolio, users
+
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
+
+# Agregá esto para que acepte cualquier host y no te bloquee
+app.add_middleware(
+    TrustedHostMiddleware, 
+    allowed_hosts=["roskapital.onrender.com", "*.onrender.com", "localhost", "127.0.0.1"]
+)
 
 # Configurar logging
 logging.basicConfig(
