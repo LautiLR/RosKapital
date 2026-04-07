@@ -4,6 +4,7 @@ Aplicación principal optimizada y segura
 """
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -21,8 +22,6 @@ from app.database import init_db
 
 # Importar routers
 from app.routers import auth, market, portfolio, users
-
-from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
 # Configurar logging
 logging.basicConfig(
@@ -63,10 +62,11 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 # CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=settings.cors_origins_list,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 # GZIP Compression
