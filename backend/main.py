@@ -23,20 +23,6 @@ from app.database import init_db
 # Importar routers
 from app.routers import auth, market, portfolio, users
 
-import requests as req_lib
-
-def get_yf_session():
-    session = req_lib.Session()
-    # Usamos un User-Agent más moderno y agregamos más headers
-    session.headers.update({
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,video/webm,*/*;q=0.8',
-        'Accept-Language': 'es-AR,es;q=0.8,en-US;q=0.5,en;q=0.3',
-        'Connection': 'keep-alive',
-        'Upgrade-Insecure-Requests': '1'
-    })
-    return session
-
 # Configurar logging
 logging.basicConfig(
     level=getattr(logging, settings.LOG_LEVEL),
