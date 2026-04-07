@@ -18,8 +18,8 @@ slowapi==0.1.9
 
 # Financial Data
 yfinance==0.2.35
-pandas==2.1.4
-numpy==1.26.3
+pandas>=2.1.0
+numpy>=1.26.0
 requests==2.31.0
 
 # Async HTTP
