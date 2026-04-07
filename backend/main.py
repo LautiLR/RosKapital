@@ -24,12 +24,6 @@ from app.routers import auth, market, portfolio, users
 
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
-# Agregá esto para que acepte cualquier host y no te bloquee
-app.add_middleware(
-    TrustedHostMiddleware, 
-    allowed_hosts=["roskapital.onrender.com", "*.onrender.com", "localhost", "127.0.0.1"]
-)
-
 # Configurar logging
 logging.basicConfig(
     level=getattr(logging, settings.LOG_LEVEL),
@@ -73,7 +67,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-) # <--- FIJATE QUE ESTE PARÉNTESIS ESTÉ CERRANDO BIEN
+)
 
 # GZIP Compression
 app.add_middleware(GZipMiddleware, minimum_size=1000)
