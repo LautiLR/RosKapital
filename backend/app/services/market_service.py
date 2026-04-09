@@ -221,7 +221,7 @@ def get_market_indices() -> List[Dict]:
     def get_index_data(ticker):
         try:
             index = yf.Ticker(ticker)
-            hist = index.history(period="1d")
+            hist = index.history(period="5d")
             
             if hist.empty:
                 return None
