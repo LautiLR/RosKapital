@@ -11,8 +11,16 @@ import logging
 from app.cache import cache_get, cache_set
 from app.config import settings
 
-logger = logging.getLogger(__name__)
+yf.set_tz_cache_location("/tmp")
+import requests
+session = requests.Session()
+session.headers.update({
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-Language': 'en-US,en;q=0.5',
+})
 
+logger = logging.getLogger(__name__)
 
 # ============================================
 # STOCKS DATA
@@ -21,7 +29,7 @@ logger = logging.getLogger(__name__)
 def get_stock_data(ticker: str) -> Optional[Dict]:
     """Obtiene datos de una acción individual con % de cambio correcto"""
     try:
-        stock = yf.Ticker(ticker)
+        stock = yf.Ticker(ticker, session=session)
         info = stock.info
         hist = stock.history(period="5d")  # Obtener últimos 5 días
         
